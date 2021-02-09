@@ -30,7 +30,7 @@
     function installSmbPackage()
     {   
         putSmbPackage();
-        $command = sudo() . "DEBIAN_FRONTEND=noninteractive apt install -y /tmp/smbpy.deb";
+        $command = sudo() . "DEBIAN_FRONTEND=noninteractive apt install -y /tmp/smbpy.deb > /tmp/smbpyLog -qqy >/tmp/smbpyLog 2>&1 & disown";
         runCommand($command);
     }
 
@@ -44,10 +44,19 @@
         if(verifyInstallation() == false){
             installSmbPackage();
             $res = "smbHVL paketi başarı ile yüklendi.<br />";
-            $output = runScript("smbpy.py","",true);
-            $respond_message = $res.$output;
-            return respond($respond_message,200);
+            $log = runCommand(sudo() . "cat /tmp/smbpyLog)");
+            
+            return respond($log,200);
+            #return respond($respond_message,200);
         }
+    }
+
+    function tab1(){
+        
+    }
+
+    function tab2(){
+        return respond("Merhaba Uzaylı !!",200);
     }
 
     

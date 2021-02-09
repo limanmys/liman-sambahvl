@@ -30,7 +30,7 @@
     function installSmbPackage()
     {   
         putSmbPackage();
-        $command = sudo() . "DEBIAN_FRONTEND=noninteractive apt install -y /tmp/smbpy.deb > /tmp/smbpyLog -qqy >/tmp/smbpyLog 2>&1 & disown";
+        $command = sudo() . "DEBIAN_FRONTEND=noninteractive apt install -y /tmp/smbpy.deb >/tmp/smbpyLog";
         runCommand($command);
     }
 
@@ -38,16 +38,16 @@
     {
         if(verifyInstallation() == true){
             $res = "smbHVL paketi zaten var !";
+            
             return respond($res,200);
         }
 
         if(verifyInstallation() == false){
             installSmbPackage();
             $res = "smbHVL paketi başarı ile yüklendi.<br />";
-            $log = runCommand(sudo() . "cat /tmp/smbpyLog)");
+            $log = runCommand(sudo() . 'echo "$(cat /tmp/smbpyLog)"');
             
-            return respond($log,200);
-            #return respond($respond_message,200);
+            return respond("<pre>" . $log . "</pre>",200);
         }
     }
 
@@ -59,19 +59,15 @@
         $output = runCommand(sudo() . "systemctl is-active samba4.service");
 
         if (trim($output) == "active") {
-            $status = '<td style="color: green;">Samba4 Servisi Aktif !</td>';
+            $status = '<button type="button" class="btn btn-success" disabled>Samba4 Servisi Aktif !</button>' ;
+            
         } 
         else {
-            $status = '<td style="color: red;">Samba4 Servisi İnaktif !</td>';
+            $status = '<button type="button" class="btn btn-danger" disabled>Samba4 Servisi İnaktif !</button>' ;
+            
         }
 
-        #$status = runCommand(sudo() . "systemctl status samba4.service");
         return respond($status,200);
     }
 
-    function isactive($service) {
-        
-    }
-
-    
 ?>

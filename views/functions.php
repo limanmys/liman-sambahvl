@@ -52,11 +52,25 @@
     }
 
     function tab1(){
-        
+        # selam naber
     }
 
     function tab2(){
-        return respond("Merhaba Uzaylı !!",200);
+        $output = runCommand(sudo() . "systemctl is-active samba4.service");
+
+        if (trim($output) == "active") {
+            $status = '<td style="color: green;">Samba4 Servisi Aktif !</td>';
+        } 
+        else {
+            $status = '<td style="color: red;">Samba4 Servisi İnaktif !</td>';
+        }
+
+        #$status = runCommand(sudo() . "systemctl status samba4.service");
+        return respond($status,200);
+    }
+
+    function isactive($service) {
+        
     }
 
     

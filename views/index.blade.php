@@ -1,8 +1,8 @@
 <ul class="nav nav-tabs" role="tablist" style="margin-bottom: 15px;">
     <li class="nav-item">
         <a class="nav-link active"  onclick="tab1()" href="#tab1" data-toggle="tab">Kurulum</a>
-        
     </li>
+    
     <li class="nav-item">
         <a class="nav-link "  onclick="tab2()" href="#tab2" data-toggle="tab">Servis Durumu</a>
     </li>
@@ -10,8 +10,8 @@
 
 <div class="tab-content">
     <div id="tab1" class="tab-pane active">
-        <div id="smbinstall">
-            <button class="btn btn-primary mb-2" onclick="observeInstallation()">SambaHVL Paketini Kur</button>
+        <button class="btn btn-primary mb-2" onclick="observeInstallation()">SambaHVL Paketini Kur</button>
+        <div id="smbinstall">   
         </div>
     </div>
 

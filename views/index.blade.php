@@ -10,9 +10,16 @@
 
 <div class="tab-content">
     <div id="tab1" class="tab-pane active">
-        <button class="btn btn-primary mb-2" onclick="observeInstallation()">SambaHVL Paketini Kur</button>
-        <div id="smbinstall">   
-        </div>
+        <button class="btn btn-primary mb-2" onclick="installSmbPackage()">SambaHVL Paketini Kur</button>
+        <pre id="smbinstall">
+
+        </pre>
+
+        <pre id="smblast">
+
+        </pre>
+
+        
     </div>
 
     <div id="tab2" class="tab-pane">
@@ -26,14 +33,33 @@
         tab1();
     }
     
-    function observeInstallation(){
+    function installSmbPackage(){
         var form = new FormData();
-        request(API('observeInstallation'), form, function(response) {
-            message = JSON.parse(response)["message"];
-            $('#smbinstall').html(message);
+        request(API('installSmbPackage'), form, function(response) {
+            observe();
         }, function(error) {
             $('#smbinstall').html("Hata oluştu");
         });
+    }
+    
+    function observe(){
+        var form = new FormData();
+        request(API('observeInstallation'), form, function(response) {
+            let json = JSON.parse(response);
+            setTimeout(() => {
+                observe();
+            }, 1000);
+          $("#smbinstall").text(json["message"]);
+        }, function(response) {
+            let error = JSON.parse(response);
+           if(error["status"] == 202){
+            $('#smblast').html("Paket yüklendi");
+           } else{
+            $('#smblast').html("Hata oluştu");
+           }
+            
+        });
+
     }
 
     function tab1(){

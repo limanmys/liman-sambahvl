@@ -6,9 +6,9 @@
 
     function verifyInstallation(){
         if(trim(runCommand('dpkg -s smbpy | grep "Status" | grep -w "install" 1>/dev/null 2>/dev/null && echo "1" || echo "0"')) == "1"){
-            return true;
+            return respond(true,200);
         }else{
-            return false;
+            return respond(false,200);
         }
     }
 

@@ -8,16 +8,26 @@
     </li>
 </ul>
 
+<style  type="text/css">
+    pre 
+        {
+        display: inline;
+        }
+
+
+</style>
+
 <div class="tab-content">
     <div id="tab1" class="tab-pane active">
-        <button class="btn btn-primary mb-2" onclick="installSmbPackage()">SambaHVL Paketini Kur</button>
+        <button class="btn btn-primary mb-2" id="1" onclick="installSmbPackage()">SambaHVL Paketini Kur</button>
         <pre id="smbinstall">
-
+        
+        
         </pre>
 
-        <pre id="smblast">
-
-        </pre>
+        <div id="smblast"> 
+        
+        </div>
 
         
     </div>
@@ -64,9 +74,16 @@
 
     function tab1(){
         var form = new FormData();
-        request("{{API('tab1')}}", form, function(response) {
+        request(API('verifyInstallation'), form, function(response) {
             message = JSON.parse(response)["message"];
-            $('#tab1').html(message);
+            let x = document.getElementById("1");
+            if(message == true){
+                x.disabled = true;
+                $('#smbinstall').html("\nPaket zaten yüklü !");
+
+            } else{
+                x.disabled = false;
+            }
         }, function(error) {
             $('#tab1').html("Hata oluştu");
         });

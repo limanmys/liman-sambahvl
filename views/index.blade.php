@@ -8,28 +8,17 @@
     </li>
 </ul>
 
-<style  type="text/css">
-    pre 
-        {
-        display: inline;
-        }
-
-
-</style>
 
 <div class="tab-content">
     <div id="tab1" class="tab-pane active">
         <button class="btn btn-primary mb-2" id="1" onclick="installSmbPackage()">SambaHVL Paketini Kur</button>
+
         <pre id="smbinstall">
-        
-        
         </pre>
 
         <div id="smblast"> 
-        
         </div>
 
-        
     </div>
 
     <div id="tab2" class="tab-pane">
@@ -75,6 +64,7 @@
     function tab1(){
         var form = new FormData();
         request(API('verifyInstallation'), form, function(response) {
+            $('#smblast').html("");
             message = JSON.parse(response)["message"];
             let x = document.getElementById("1");
             if(message == true){

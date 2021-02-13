@@ -1,5 +1,4 @@
 <?php 
-
     function index(){
         return view('index');
     }
@@ -10,6 +9,15 @@
         }else{
             return respond(false,200);
         }
+    }
+
+    function verifyInstallationPhp(){
+        if(trim(runCommand('dpkg -s smbpy | grep "Status" | grep -w "install" 1>/dev/null 2>/dev/null && echo "1" || echo "0"')) == "1"){
+            return true;
+        }else{
+            return false;
+        }
+
     }
 
     function putSmbPackage(){
@@ -38,13 +46,13 @@
 
     function observeInstallation()
     {
-        if(verifyInstallation() == true){
+        if(verifyInstallationPhp() == true){
             $res = "smbHVL paketi zaten var !";
             
             return respond($res, 202);
         }
 
-        if(verifyInstallation() == false){
+        if(verifyInstallationPhp() == false){
             $log = runCommand(sudo() . 'cat /tmp/smbpyLog');
             
             return respond($log, 200);

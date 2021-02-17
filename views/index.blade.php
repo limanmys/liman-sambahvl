@@ -4,7 +4,11 @@
     </li>
     
     <li class="nav-item">
-        <a class="nav-link "  onclick="tab2()" href="#tab2" data-toggle="tab">Servis Durumu</a>
+        <a class="nav-link "  onclick="tab2()" href="#tab2" data-toggle="tab">Samba Status</a>
+    </li>
+
+    <li class="nav-item">
+        <a class="nav-link "  onclick="tab3()" href="#tab3" data-toggle="tab">NTP Status</a>
     </li>
 </ul>
 
@@ -12,18 +16,15 @@
 <div class="tab-content">
     <div id="tab1" class="tab-pane active">
         <button class="btn btn-primary mb-2" id="1" onclick="installSmbPackage()">SambaHVL Paketini Kur</button>
-
-        <pre id="smbinstall">
-        </pre>
-
-        <div id="smblast"> 
-        </div>
+        <pre id="smbinstall">   </pre>
+        <div id="smblast">  </div>
 
     </div>
 
-    <div id="tab2" class="tab-pane">
-    
-    </div>
+    <div id="tab2" class="tab-pane">    </div>
+    <div id="tab3" class="tab-pane">    </div>
+
+
 </div>
 
 <script>
@@ -88,5 +89,16 @@
             $('#tab2').html("Hata oluştu");
         });
     }
-</script>
 
+    function tab3(){
+        var form = new FormData();
+        request(API('ntpStatus'), form, function(response) {
+            message = JSON.parse(response)["message"];
+            $('#tab3').html(message);
+        }, function(error) {
+            $('#tab3').html("Hata oluştu");
+        });
+    }
+
+    
+</script>

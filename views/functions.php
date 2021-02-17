@@ -1,3 +1,4 @@
+
 <?php 
     function index(){
         return view('index');
@@ -78,4 +79,19 @@
         return respond($status,200);
     }
 
+    function ntpStatus(){
+        $output = runCommand(sudo() . "systemctl is-active ntp.service");
+
+        if (trim($output) == "active") {
+            $status = '<button type="button" class="btn btn-success" disabled>NTP Servisi Aktif !</button>' ;
+            
+        } 
+        else {
+            $status = '<button type="button" class="btn btn-danger" disabled>NTP Servisi İnaktif !</button>' ;
+            
+        }
+
+        return respond($status,200);
+
+    }
 ?>

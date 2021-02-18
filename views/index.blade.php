@@ -10,6 +10,11 @@
     <li class="nav-item">
         <a class="nav-link "  onclick="tab3()" href="#tab3" data-toggle="tab">NTP Status</a>
     </li>
+
+    <li class="nav-item">
+        <a class="nav-link "  onclick="tab4()" href="#tab4" data-toggle="tab">DNS Settings</a>
+    </li>
+
 </ul>
 
 
@@ -25,8 +30,17 @@
     <div id="tab3" class="tab-pane">
     <pre id="ntplog">   </pre>
     </div>
-    
 
+    <div id="tab4" class="tab-pane">
+        <form>
+            <br>
+            <label for="resolvlabel">Resolv.conf ip : </label>
+            <input type="text" id="resolvip"><br><br>
+            <label for="forwarderlabel">DNS Forwarder : </label>
+            <input type="text" id="forwarderip"><br><br>
+            <input type="submit" value="Submit">
+        </form>
+    </div>
 
 </div>
 
@@ -60,9 +74,7 @@
            } else{
             $('#smblast').html("Hata oluştu");
            }
-            
         });
-
     }
 
     function tab1(){
@@ -124,5 +136,30 @@
         });
     }
 
-    
+    function tab4(){
+        returnResolvIp();
+        
+    }
+
+
+    function returnResolvIp(){
+        var form = new FormData();
+        request(API('returnResolvIp'), form, function(response) {
+            message = JSON.parse(response)["message"];
+            document.getElementById("resolvip").value = message;
+        }, function(error) {
+            $('#tab4').html("Hata oluştu");
+        });
+    }
+
+    function returnForwarderIp(){
+        var form = new FormData();
+        request(API('returnForwarderIp'), form, function(response) {
+            message = JSON.parse(response)["message"];
+            document.getElementById("forwarderip").value = message;
+        }, function(error) {
+            $('#tab4').html("Hata oluştu");
+        });
+    }
+
 </script>

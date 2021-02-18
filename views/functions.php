@@ -104,4 +104,32 @@
         return respond($output, 200);
 
     }
+
+    function returnResolvIp(){
+        $file = '/etc/resolv.conf';
+        $searchfor = 'nameserver';
+        header('Content-Type: text/plain');
+
+        $contents = file_get_contents($file);
+        $pattern = preg_quote($searchfor, '/');
+        $pattern = "/^.*$pattern.*\$/m";
+
+        if(preg_match_all($pattern, $contents, $matches)){
+            $ip = $matches[0];
+            $resolvip = str_replace("nameserver ", "", $ip);
+            $resolvip = implode($resolvip);
+        }
+        else{
+        echo "No matches found";
+        }
+        return respond($resolvip,200);
+    }
+
+    function returnForwarderIp(){
+        $smbconf = parse_ini_file('/etc/samba/smb.conf',true);
+        
+        $forwarderip = ($smbconf['global']['dns forwarder']);
+
+        return $forwarderip;
+    }
 ?>

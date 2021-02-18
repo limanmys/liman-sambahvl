@@ -83,15 +83,25 @@
         $output = runCommand(sudo() . "systemctl is-active ntp.service");
 
         if (trim($output) == "active") {
-            $status = '<button type="button" class="btn btn-success" disabled>NTP Servisi Aktif !</button>' ;
-            
+            #$log = ntplog();
+            #$status = '<button type="button" class="btn btn-success" disabled>NTP Servisi Aktif !</button> <br> '. $log;
+            return respond(true,200);
         } 
         else {
-            $status = '<button type="button" class="btn btn-danger" disabled>NTP Servisi İnaktif !</button>' ;
-            
+            #$status = '<button type="button" class="btn btn-danger" disabled>NTP Servisi İnaktif !</button>' ;
+            return respond(false,200);
         }
 
-        return respond($status,200);
+        #return respond($status,200);
+
+    }
+
+    function ntplog(){
+        $command = "systemctl status ntp.service";
+
+        $output = runCommand(sudo() . $command);
+
+        return respond($output, 200);
 
     }
 ?>

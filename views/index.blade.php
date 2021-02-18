@@ -22,7 +22,10 @@
     </div>
 
     <div id="tab2" class="tab-pane">    </div>
-    <div id="tab3" class="tab-pane">    </div>
+    <div id="tab3" class="tab-pane">
+    <pre id="ntplog">   </pre>
+    </div>
+    
 
 
 </div>
@@ -94,9 +97,30 @@
         var form = new FormData();
         request(API('ntpStatus'), form, function(response) {
             message = JSON.parse(response)["message"];
-            $('#tab3').html(message);
+            if(message == true){
+                isActiveButton = '<button type="button" class="btn btn-success" disabled>NTP Servisi Aktif !</button>' ;
+                $('#tab3').html(isActiveButton);
+
+                var d1 = document.getElementById('tab3');
+                d1.insertAdjacentHTML('beforeend', '<pre id="ntplog">   </pre>');
+                ntplog();
+            } else{
+                isActiveButton = '<button type="button" class="btn btn-danger" disabled>NTP Servisi Aktif Değil !</button>' ;
+                $('#tab3').html(isActiveButton);
+
+            }
         }, function(error) {
             $('#tab3').html("Hata oluştu");
+        });
+    }
+
+    function ntplog(){
+        var form = new FormData();
+        request(API('ntplog'), form, function(response) {
+            message = JSON.parse(response)["message"];
+            $('#ntplog').html(message);
+        }, function(error) {
+            $('#ntplog').html("Hata oluştu");
         });
     }
 

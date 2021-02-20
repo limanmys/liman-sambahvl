@@ -38,7 +38,7 @@
             <input type="text" id="resolvip"><br><br>
             <label for="forwarderlabel">DNS Forwarder : </label>
             <input type="text" id="forwarderip"><br><br>
-            <input type="submit" value="Submit">
+            <button class="btn btn-primary mb-2" onclick="writeConfigFile()">Submit</button>
         </form>
     </div>
 
@@ -138,7 +138,7 @@
 
     function tab4(){
         returnResolvIp();
-        
+        returnForwarderIp();
     }
 
 
@@ -158,8 +158,24 @@
             message = JSON.parse(response)["message"];
             document.getElementById("forwarderip").value = message;
         }, function(error) {
-            $('#tab4').html("Hata oluştu");
+            $('#tab4').html(error);
         });
     }
 
+    function writeConfigFile(){
+        
+        request(API('writeConfigFile'), resolvId);
+
+    }
+    $('.button').click(function() {
+        var resolvId = document.getElementById("resolvip").value;
+    $.ajax({
+        
+        type: "POST",
+        url: "functions.php",
+        data: { name: "John" }
+    }).done(function( msg ) {
+        alert( "Data Saved: " + msg );
+    });
+    });
 </script>

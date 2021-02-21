@@ -147,19 +147,32 @@ use Liman\Toolkit\Shell\Command;
     
     function writeConfigFile(){
         $resolv = request('resolvinput');
+        $forwarder = request('forwarderinput');
+
         $resolvOut = runCommand(sudo() . 'cat /etc/resolv.conf');
-        //$smbOut = runCommand(sudo() . 'cat /etc/samba/smb.conf');
+        $smbOut = runCommand(sudo() . 'cat /etc/samba/smb.conf');
     
         $resolvSearch = 'nameserver';
-        //$smbSearch = 'dns forwarder';
+        $smbSearch = 'dns forwarder';
     
         header('Content-Type: text/plain');
     
-        $pattern = preg_quote($resolvSearch, '/');
-        $pattern = "/^.*$pattern.*\$/m";
+        $patternResolv = preg_quote($resolvSearch, '/');
+        $patternResolv = "/^.*$patternResolv.*\$/m";
     
-        if(preg_match_all($pattern, $resolvOut, $matches)){
-            $ip = $matches[0];
+        if(preg_match_all($patternResolv, $resolvOut, $matchesResolv)){
+            $ipResolv = $matchesResolv[0];
+        }
+    
+        else{
+            echo "No matches found";
+        }
+
+        $patternForwarder = preg_quote($smbSearch, '/');
+        $patternForwarder = "/^.*$patternForwarder.*\$/m";
+    
+        if(preg_match_all($patternForwarder, $smbOut, $matchesForwarder)){
+            $ipForwarder = $matchesForwarder[0];
         }
     
         else{
@@ -167,13 +180,20 @@ use Liman\Toolkit\Shell\Command;
         }
         
         $degisen = "nameserver " . $resolv;
-        $resolvOut = str_replace($ip,$degisen,$resolvOut);
-    
+        $resolvOut = str_replace($ipResolv,$degisen,$resolvOut);
+
+        $degisenForwarder = "dns forwarder = " . $forwarder;
+        $smbOut = str_replace($ipForwarder,$degisenForwarder,$smbOut);
+        
         $command = "sh -c 'echo " . $resolvOut . " > /etc/resolv.conf'";
-        $writeConfigFile = runCommand(sudo() . $command);
+        runCommand(sudo() . "chattr -i /etc/resolv.conf");
+        runCommand(sudo() . $command);
+        runCommand(sudo() . "chattr +i /etc/resolv.conf");
 
-    
+        $commandForwarder = "sh -c 'echo " . '"' . $smbOut . '"' . " > /etc/samba/smb.conf'";
+        runCommand(sudo() . $commandForwarder);
 
-        return respond($writeConfigFile,200);
+        $response = "Değişiklikler başarı ile gerçekleştirildi !";
+        return respond($response,200);
     }
 ?>

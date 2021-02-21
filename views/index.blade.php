@@ -166,10 +166,13 @@
     function writeConfigFile(){
         var form = new FormData();
         var resolvinput = document.getElementById("resolvip").value;
+        var forwarderinput = document.getElementById("forwarderip").value;
         form.append("resolvinput",resolvinput);
+        form.append("forwarderinput",forwarderinput);
 
         request(API('writeConfigFile'), form, function(response) {
-            alert(response);
+            message = JSON.parse(response)["message"];
+            alert(message);
         }, function(error) {
             $('#tab4').html(error);
         });

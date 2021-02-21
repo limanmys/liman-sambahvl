@@ -1,5 +1,7 @@
 
 <?php 
+use Liman\Toolkit\Shell\Command;
+
     function index(){
         return view('index');
     }
@@ -142,35 +144,36 @@
         }
         return respond($forwarderip,200);
     }
-
-    function writeConfigFile($resolvip){
-
-        echo "<script> alert(". $resolvip .") </script>";
+    
+    function writeConfigFile(){
+        $resolv = request('resolvinput');
         $resolvOut = runCommand(sudo() . 'cat /etc/resolv.conf');
         //$smbOut = runCommand(sudo() . 'cat /etc/samba/smb.conf');
-
+    
         $resolvSearch = 'nameserver';
         //$smbSearch = 'dns forwarder';
-
+    
         header('Content-Type: text/plain');
-
+    
         $pattern = preg_quote($resolvSearch, '/');
         $pattern = "/^.*$pattern.*\$/m";
-
+    
         if(preg_match_all($pattern, $resolvOut, $matches)){
             $ip = $matches[0];
         }
-
+    
         else{
             echo "No matches found";
         }
         
-        $degisen = "nameserver = " . $resolvip;
+        $degisen = "nameserver " . $resolv;
         $resolvOut = str_replace($ip,$degisen,$resolvOut);
-
-        $command = 'cat ' . $resolvOut . '> /etc/resolv.conf';
+    
+        $command = "sh -c 'echo " . $resolvOut . " > /etc/resolv.conf'";
         $writeConfigFile = runCommand(sudo() . $command);
 
+    
 
+        return respond($writeConfigFile,200);
     }
 ?>

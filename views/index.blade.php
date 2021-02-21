@@ -35,10 +35,11 @@
         <form>
             <br>
             <label for="resolvlabel">Resolv.conf ip : </label>
-            <input type="text" id="resolvip"><br><br>
+            <input type="text" id="resolvip" name="resolv"><br><br>
             <label for="forwarderlabel">DNS Forwarder : </label>
             <input type="text" id="forwarderip"><br><br>
-            <button class="btn btn-primary mb-2" onclick="writeConfigFile()">Submit</button>
+
+            <button class="btn btn-primary mb-2" onclick="writeConfigFile()" type="button">Submit</button>
         </form>
     </div>
 
@@ -163,19 +164,17 @@
     }
 
     function writeConfigFile(){
-        
-        request(API('writeConfigFile'), resolvId);
+        var form = new FormData();
+        var resolvinput = document.getElementById("resolvip").value;
+        form.append("resolvinput",resolvinput);
 
-    }
-    $('.button').click(function() {
-        var resolvId = document.getElementById("resolvip").value;
-    $.ajax({
+        request(API('writeConfigFile'), form, function(response) {
+            alert(response);
+        }, function(error) {
+            $('#tab4').html(error);
+        });
         
-        type: "POST",
-        url: "functions.php",
-        data: { name: "John" }
-    }).done(function( msg ) {
-        alert( "Data Saved: " + msg );
-    });
-    });
+    
+    }   
+     
 </script>

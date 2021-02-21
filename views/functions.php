@@ -149,51 +149,64 @@ use Liman\Toolkit\Shell\Command;
         $resolv = request('resolvinput');
         $forwarder = request('forwarderinput');
 
-        $resolvOut = runCommand(sudo() . 'cat /etc/resolv.conf');
-        $smbOut = runCommand(sudo() . 'cat /etc/samba/smb.conf');
-    
-        $resolvSearch = 'nameserver';
-        $smbSearch = 'dns forwarder';
-    
-        header('Content-Type: text/plain');
-    
-        $patternResolv = preg_quote($resolvSearch, '/');
-        $patternResolv = "/^.*$patternResolv.*\$/m";
-    
-        if(preg_match_all($patternResolv, $resolvOut, $matchesResolv)){
-            $ipResolv = $matchesResolv[0];
-        }
-    
-        else{
-            echo "No matches found";
-        }
+        if(filter_var($resolv, FILTER_VALIDATE_IP) !== false and filter_var($forwarder, FILTER_VALIDATE_IP)){
 
-        $patternForwarder = preg_quote($smbSearch, '/');
-        $patternForwarder = "/^.*$patternForwarder.*\$/m";
-    
-        if(preg_match_all($patternForwarder, $smbOut, $matchesForwarder)){
-            $ipForwarder = $matchesForwarder[0];
-        }
-    
-        else{
-            echo "No matches found";
-        }
+            $resolvOut = runCommand(sudo() . 'cat /etc/resolv.conf');
+            $smbOut = runCommand(sudo() . 'cat /etc/samba/smb.conf');
         
-        $degisen = "nameserver " . $resolv;
-        $resolvOut = str_replace($ipResolv,$degisen,$resolvOut);
-
-        $degisenForwarder = "dns forwarder = " . $forwarder;
-        $smbOut = str_replace($ipForwarder,$degisenForwarder,$smbOut);
+            $resolvSearch = 'nameserver';
+            $smbSearch = 'dns forwarder';
         
-        $command = "sh -c 'echo " . $resolvOut . " > /etc/resolv.conf'";
-        runCommand(sudo() . "chattr -i /etc/resolv.conf");
-        runCommand(sudo() . $command);
-        runCommand(sudo() . "chattr +i /etc/resolv.conf");
+            header('Content-Type: text/plain');
+        
+            $patternResolv = preg_quote($resolvSearch, '/');
+            $patternResolv = "/^.*$patternResolv.*\$/m";
+        
+            if(preg_match_all($patternResolv, $resolvOut, $matchesResolv)){
+                $ipResolv = $matchesResolv[0];
+            }
+        
+            else{
+                echo "No matches found";
+            }
 
-        $commandForwarder = "sh -c 'echo " . '"' . $smbOut . '"' . " > /etc/samba/smb.conf'";
-        runCommand(sudo() . $commandForwarder);
+            $patternForwarder = preg_quote($smbSearch, '/');
+            $patternForwarder = "/^.*$patternForwarder.*\$/m";
+        
+            if(preg_match_all($patternForwarder, $smbOut, $matchesForwarder)){
+                $ipForwarder = $matchesForwarder[0];
+            }
+        
+            else{
+                echo "No matches found";
+            }
+            
+            $degisen = "nameserver " . $resolv;
+            $resolvOut = str_replace($ipResolv,$degisen,$resolvOut);
 
-        $response = "Değişiklikler başarı ile gerçekleştirildi !";
-        return respond($response,200);
+            $degisenForwarder = "dns forwarder = " . $forwarder;
+            $smbOut = str_replace($ipForwarder,$degisenForwarder,$smbOut);
+            
+            $command = "sh -c 'echo " . $resolvOut . " > /etc/resolv.conf'";
+            runCommand(sudo() . "chattr -i /etc/resolv.conf");
+            runCommand(sudo() . $command);
+            runCommand(sudo() . "chattr +i /etc/resolv.conf");
+
+            $commandForwarder = "sh -c 'echo " . '"' . $smbOut . '"' . " > /etc/samba/smb.conf'";
+            runCommand(sudo() . $commandForwarder);
+            
+            $restartCommand = "systemctl restart samba4.service";
+            runCommand(sudo() . $restartCommand);
+
+            $response = "Degisiklikler basarı ile gerceklestirildi !";
+            return respond($response,200);
+        
+        }
+
+        else{
+            $response = "Girdiginiz ip adreslerinden biri hatali !";
+            return respond($response,200);
+
+        }
     }
 ?>

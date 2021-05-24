@@ -4,55 +4,67 @@
     </li>
     
     <li class="nav-item">
-        <a class="nav-link "  onclick="tab2()" href="#tab2" data-toggle="tab">Samba Status</a>
+        <a class="nav-link " onclick="tab5()" href="#tab5" data-toggle="tab">Etki Alanı Oluştur</a>
     </li>
 
     <li class="nav-item">
-        <a class="nav-link "  onclick="tab3()" href="#tab3" data-toggle="tab">NTP Status</a>
+        <a class="nav-link "  onclick="tab2()" href="#tab2" data-toggle="tab">Samba Servis Durumu</a>
     </li>
-
-    <li class="nav-item">
-        <a class="nav-link "  onclick="tab4()" href="#tab4" data-toggle="tab">DNS Settings</a>
-    </li>
-
 </ul>
 
 
 <div class="tab-content">
     <div id="tab1" class="tab-pane active">
-        <button class="btn btn-primary mb-2" id="1" onclick="installSmbPackage()">SambaHVL Paketini Kur</button>
+        <p>SambaHVL paketini kurmak için lütfen aşağıdaki butonu kullanın.</p>
+        <button class="btn btn-success mb-2" id="1" onclick="installSmbPackage()">SambaHVL Paketini Kur</button>
+        <div id="smbInstallStatus">  </div>
         <pre id="smbinstall">   </pre>
         <div id="smblast">  </div>
-
     </div>
 
-    <div id="tab2" class="tab-pane">    </div>
-    <div id="tab3" class="tab-pane">
-    <pre id="ntplog">   </pre>
+    <div id="tab2" class="tab-pane">   
+        <pre id="sambaLog">   
+        
+        </pre>
     </div>
 
-    <div id="tab4" class="tab-pane">
-        <form>
-            <br>
-            <label for="resolvlabel">Resolv.conf ip : </label>
-            <input type="text" id="resolvip" name="resolv"><br><br>
-            <label for="forwarderlabel">DNS Forwarder : </label>
-            <input type="text" id="forwarderip"><br><br>
-
-            <button class="btn btn-primary mb-2" onclick="writeConfigFile()" type="button">Submit</button>
-        </form>
+    <div id="tab5" class="tab-pane">  
+        <p>Etki alanı kurmak için lütfen aşağıdaki butonu kullanın.</p>
+        <button class="btn btn-success mb-2" id="createDomainButton" onclick="createDomain()" type="button">Etki Alanı Oluştur</button>
+        <div id="domainStatus"></div> 
+        <pre id="domainLogs" class="tab-pane">    
+        </pre>
     </div>
-
 </div>
 
 <script>
-
    if(location.hash === ""){
         tab1();
     }
-    
+
+    // Install SambaHvl Package == Tab 1 == 
+
+    function tab1(){
+        var form = new FormData();
+        request(API('verifyInstallation'), form, function(response) {
+            $('#smblast').html("");
+            message = JSON.parse(response)["message"];
+            let x = document.getElementById("1");
+            if(message == true){
+                x.disabled = true;
+                $('#smbinstall').html("\nPaket zaten yüklü !");
+            } else{
+                x.disabled = false;
+            }
+        }, function(error) {
+            showSwal(error.message, 'error', 3000);
+            console.log(error);
+        });
+    }
+
     function installSmbPackage(){
         var form = new FormData();
+        $('#smbInstallStatus').html("<b>SambaHvl kuruluyor. Lütfen kayıtları takip ediniz.</b>");
         request(API('installSmbPackage'), form, function(response) {
             observe();
         }, function(error) {
@@ -70,24 +82,25 @@
           $("#smbinstall").text(json["message"]);
         }, function(response) {
             let error = JSON.parse(response);
-           if(error["status"] == 202){
-            $('#smblast').html("Paket yüklendi");
+            if(error["status"] == 202){
+            $('#smblast').html(error);
            } else{
-            $('#smblast').html("Hata oluştu");
+            showSwal(error, 'error', 3000);
            }
+
         });
     }
 
-    function tab1(){
+    // Create New Domain == Tab 2 ==
+
+    function tab5(){
         var form = new FormData();
-        request(API('verifyInstallation'), form, function(response) {
-            $('#smblast').html("");
+        request(API('verifyDomain'), form, function(response) {
             message = JSON.parse(response)["message"];
-            let x = document.getElementById("1");
+            let x = document.getElementById("createDomainButton");
             if(message == true){
                 x.disabled = true;
-                $('#smbinstall').html("\nPaket zaten yüklü !");
-
+                returnDomainInformations();
             } else{
                 x.disabled = false;
             }
@@ -96,30 +109,45 @@
         });
     }
 
-    function tab2(){
+    
+    function createDomain(){
         var form = new FormData();
-        request("{{API('tab2')}}", form, function(response) {
+        $('#domainStatus').html("<b>Etki alanı oluşturuluyor. Lütfen bekleyiniz.</b>");
+        request(API('createSambaDomain'), form, function(response) {
+            returnDomainInformations();
+        }, function(error) {
+            $('#smbinstall').html("Hata oluştu");
+        });
+    }
+    
+
+    function returnDomainInformations(){
+        var form = new FormData();
+        request(API('returnDomainInformations'), form, function(response) {
             message = JSON.parse(response)["message"];
-            $('#tab2').html(message);
+            $('#domainStatus').html("<b>Etki alanı bilgileri :</b>");
+            $('#domainLogs').html("\n" + message);
         }, function(error) {
             $('#tab2').html("Hata oluştu");
         });
     }
 
-    function tab3(){
+    // Control Samba4.service Status == Tab 3 ==
+
+    function tab2(){
         var form = new FormData();
-        request(API('ntpStatus'), form, function(response) {
+        request(API('tab2'), form, function(response) {
             message = JSON.parse(response)["message"];
             if(message == true){
-                isActiveButton = '<button type="button" class="btn btn-success" disabled>NTP Servisi Aktif !</button>' ;
-                $('#tab3').html(isActiveButton);
+                isActiveButton = '<button type="button" class="btn btn-success" disabled>Samba Servisi Aktif !</button>' ;
+                $('#tab2').html(isActiveButton);
 
-                var d1 = document.getElementById('tab3');
-                d1.insertAdjacentHTML('beforeend', '<pre id="ntplog">   </pre>');
-                ntplog();
+                var d1 = document.getElementById('tab2');
+                d1.insertAdjacentHTML('beforeend', '<pre id="sambaLog">   </pre>');
+                sambaLog();
             } else{
-                isActiveButton = '<button type="button" class="btn btn-danger" disabled>NTP Servisi Aktif Değil !</button>' ;
-                $('#tab3').html(isActiveButton);
+                isActiveButton = '<button type="button" class="btn btn-danger" disabled>Samba Servisi Aktif Değil !</button>' ;
+                $('#tab2').html(isActiveButton);
 
             }
         }, function(error) {
@@ -127,57 +155,14 @@
         });
     }
 
-    function ntplog(){
+    function sambaLog(){
         var form = new FormData();
-        request(API('ntplog'), form, function(response) {
+        request(API('sambaLog'), form, function(response) {
             message = JSON.parse(response)["message"];
-            $('#ntplog').html(message);
+            $('#sambaLog').html(message);
         }, function(error) {
-            $('#ntplog').html("Hata oluştu");
+            $('#sambaLog').html("Hata oluştu");
         });
     }
-
-    function tab4(){
-        returnResolvIp();
-        returnForwarderIp();
-    }
-
-
-    function returnResolvIp(){
-        var form = new FormData();
-        request(API('returnResolvIp'), form, function(response) {
-            message = JSON.parse(response)["message"];
-            document.getElementById("resolvip").value = message;
-        }, function(error) {
-            $('#tab4').html("Hata oluştu");
-        });
-    }
-
-    function returnForwarderIp(){
-        var form = new FormData();
-        request(API('returnForwarderIp'), form, function(response) {
-            message = JSON.parse(response)["message"];
-            document.getElementById("forwarderip").value = message;
-        }, function(error) {
-            $('#tab4').html(error);
-        });
-    }
-
-    function writeConfigFile(){
-        var form = new FormData();
-        var resolvinput = document.getElementById("resolvip").value;
-        var forwarderinput = document.getElementById("forwarderip").value;
-        form.append("resolvinput",resolvinput);
-        form.append("forwarderinput",forwarderinput);
-
-        request(API('writeConfigFile'), form, function(response) {
-            message = JSON.parse(response)["message"];
-            alert(message);
-        }, function(error) {
-            $('#tab4').html(error);
-        });
-        
-    
-    }   
      
 </script>

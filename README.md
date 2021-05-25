@@ -9,11 +9,11 @@ Eklenti yeteneklerinin el ile yapılmasını anlatan dev.to makalesi : [Yeni bir
 
 ### SambaHVL kurulumu
 
-[![smb1](https://github.com/zekiahmetbayar/zekiahmetbayar.github.io/blob/master/sambaHVL/smb1.PNG)]
+![smb1](https://github.com/zekiahmetbayar/zekiahmetbayar.github.io/blob/master/sambaHVL/smb1.PNG)
 
 ### Etki alanı kurulumu
 
-[![smb2](https://github.com/zekiahmetbayar/zekiahmetbayar.github.io/blob/master/sambaHVL/smb2.PNG)]
+![smb2](https://github.com/zekiahmetbayar/zekiahmetbayar.github.io/blob/master/sambaHVL/smb2.PNG)
 
 ### Samba servis durumunun görüntülenmesi
-[![smb3](https://github.com/zekiahmetbayar/zekiahmetbayar.github.io/blob/master/sambaHVL/smb3.PNG)]
+![smb3](https://github.com/zekiahmetbayar/zekiahmetbayar.github.io/blob/master/sambaHVL/smb3.PNG)

@@ -1,0 +1,27 @@
+{
+    "name": "SambaHVL",
+    "publisher": "Administrator",
+    "version": "0.0.2",
+    "version_code": 11,
+    "database": {
+        "1": {
+            "variable": "domainName",
+            "type": "text",
+            "name": "Etki Alan Ad\u0131 (\u00d6rne\u011fin : staj.lab)",
+            "required": true
+        },
+        "2": {
+            "variable": "domainPassword",
+            "type": "password",
+            "name": "Etki Alan Ad\u0131 Parolas\u0131 (En az 8 karakterden olu\u015fup rakam, bir b\u00fcy\u00fck ve bir k\u00fc\u00e7\u00fck harf i\u00e7ermelidir.)",
+            "required": true
+        }
+    },
+    "widgets": [],
+    "language": "php",
+    "status": 0,
+    "service": "",
+    "supportedLiman": "1.5.0",
+    "support": "administrator@liman.dev",
+    "icon": "share"
+}

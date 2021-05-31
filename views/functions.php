@@ -23,8 +23,11 @@ use Liman\Toolkit\Shell\Command;
         if(isFileExists($smbConfigPath) == false){
             return respond(false,200);
         }
+<<<<<<< HEAD
         
         
+=======
+>>>>>>> f98e3bb0d8d48bb25d0604f1902a6e520b16e65f
     }
 
     function verifyInstallationPhp(){
@@ -166,6 +169,7 @@ use Liman\Toolkit\Shell\Command;
 
         return respond($output, 200);
     }
+<<<<<<< HEAD
 
     // FSMO-Role Management  == Tab 4 ==
     
@@ -226,4 +230,6 @@ use Liman\Toolkit\Shell\Command;
         $output=runCommand(sudo()."samba-tool fsmo transfer --role=all -UAdministrator");
         return respond($output,200);
     }
+=======
+>>>>>>> f98e3bb0d8d48bb25d0604f1902a6e520b16e65f
 ?>

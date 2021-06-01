@@ -121,6 +121,10 @@
     <li class="nav-item">
         <a class="nav-link "  onclick="trustedServers()" href="#trustRelation" data-toggle="tab">Trusted Servers</a>
     </li>
+
+    <li class="nav-item">
+        <a class="nav-link "  onclick="replicationInfo()" href="#replication" data-toggle="tab">Replication Info</a>
+    </li>
 </ul>
 
 
@@ -160,7 +164,11 @@
         <div id="trustedServers">
         </div>
     </div>
-
+    
+    <div id="replication" class="tab-pane">
+        <div id="replicationPrintArea">
+        <div class="table-responsive replicationTable" id="replicationTable"></div> 
+    </div>
 </div>
 
 <script>
@@ -481,6 +489,61 @@
             showSwal(message, 'success', 10000);
             trustedServers();
         }, function(error) {
+            showSwal(error.message, 'error', 3000);
+        });
+    }
+
+    function replicationInfo(){
+        showSwal('{{__("Yükleniyor...")}}','info',2000);
+        var form = new FormData();
+
+        request(API('replicationOrganized'), form, function(response) {
+            $('.replicationTable').html(response).find('table').DataTable({
+            bFilter: true,
+            "language" : {
+                url : "/turkce.json"
+            }
+            });;
+        }, function(response) {
+            let error = JSON.parse(response);
+            showSwal(error.message, 'error', 3000);
+        });
+
+    }
+
+    function updateReplication(line) {
+        var form = new FormData();
+
+        let inHost = line.querySelector("#hostNameTo").innerHTML;
+        let info = line.querySelector("#info").innerHTML;
+        let outHost = line.querySelector("#hostNameFrom").innerHTML;
+
+        form.append("inHost", inHost);
+        form.append("info", info);
+        form.append("outHost", outHost);
+
+        request(API('createBound'), form, function(response) {
+            message = JSON.parse(response)["message"];
+            showSwal(message, 'success', 3000);
+        }, function(response) {
+            let error = JSON.parse(response);
+            showSwal(error.message, 'error', 3000);
+        });
+    }
+
+    function showUpdateTime(line) {
+        var form = new FormData();
+
+        let lastUpdateTime = line.querySelector("#lastUpdateTime").innerHTML;   
+
+        form.append("lastUpdateTime", lastUpdateTime);
+
+        request(API('showUpdateTime'), form, function(response) {
+            message = JSON.parse(response)["message"];
+            console.log(message);
+            showSwal(message, 'success', 3000);
+        }, function(response) {
+            let error = JSON.parse(response);
             showSwal(error.message, 'error', 3000);
         });
     }

@@ -287,4 +287,56 @@ use Liman\Toolkit\Shell\Command;
                     "@" . $domainName . " --password=" . $password);
         return respond("Trust relation with " . $domainName . " has been created", 200);
     }
+
+    function replicationOrganized(){
+        $hostNameTo = runCommand("hostname");
+
+        $allInfo = runCommand(sudo() . "samba-tool drs showrepl --json");
+        $allInfo = json_decode($allInfo,true);
+
+        $data = [];
+
+        for ($i=0; $i < count($allInfo["repsFrom"]); $i++) {
+            $pureHostName = str_replace("Default-First-Site-Name\\", "", $allInfo["repsFrom"][$i]["DSA"]);
+            $data[] = [
+                "hostNameTo" => $hostNameTo,
+                "info" => $allInfo["repsFrom"][$i]["NC dn"],
+                "hostNameFrom" => $pureHostName,
+                "lastUpdateTime" => $allInfo["repsFrom"][$i]["last success"]
+            ];
+        }
+
+        return view('table', [
+            "value" => $data,
+            "title" => ["Incoming Host Name", "Info", "Outgoing Host Name", "*hidden*"],
+            "display" => ["hostNameTo", "info", "hostNameFrom", "lastUpdateTime:lastUpdateTime"],
+            "onclick" => "test",
+            "menu" => [
+
+                "Update Replication" => [
+                    "target" => "updateReplication",
+                    "icon" => "fa-plus-circle"
+                ],
+
+                "Last Update Time" => [
+                    "target" => "showUpdateTime",
+                    "icon" => "fa-recycle"
+                ],
+            ],
+        ]);   
+    }
+
+    function createBound(){ 
+        $incomingHostName = request('inHost');
+        $outgoingHostName = request('outHost');
+        $info = request('info');
+        runCommand(sudo() . 'samba-tool drs replicate ' . $incomingHostName . $outgoingHostName . $info);
+        return respond("Islem basarili", 200);
+    }
+
+    function showUpdateTime(){
+        $lastUpdateTime = request('lastUpdateTime');
+        return respond($lastUpdateTime, 200);
+        
+    }
 ?>

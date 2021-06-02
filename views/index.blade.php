@@ -493,6 +493,8 @@
         });
     }
 
+    // Replication Management == Tab 6 ==
+
     function replicationInfo(){
         showSwal('{{__("Yükleniyor...")}}','info',2000);
         var form = new FormData();
@@ -512,17 +514,18 @@
     }
 
     function updateReplication(line) {
+        showSwal('{{__("Yükleniyor...")}}','info',2000);
         var form = new FormData();
 
-        let inHost = line.querySelector("#hostNameTo").innerHTML;
+        let inHost = line.querySelector("#destinationHostName").innerHTML;
         let info = line.querySelector("#info").innerHTML;
-        let outHost = line.querySelector("#hostNameFrom").innerHTML;
+        let outHost = line.querySelector("#sourceHostName").innerHTML;
 
         form.append("inHost", inHost);
         form.append("info", info);
         form.append("outHost", outHost);
 
-        request(API('createBound'), form, function(response) {
+        request(API('updateReplication'), form, function(response) {
             message = JSON.parse(response)["message"];
             showSwal(message, 'success', 3000);
         }, function(response) {
@@ -535,13 +538,15 @@
         var form = new FormData();
 
         let lastUpdateTime = line.querySelector("#lastUpdateTime").innerHTML;   
+        let rowNumber = line.querySelector("#rowNumber").innerHTML; 
 
         form.append("lastUpdateTime", lastUpdateTime);
+        form.append("rowNumber", rowNumber);
 
         request(API('showUpdateTime'), form, function(response) {
             message = JSON.parse(response)["message"];
             console.log(message);
-            showSwal(message, 'success', 3000);
+            showSwal(message, 'info', 3000);
         }, function(response) {
             let error = JSON.parse(response);
             showSwal(error.message, 'error', 3000);

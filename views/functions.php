@@ -288,9 +288,9 @@ use Liman\Toolkit\Shell\Command;
         return respond("Trust relation with " . $domainName . " has been created", 200);
     }
 
-    function replicationOrganized(){
-        $hostNameTo = runCommand("hostname");
+    // Replication Management == Tab 6 ==
 
+    function replicationOrganized(){
         $allInfo = runCommand(sudo() . "samba-tool drs showrepl --json");
         $allInfo = json_decode($allInfo,true);
 
@@ -299,44 +299,46 @@ use Liman\Toolkit\Shell\Command;
         for ($i=0; $i < count($allInfo["repsFrom"]); $i++) {
             $pureHostName = str_replace("Default-First-Site-Name\\", "", $allInfo["repsFrom"][$i]["DSA"]);
             $data[] = [
-                "hostNameTo" => $hostNameTo,
+                "destinationHostName" => strtoupper(runCommand("hostname")),
                 "info" => $allInfo["repsFrom"][$i]["NC dn"],
-                "hostNameFrom" => $pureHostName,
-                "lastUpdateTime" => $allInfo["repsFrom"][$i]["last success"]
+                "sourceHostName" => $pureHostName,
+                "lastUpdateTime" => $allInfo["repsFrom"][$i]["last success"],
+                "rowNumber" => $i
             ];
         }
 
         return view('table', [
             "value" => $data,
-            "title" => ["Incoming Host Name", "Info", "Outgoing Host Name", "*hidden*"],
-            "display" => ["hostNameTo", "info", "hostNameFrom", "lastUpdateTime:lastUpdateTime"],
+            "title" => ["Source Host Name", "NC-dn Info", "Destination Host Name", "*hidden*", "*hidden*"],
+            "display" => ["sourceHostName", "info", "destinationHostName", "lastUpdateTime:lastUpdateTime", "rowNumber:rowNumber"],
             "onclick" => "test",
             "menu" => [
 
                 "Update Replication" => [
                     "target" => "updateReplication",
-                    "icon" => "fa-plus-circle"
+                    "icon" => "fa-recycle"
                 ],
 
                 "Last Update Time" => [
                     "target" => "showUpdateTime",
-                    "icon" => "fa-recycle"
+                    "icon" => "fa-clock"
                 ],
             ],
         ]);   
     }
 
-    function createBound(){ 
+    function updateReplication(){ 
         $incomingHostName = request('inHost');
         $outgoingHostName = request('outHost');
         $info = request('info');
-        runCommand(sudo() . 'samba-tool drs replicate ' . $incomingHostName . $outgoingHostName . $info);
-        return respond("Islem basarili", 200);
+        return respond(runCommand(sudo() . 'samba-tool drs replicate ' . $incomingHostName . ' ' . $outgoingHostName . ' ' . $info), 200);
     }
 
     function showUpdateTime(){
-        $lastUpdateTime = request('lastUpdateTime');
-        return respond($lastUpdateTime, 200);
-        
+        $allInfo = runCommand(sudo() . "samba-tool drs showrepl --json");
+        $allInfo = json_decode($allInfo,true);
+        $rNumber = request("rowNumber");
+        $lastUpdateTime = $allInfo["repsFrom"][$rNumber]["last success"];
+        return respond($lastUpdateTime, 200);        
     }
 ?>

@@ -167,7 +167,7 @@ use Liman\Toolkit\Shell\Command;
         return respond($output, 200);
     }
 
-    // FSMO-Role Management  == Tab 4 ==
+    // #### FSMO-Role Management Tab ####
     
     function printTable(){
         $allData = runCommand(sudo()."samba-tool fsmo show");
@@ -338,5 +338,50 @@ use Liman\Toolkit\Shell\Command;
         $lastUpdateTime = request('lastUpdateTime');
         return respond($lastUpdateTime, 200);
         
+    }
+
+    #### Migration Tab ####
+    
+    function migrate(){
+        $ip = request("ip");
+        $username = request("username");
+        $password = request("password");
+        runCommand(sudo()."smb-migrate-domain -s ".$ip." -a ".$username." -p ".$password,200);
+
+        if(check2() == true){
+            //migrate edilebilir yani migrate edilmemiş.
+            return respond(true,200);
+        }
+        else{
+            return respond(false,200);
+        }
+        
+
+    }
+    function check(){
+        //check => true ise migrate edilebilir.
+        $output=runCommand(sudo()."net ads info",200);
+        if($output==""){
+            $output=runCommand(sudo()."net ads info 2>&1",200);
+        }
+        if(str_contains($output, "Can't load /etc/samba/smb.conf")){
+            return respond(true,200);
+        }
+        else{
+            return respond(false,200);
+        }
+    }
+    function check2(){
+        //check => true migrate edilebilir.
+        $output=runCommand(sudo()."net ads info",200);
+        if($output==""){
+            $output=runCommand(sudo()."net ads info 2>&1",200);
+        }
+        if(str_contains($output, "Can't load /etc/samba/smb.conf")){
+            return true;
+        }
+        else{
+            return false;
+        }
     }
 ?>

@@ -114,7 +114,6 @@ class SambaController{
     }
 
     //FSMO
-
     function returnRolesTable(){
         $allData = runCommand(sudo()."samba-tool fsmo show");
         $allDataList = explode("\n",$allData);

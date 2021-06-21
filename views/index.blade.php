@@ -194,6 +194,7 @@
         <h1>{{ __(' Migration İşlemi') }}</h1>
         <br />
         <button class="btn btn-success mb-2" id="btn3" onclick="showMigrationModal()" type="button">Migrate</button>
+        <button class="btn btn-success mb-2" id="btn4" onclick="showMigrationModal2()" type="button">Migrate Et - Site</button>
         <div class="text-area" id="textarea"></div>
     </div>
 
@@ -362,21 +363,46 @@
 
         request(API('take_the_role'), form, function(response) {
             message = JSON.parse(response)["message"];
-            if(message == ""){
-                showSwal('Hata oluştu.', 'error', 7000);
-            }
-            else if(message.includes("successful")){
-                printTable();
+            if(message.includes("successful")){
+                tab1();
                 showSwal(message,'success',7000);
             }
-            else{
+            else if(message.includes("already")){
                 showSwal(message,'info',7000);
             }
+            else if(message.includes("WERR_FILE_NOT_FOUND")){
+                showSwal('WERR_FILE_NOT_FOUND \nTrying to seize... ','info',5000);
+                showWarningModal();
+                temp=contraction;
+
+            }                
+            else{
+                showSwal(message, 'error', 7000);
+            }
         }, function(error) {
-            showSwal(error.message, 'error', 3000);
-            console.log(error);
+            showSwal(error.message, 'error', 5000);
         });
     }
+
+    function showWarningModal(contraction){
+        showSwal('Yükleniyor...','info',2000);
+        //console.log(contraction);
+        $('#warningModal').find('.modal-footer').html(
+            '<button type="button" class="btn btn-success" onClick="warningModalYes()">Evet</button> '
+            + '<button type="button" class="btn btn-danger" onClick="warningModalNo()">Hayır</button>');
+        $('#warningModal').find('.modal-body').html(
+            " Rolünü almaya çalıştığınız sunucuya erişilemiyor ! \n Yine de devam etmek ister misiniz ?");
+        $('#warningModal').modal("show");
+    }
+    function warningModalYes(){
+        $('#warningModal').modal("hide");
+        seizeTheRole(contraction);
+    }
+    function warningModalNo(){
+        showSwal('Yükleniyor...','info',2000);
+        $('#warningModal').modal("hide");
+    }
+    
     
     function showInfoModal(line){
         showSwal('Yükleniyor...','info',3500);
@@ -404,23 +430,46 @@
 
     function hideChangeModal(line){
         var form = new FormData();
-        form.append("contraction", $('#changeModal').find('select[name=newType]').val());
+        let contraction = $('#changeModal').find('select[name=newType]').val();
+        form.append("contraction",contraction);
+        $('#changeModal').modal("hide");
+        showSwal('Yükleniyor...','info',5000);
+
         request(API('take_the_role'), form, function(response) {
             message = JSON.parse(response)["message"];
-            $('#changeModal').modal("hide");
-            if(message == ""){
-                showSwal('Hata oluştu.', 'error', 7000);
-            }
-            else if(message.includes("successful")){
-                printTable();
+            if(message.includes("successful")){
+                tab1();
                 showSwal(message,'success',7000);
             }
-            else{
+            else if(message.includes("already")){
                 showSwal(message,'info',7000);
+            }
+            else if(message.includes("WERR_FILE_NOT_FOUND")){                
+                showSwal('WERR_FILE_NOT_FOUND \nTrying to seize... ','info',5000);
+                showWarningModal();
+            }                
+            else{
+                showSwal('Hata oluştu.', 'error', 7000);
             }
 
         }, function(error) {
             $('#changeModal').modal("hide");
+            showSwal(error.message, 'error', 5000);
+        });
+    }
+
+    function seizeTheRole(contraction){
+        var form = new FormData();
+        form.append("contraction",temp);
+        
+        request(API('seizeTheRole'), form, function(response) {
+            message = JSON.parse(response)["message"];
+            
+            tab1();
+            showSwal(message, 'success', 5000); 
+            
+            
+        }, function(error) {
             showSwal(error.message, 'error', 5000);
         });
     }

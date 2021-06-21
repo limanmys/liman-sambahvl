@@ -170,6 +170,12 @@ class SambaController{
         return respond($output,200);
     }
 
+    function seizeTheRole(){
+        $contraction = request("contraction");
+        $output=runCommand(sudo()."samba-tool fsmo seize --role=$contraction -UAdministrator");
+        return respond($output,200);
+    }
+
     function trustedServers(){
         $allData = runCommand(sudo() . "samba-tool domain trust list 2>&1");
         $allDataList = explode("\n", $allData);
@@ -327,6 +333,28 @@ class SambaController{
             return false;
         }
     }
+
+    function migrate2(){
+        $ip = request("ip");
+        $username = request("username");
+        $password = request("password");
+        $site = request("site");
+
+        $command = "smb-migrate-domain -s ".$ip." -a ".$username." -p ".$password." -t ".$site." 2>&1 > /tmp/smb-migrate-logs.txt";
+        runCommand(sudo().$command);
+        return respond("Success", 200);
+    }
+
+    function migrateLog(){
+
+        $log = runCommand(sudo() . 'cat /tmp/smb-migrate-logs.txt');
+        if(str_contains($log, "servisler yeniden başlatılıyor")){
+            return respond("bitti", 200);
+        }
+        return respond($log, 200);
+    }
+
+
 
 }
 ?>

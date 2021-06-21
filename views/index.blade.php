@@ -211,7 +211,7 @@
 
     function tab1(){
         var form = new FormData();
-        request(API('verifyInstallation'), form, function(response) {
+        request(API('verify_installation'), form, function(response) {
             $('#smblast').html("");
             message = JSON.parse(response)["message"];
             let x = document.getElementById("1");
@@ -230,7 +230,7 @@
     function installSmbPackage(){
         var form = new FormData();
         $('#smbInstallStatus').html("<b>SambaHvl kuruluyor. Lütfen kayıtları takip ediniz.</b>");
-        request(API('installSmbPackage'), form, function(response) {
+        request(API('install_smb_package'), form, function(response) {
             observe();
         }, function(error) {
             $('#smbinstall').html("Hata oluştu");
@@ -239,7 +239,7 @@
     
     function observe(){
         var form = new FormData();
-        request(API('observeInstallation'), form, function(response) {
+        request(API('observe_installation'), form, function(response) {
             let json = JSON.parse(response);
             setTimeout(() => {
                 observe();
@@ -260,7 +260,7 @@
 
     function tab5(){
         var form = new FormData();
-        request(API('verifyDomain'), form, function(response) {
+        request(API('verify_domain'), form, function(response) {
             message = JSON.parse(response)["message"];
             let x = document.getElementById("createDomainButton");
             if(message == true){
@@ -278,7 +278,7 @@
     function createDomain(){
         var form = new FormData();
         $('#domainStatus').html("<b>Etki alanı oluşturuluyor. Lütfen bekleyiniz.</b>");
-        request(API('createSambaDomain'), form, function(response) {
+        request(API('create_samba_domain'), form, function(response) {
             returnDomainInformations();
         }, function(error) {
             $('#smbinstall').html("Hata oluştu");
@@ -301,7 +301,7 @@
 
     function tab2(){
         var form = new FormData();
-        request(API('tab2'), form, function(response) {
+        request(API('return_samba_service_status'), form, function(response) {
             message = JSON.parse(response)["message"];
             if(message == true){
                 isActiveButton = '<button type="button" class="btn btn-success" disabled>Samba Servisi Aktif !</button>' ;
@@ -322,7 +322,7 @@
 
     function sambaLog(){
         var form = new FormData();
-        request(API('sambaLog'), form, function(response) {
+        request(API('return_samba_service_log'), form, function(response) {
             message = JSON.parse(response)["message"];
             $('#sambaLog').html(message);
         }, function(error) {
@@ -335,7 +335,7 @@
     function printTable(){
         showSwal('Yükleniyor...','info',2000);
         var form = new FormData();
-        request(API('printTable'), form, function(response) {
+        request(API('roles_table'), form, function(response) {
             $('#fsmoTable').html(response).find('table').DataTable({
             bFilter: true,
             "language" : {
@@ -354,7 +354,7 @@
         let contraction = line.querySelector("#contraction").innerHTML;
         form.append("contraction",contraction);
 
-        request(API('takeTheRole'), form, function(response) {
+        request(API('take_the_role'), form, function(response) {
             message = JSON.parse(response)["message"];
             if(message == ""){
                 showSwal('Hata oluştu.', 'error', 7000);
@@ -375,7 +375,7 @@
     function showInfoModal(line){
         showSwal('Yükleniyor...','info',3500);
         var form = new FormData();
-        request(API('takeAllRoles'), form, function(response) {
+        request(API('take_all_roles'), form, function(response) {
             message = JSON.parse(response)["message"];
             $('#infoModal').find('.modal-body').html(
                 "<pre>"+message+"</pre>"
@@ -400,7 +400,7 @@
     function hideChangeModal(line){
         var form = new FormData();
         form.append("contraction", $('#changeModal').find('select[name=newType]').val());
-        request(API('takeTheRole'), form, function(response) {
+        request(API('take_the_role'), form, function(response) {
             message = JSON.parse(response)["message"];
             $('#changeModal').modal("hide");
             if(message == ""){
@@ -426,7 +426,7 @@
 
     function trustedServers(){
         var form = new FormData();
-        request("{{API('trustedServers')}}", form, function(response) {
+        request(API('trusted_servers'), form, function(response) {
             $('#trustedServers').html(response).find('table').DataTable({
             bFilter: true,
             "language" : {
@@ -485,7 +485,7 @@
         form.append("password", passwd);
         closeDeleteTrustedServerModal();
         trustedServers();
-        request(API('destroyTrustRelation'), form, function(response) {
+        request(API('destroy_trust_relation'), form, function(response) {
             message = JSON.parse(response)["message"];
             showSwal(message, 'success', 3000);
         }, function(error) {
@@ -512,7 +512,7 @@
         form.append("password", $('#createTrustRelationModal').find('input[name=password]').val());
 
         $('#createTrustRelationModal').modal("hide");
-        request(API('createTrustRelation'), form, function(response) {
+        request(API('create_trust_relation'), form, function(response) {
             message = JSON.parse(response)["message"];
             showSwal(message, 'success', 10000);
             trustedServers();
@@ -525,7 +525,7 @@
         showSwal('{{__("Yükleniyor...")}}','info',2000);
         var form = new FormData();
 
-        request(API('replicationOrganized'), form, function(response) {
+        request(API('replication_organized'), form, function(response) {
             $('.replicationTable').html(response).find('table').DataTable({
             bFilter: true,
             "language" : {
@@ -550,7 +550,7 @@
         form.append("info", info);
         form.append("outHost", outHost);
 
-        request(API('createBound'), form, function(response) {
+        request(API('create_bound'), form, function(response) {
             message = JSON.parse(response)["message"];
             showSwal(message, 'success', 3000);
         }, function(response) {
@@ -566,7 +566,7 @@
 
         form.append("lastUpdateTime", lastUpdateTime);
 
-        request(API('showUpdateTime'), form, function(response) {
+        request(API('show_update_time'), form, function(response) {
             message = JSON.parse(response)["message"];
             console.log(message);
             showSwal(message, 'success', 3000);
@@ -582,7 +582,7 @@
         var form = new FormData();
         let x = document.getElementById("btn3");
 
-        request(API('check'), form, function(response) {
+        request(API('check_migrate'), form, function(response) {
             message = JSON.parse(response)["message"];
             if(message==false){
                 x.disabled = true;
@@ -597,6 +597,7 @@
         showSwal('Yükleniyor...','info',2000);
         $('#migrationModal').modal("show");
     }
+
     function hideMigrationModal(){
         var form = new FormData();
         $('#migrationModal').modal("hide");
@@ -604,7 +605,7 @@
         form.append("username", $('#migrationModal').find('input[name=username]').val());
         form.append("password", $('#migrationModal').find('input[name=password]').val());
         
-        request(API('migrate'), form, function(response) {
+        request(API('migrate_domain'), form, function(response) {
             console.log(response);
             if(response == true){
                 showSwal('Migration başarısız', 'error', 7000);

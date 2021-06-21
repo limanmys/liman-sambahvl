@@ -291,7 +291,7 @@
 
     function returnDomainInformations(){
         var form = new FormData();
-        request(API('returnDomainInformations'), form, function(response) {
+        request(API('return_domain_informations'), form, function(response) {
             message = JSON.parse(response)["message"];
             $('#domainStatus').html("<b>Etki alanı bilgileri :</b>");
             $('#domainLogs').html("\n" + message);

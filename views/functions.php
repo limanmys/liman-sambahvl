@@ -5,19 +5,7 @@ use Liman\Toolkit\Shell\Command;
         return view('index');
     }
 
-    
 
-    function verifyInstallationPhp(){
-        if(trim(runCommand('dpkg -s smbpy | grep "Status" | grep -w "install" 1>/dev/null 2>/dev/null && echo "1" || echo "0"')) == "1"){
-            return true;
-        }else{
-            return false;
-        }
-
-    }
-
-    
-    
     function editHostsFile($hostname,$newHostname){
         $hostsFile = "/etc/hosts";
         $hostsLines = runCommand(sudo() . "cat " . $hostsFile);

@@ -233,7 +233,8 @@
         request(API('install_smb_package'), form, function(response) {
             observe();
         }, function(error) {
-            $('#smbinstall').html("Hata oluştu");
+            showSwal(error.message, 'error', 3000);
+            console.log(error);
         });
     }
     
@@ -282,7 +283,8 @@
         request(API('create_samba_domain'), form, function(response) {
             returnDomainInformations();
         }, function(error) {
-            $('#smbinstall').html("Hata oluştu");
+            showSwal(error.message, 'error', 3000);
+            console.log(error);
         });
     }
     
@@ -294,7 +296,8 @@
             $('#domainStatus').html("<b>Etki alanı bilgileri :</b>");
             $('#domainLogs').html("\n" + message);
         }, function(error) {
-            $('#tab2').html("Hata oluştu");
+            showSwal(error.message, 'error', 3000);
+            console.log(error);
         });
     }
 
@@ -317,7 +320,8 @@
 
             }
         }, function(error) {
-            $('#tab3').html("Hata oluştu");
+            showSwal(error.message, 'error', 3000);
+            console.log(error);
         });
     }
 
@@ -327,7 +331,8 @@
             message = JSON.parse(response)["message"];
             $('#sambaLog').html(message);
         }, function(error) {
-            $('#sambaLog').html("Hata oluştu");
+            showSwal(error.message, 'error', 3000);
+            console.log(error);
         });
     }
 
@@ -343,9 +348,9 @@
                 url : "/turkce.json"
             }
             });;
-        }, function(response) {
-            let error = JSON.parse(response);
+        }, function(error) {
             showSwal(error.message, 'error', 3000);
+            console.log(error);
         });
         
     }
@@ -368,8 +373,8 @@
                 showSwal(message,'info',7000);
             }
         }, function(error) {
-            showSwal(error.message, 'error', 5000);
-
+            showSwal(error.message, 'error', 3000);
+            console.log(error);
         });
     }
     
@@ -384,7 +389,6 @@
             $('#infoModal').modal("show");
         }, function(error) {
             showSwal(error.message, 'error', 5000);
-
         });
     }
 

@@ -2,7 +2,7 @@
     "name": "SambaHVL",
     "publisher": "Administrator",
     "version": "0.0.2",
-    "version_code": 16,
+    "version_code": 11,
     "database": {
         "1": {
             "variable": "domainName",
@@ -20,12 +20,8 @@
     "widgets": [],
     "language": "php",
     "status": 0,
-    "service": null,
+    "service": "",
     "supportedLiman": "1.5.0",
     "support": "administrator@liman.dev",
-    "icon": "share",
-    "require_key": "false",
-    "verification": null,
-    "dependencies": null,
-    "sslPorts": null
+    "icon": "share"
 }

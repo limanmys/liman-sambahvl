@@ -270,7 +270,8 @@
                 x.disabled = false;
             }
         }, function(error) {
-            $('#tab1').html("Hata oluştu");
+            showSwal(error.message, 'error', 3000);
+            console.log(error);
         });
     }
 

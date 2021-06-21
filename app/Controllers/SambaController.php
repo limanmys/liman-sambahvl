@@ -34,19 +34,6 @@ class SambaController{
         return respond($a,200);
     }
 
-    function isFileExists($filePath){
-        $existsCommand = 'test -e '. $filePath .' && echo 1 || echo 0';
-        $existsFlag = runCommand(sudo() . $existsCommand);
-
-        if($existsFlag == 1){
-            return true;
-        }
-
-        if($existsFlag == 0){
-            return false;
-        }
-
-    }
 
     function observeInstallation(){
         if(verifyInstallationPhp() == true){
@@ -62,14 +49,28 @@ class SambaController{
         }
     }
 
+    function isFileExists($filePath){
+        $existsCommand = 'test -e '. $filePath .' && echo 1 || echo 0';
+        $existsFlag = runCommand(sudo() . $existsCommand);
+
+        if($existsFlag == 1){
+            return true;
+        }
+
+        if($existsFlag == 0){
+            return false;
+        }
+
+    }
+
     function verifyDomain(){
         $smbConfigPath = "/etc/samba/smb.conf";
 
-        if(isFileExists($smbConfigPath) == true){
+        if($this->isFileExists($smbConfigPath) == true){
             return respond(true,200);
         }
         
-        if(isFileExists($smbConfigPath) == false){
+        if($this->isFileExists($smbConfigPath) == false){
             return respond(false,200);
         }
     }
@@ -289,7 +290,7 @@ class SambaController{
         $password = request("password");
         runCommand(sudo()."smb-migrate-domain -s ".$ip." -a ".$username." -p ".$password,200);
 
-        if(checkMigrate2() == true){
+        if($this->checkMigrate2() == true){
             //migrate edilebilir yani migrate edilmemiş.
             return respond(true,200);
         }
@@ -311,7 +312,7 @@ class SambaController{
             return respond(false,200);
         }
     }
-    
+
     function checkMigrate2(){
         //check => true migrate edilebilir.
         $output=runCommand(sudo()."net ads info",200);

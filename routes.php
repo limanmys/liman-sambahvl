@@ -14,7 +14,7 @@ return [
     "return_samba_service_status" => "SambaController@returnSambaServiceStatus",
     "return_samba_service_log" => "SambaController@sambaLog",
 
-    "roles_table" => "SambaController@rolesTable",
+    "roles_table" => "SambaController@returnRolesTable",
     "take_the_role" => "SambaController@takeTheRole",
     "take_all_roles" => "SambaController@takeAllRoles",
     "trusted_servers" => "SambaController@trustedServers",

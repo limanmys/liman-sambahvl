@@ -1,40 +1,4 @@
 @component('modal-component',[
-        "id" => "infoModal",
-        "title" => "Sonuç Bilgisi",
-        "footer" => [
-            "text" => "OK",
-            "class" => "btn-success",
-            "onclick" => "hideInfoModal()"
-        ]
-    ])
-@endcomponent
-
-@component('modal-component',[
-        "id" => "changeModal",
-        "title" => "Rol Seçimi",
-        "footer" => [
-            "text" => "AL",
-            "class" => "btn-success",
-            "onclick" => "hideChangeModal()"
-        ]
-    ])
-    @include('inputs', [
-        "inputs" => [
-            "Roller:newType" => [
-                "SchemaMasterRole" => "schema",
-                "InfrastructureMasterRole" => "infrastructure",
-                "RidAllocationMasterRole" => "rid",
-                "PdcEmulationMasterRole" => "pdc",
-                "DomainNamingMasterRole" => "naming",
-                "DomainDnsZonesMasterRole" => "domaindns",
-                "ForestDnsZonesMasterRole" => "forestdns",
-                "All" => "all"
-            ],
-        ]
-    ])
-@endcomponent
-
-@component('modal-component',[
         "id" => "createTrustRelationModal",
         "title" => "Create Trust Relation",
         "footer" => [
@@ -172,11 +136,7 @@
     </div>
 
     <div id="fsmo" class="tab-pane">
-        <p>Tablo üzerinde sağ tuş ile bir rolü üzerinize alabilir veya bunun için butonları kullanabilirsiniz.</p>
-        <br />
-        <button class="btn btn-success mb-2" id="btn1" onclick="showInfoModal()" type="button">Tüm rolleri al</button>
-        <button class="btn btn-success mb-2" id="btn2" onclick="showChangeModal()" type="button">Belirli bir rolü al</button>
-        <div class="table-responsive" id="fsmoTable"></div>
+        @include('pages.fsmo')
     </div>
 
     <div id="trustRelation" class="tab-pane">
@@ -336,94 +296,6 @@
         });
     }
 
-    // #### FSMO-Role Management Tab ####
-
-    function printTable(){
-        showSwal('Yükleniyor...','info',2000);
-        var form = new FormData();
-        request(API('roles_table'), form, function(response) {
-            $('#fsmoTable').html(response).find('table').DataTable({
-            bFilter: true,
-            "language" : {
-                url : "/turkce.json"
-            }
-            });;
-        }, function(error) {
-            showSwal(error.message, 'error', 3000);
-            console.log(error);
-        });
-        
-    }
-    
-    function takeTheRole(line){
-        var form = new FormData();
-        let contraction = line.querySelector("#contraction").innerHTML;
-        form.append("contraction",contraction);
-
-        request(API('take_the_role'), form, function(response) {
-            message = JSON.parse(response)["message"];
-            if(message == ""){
-                showSwal('Hata oluştu.', 'error', 7000);
-            }
-            else if(message.includes("successful")){
-                printTable();
-                showSwal(message,'success',7000);
-            }
-            else{
-                showSwal(message,'info',7000);
-            }
-        }, function(error) {
-            showSwal(error.message, 'error', 3000);
-            console.log(error);
-        });
-    }
-    
-    function showInfoModal(line){
-        showSwal('Yükleniyor...','info',3500);
-        var form = new FormData();
-        request(API('take_all_roles'), form, function(response) {
-            message = JSON.parse(response)["message"];
-            $('#infoModal').find('.modal-body').html(
-                "<pre>"+message+"</pre>"
-            );
-            $('#infoModal').modal("show");
-        }, function(error) {
-            showSwal(error.message, 'error', 5000);
-        });
-    }
-
-    function hideInfoModal(line){
-        $('#infoModal').modal("hide");
-        printTable();
-    }
-
-    function showChangeModal(line){
-        showSwal('Yükleniyor...','info',2000);
-        $('#changeModal').modal("show");
-    }
-
-    function hideChangeModal(line){
-        var form = new FormData();
-        form.append("contraction", $('#changeModal').find('select[name=newType]').val());
-        request(API('take_the_role'), form, function(response) {
-            message = JSON.parse(response)["message"];
-            $('#changeModal').modal("hide");
-            if(message == ""){
-                showSwal('Hata oluştu.', 'error', 7000);
-            }
-            else if(message.includes("successful")){
-                printTable();
-                showSwal(message,'success',7000);
-            }
-            else{
-                showSwal(message,'info',7000);
-            }
-
-        }, function(error) {
-            $('#changeModal').modal("hide");
-            showSwal(error.message, 'error', 5000);
-        });
-    }
 
     /**
      * Showing the servers which have trusted relation with this server

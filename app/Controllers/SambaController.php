@@ -153,7 +153,7 @@ class SambaController{
             "menu" => [
                 "Bu rolü al" => [
                     "target" => "takeTheRole",
-                    "icon" => "fa-file-export"
+                    "icon" => "fa-share"
                 ],
             ],
         ]);
@@ -162,11 +162,20 @@ class SambaController{
     function takeTheRole(){
         $contraction = request("contraction");
         $output=runCommand(sudo()."samba-tool fsmo transfer --role=$contraction -UAdministrator");
+        if($output == ""){
+            $output=runCommand(sudo()."samba-tool fsmo transfer --role=$contraction -UAdministrator 2>&1");
+        }
         return respond($output,200);
     }
 
     function takeAllRoles(){
         $output=runCommand(sudo()."samba-tool fsmo transfer --role=all -UAdministrator");
+        return respond($output,200);
+    }
+
+    function seizeTheRole(){
+        $contraction = request("contraction");
+        $output=runCommand(sudo()."samba-tool fsmo seize --role=$contraction -UAdministrator");
         return respond($output,200);
     }
 

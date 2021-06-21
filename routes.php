@@ -29,7 +29,8 @@ return [
 
     "check_migrate" => "SambaController@checkMigrate",
     "migrate_domain" => "SambaController@migrateDomain",
-    "show_update_time" => "SambaController@showUpdateTime",
+    "migrate_site" => "SambaController@migrateSite",
+    "migrate_log" => "SambaController@migrateLog",
     
     
 

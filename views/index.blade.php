@@ -62,23 +62,7 @@
     ])
 @endcomponent
 
-@component('modal-component',[
-        "id" => "migrationModal",
-        "title" => "Giriş",
-        "footer" => [
-            "text" => "OK",
-            "class" => "btn-success",
-            "onclick" => "hideMigrationModal()"
-        ]
-    ])
-    @include('inputs', [
-        "inputs" => [
-            "IP Addresi" => "ipAddr:text",
-            "Kullanıcı Adı" => "username:text",
-            "Şifre" => "password:password"
-        ]
-    ])
-@endcomponent
+
 
 
 
@@ -151,10 +135,7 @@
     </div>
 
     <div id="migration" class="tab-pane">
-        <h1>{{ __(' Migration İşlemi') }}</h1>
-        <br />
-        <button class="btn btn-success mb-2" id="btn3" onclick="showMigrationModal()" type="button">Migrate</button>
-        <div class="text-area" id="textarea"></div>
+        @include('pages.migration')
     </div>
 
 </div>
@@ -453,54 +434,5 @@
         });
     }
 
-    // #### Migration Tab ####
-
-    function migration(){
-        var form = new FormData();
-        let x = document.getElementById("btn3");
-
-        request(API('check_migrate'), form, function(response) {
-            message = JSON.parse(response)["message"];
-            if(message==false){
-                x.disabled = true;
-                $('#textarea').html("Bu sunucu migrate edilemez.");
-            }
-        }, function(error) {
-            showSwal(error.message, 'error', 5000);
-        });
-    }
-
-    function showMigrationModal(){
-        showSwal('Yükleniyor...','info',2000);
-        $('#migrationModal').modal("show");
-    }
-    function hideMigrationModal(){
-        var form = new FormData();
-        $('#migrationModal').modal("hide");
-        form.append("ip", $('#migrationModal').find('input[name=ipAddr]').val());
-        form.append("username", $('#migrationModal').find('input[name=username]').val());
-        form.append("password", $('#migrationModal').find('input[name=password]').val());
-        
-        request(API('migrate_domain'), form, function(response) {
-            console.log(response);
-            if(response == true){
-                showSwal('Migration başarısız', 'error', 7000);
-            }
-            else if(response == false){
-                migration();
-                showSwal('Migration başarılı', 'success', 7000);
-            }
-            else if(response == ""){
-                migration();
-                showSwal('Migration başarılı', 'success', 7000);
-            }
-            else{
-                showSwal('Migration başarısız...', 'error', 7000);
-
-            }
-
-        }, function(error) {
-            showSwal(error.message, 'error', 5000);
-        });
-    }
+    
 </script>

@@ -114,7 +114,6 @@ class SambaController{
     }
 
     //FSMO
-
     function returnRolesTable(){
         $allData = runCommand(sudo()."samba-tool fsmo show");
         $allDataList = explode("\n",$allData);
@@ -301,7 +300,7 @@ class SambaController{
         $ip = request("ip");
         $username = request("username");
         $password = request("password");
-        runCommand(sudo()."smb-migrate-domain -s ".$ip." -a ".$username." -p ".$password,200);
+        runCommand(sudo()."smb-migrate-domain -s ".$ip." -a ".$username." -p ".$password." 2>&1 > /tmp/smb-migrate-logs.txt",200);
 
         if($this->checkMigrate2() == true){
             //migrate edilebilir yani migrate edilmemiş.
@@ -359,16 +358,5 @@ class SambaController{
         return respond($log, 200);
     }
 
-    function migrate2(){
-        $ip = request("ip");
-        $username = request("username");
-        $password = request("password");
-        $site = request("site");
-
-        $command = "smb-migrate-domain -s ".$ip." -a ".$username." -p ".$password." -t ".$site." 2>&1 > /tmp/smb-migrate-logs.txt";
-        runCommand(sudo().$command);
-        return respond("Success", 200);
-    }
- 
 }
 ?>

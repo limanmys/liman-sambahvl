@@ -43,6 +43,7 @@
 
 <script>
 
+
     function checkMigrate(){
         var form = new FormData();
         let domain_btn = document.getElementById("domain");

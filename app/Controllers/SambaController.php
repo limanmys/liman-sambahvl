@@ -370,16 +370,5 @@ class SambaController{
         return respond("Success", 200);
     }
 
-    function migrateLog(){
-
-        $log = runCommand(sudo() . 'cat /tmp/smb-migrate-logs.txt');
-        if(str_contains($log, "servisler yeniden başlatılıyor")){
-            return respond("bitti", 200);
-        }
-        return respond($log, 200);
-    }
-
-
-
 }
 ?>

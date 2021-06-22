@@ -17,8 +17,9 @@ return [
     "roles_table" => "SambaController@returnRolesTable",
     "take_the_role" => "SambaController@takeTheRole",
     "take_all_roles" => "SambaController@takeAllRoles",
-    "trusted_servers" => "SambaController@trustedServers",
+    "seize_the_role" => "SambaController@seizeTheRole",
 
+    "trusted_servers" => "SambaController@trustedServers",
     "destroy_trust_relation" => "SambaController@destroyTrustRelation",
     "create_trust_relation" => "SambaController@createTrustRelation",
 
@@ -28,7 +29,8 @@ return [
 
     "check_migrate" => "SambaController@checkMigrate",
     "migrate_domain" => "SambaController@migrateDomain",
-    "show_update_time" => "SambaController@showUpdateTime",
+    "migrate_site" => "SambaController@migrateSite",
+    "migrate_log" => "SambaController@migrateLog",
     
     
 

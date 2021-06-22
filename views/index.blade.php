@@ -1,40 +1,4 @@
 @component('modal-component',[
-        "id" => "infoModal",
-        "title" => "Sonuç Bilgisi",
-        "footer" => [
-            "text" => "OK",
-            "class" => "btn-success",
-            "onclick" => "hideInfoModal()"
-        ]
-    ])
-@endcomponent
-
-@component('modal-component',[
-        "id" => "changeModal",
-        "title" => "Rol Seçimi",
-        "footer" => [
-            "text" => "AL",
-            "class" => "btn-success",
-            "onclick" => "hideChangeModal()"
-        ]
-    ])
-    @include('inputs', [
-        "inputs" => [
-            "Roller:newType" => [
-                "SchemaMasterRole" => "schema",
-                "InfrastructureMasterRole" => "infrastructure",
-                "RidAllocationMasterRole" => "rid",
-                "PdcEmulationMasterRole" => "pdc",
-                "DomainNamingMasterRole" => "naming",
-                "DomainDnsZonesMasterRole" => "domaindns",
-                "ForestDnsZonesMasterRole" => "forestdns",
-                "All" => "all"
-            ],
-        ]
-    ])
-@endcomponent
-
-@component('modal-component',[
         "id" => "createTrustRelationModal",
         "title" => "Create Trust Relation",
         "footer" => [
@@ -98,23 +62,7 @@
     ])
 @endcomponent
 
-@component('modal-component',[
-        "id" => "migrationModal",
-        "title" => "Giriş",
-        "footer" => [
-            "text" => "OK",
-            "class" => "btn-success",
-            "onclick" => "hideMigrationModal()"
-        ]
-    ])
-    @include('inputs', [
-        "inputs" => [
-            "IP Addresi" => "ipAddr:text",
-            "Kullanıcı Adı" => "username:text",
-            "Şifre" => "password:password"
-        ]
-    ])
-@endcomponent
+
 
 
 
@@ -172,11 +120,7 @@
     </div>
 
     <div id="fsmo" class="tab-pane">
-        <p>Tablo üzerinde sağ tuş ile bir rolü üzerinize alabilir veya bunun için butonları kullanabilirsiniz.</p>
-        <br />
-        <button class="btn btn-success mb-2" id="btn1" onclick="showInfoModal()" type="button">Tüm rolleri al</button>
-        <button class="btn btn-success mb-2" id="btn2" onclick="showChangeModal()" type="button">Belirli bir rolü al</button>
-        <div class="table-responsive" id="fsmoTable"></div>
+        @include('pages.fsmo')
     </div>
 
     <div id="trustRelation" class="tab-pane">
@@ -191,11 +135,15 @@
     </div>
 
     <div id="migration" class="tab-pane">
+<<<<<<< HEAD
         <h1>{{ __(' Migration İşlemi') }}</h1>
         <br />
         <button class="btn btn-success mb-2" id="btn3" onclick="showMigrationModal()" type="button">Migrate</button>
         <button class="btn btn-success mb-2" id="btn4" onclick="showMigrationModal2()" type="button">Migrate Et - Site</button>
         <div class="text-area" id="textarea"></div>
+=======
+        @include('pages.migration')
+>>>>>>> 2eeb1a1dd9fcebe09abbb80199aa44fa103cdf29
     </div>
 
 </div>
@@ -337,6 +285,7 @@
         });
     }
 
+<<<<<<< HEAD
     // #### FSMO-Role Management Tab ####
 
     function printTable(){
@@ -457,6 +406,8 @@
             showSwal(error.message, 'error', 5000);
         });
     }
+=======
+>>>>>>> 2eeb1a1dd9fcebe09abbb80199aa44fa103cdf29
 
     function seizeTheRole(contraction){
         var form = new FormData();
@@ -630,55 +581,5 @@
         });
     }
 
-    // #### Migration Tab ####
-
-    function migration(){
-        var form = new FormData();
-        let x = document.getElementById("btn3");
-
-        request(API('check_migrate'), form, function(response) {
-            message = JSON.parse(response)["message"];
-            if(message==false){
-                x.disabled = true;
-                $('#textarea').html("Bu sunucu migrate edilemez.");
-            }
-        }, function(error) {
-            showSwal(error.message, 'error', 5000);
-        });
-    }
-
-    function showMigrationModal(){
-        showSwal('Yükleniyor...','info',2000);
-        $('#migrationModal').modal("show");
-    }
-
-    function hideMigrationModal(){
-        var form = new FormData();
-        $('#migrationModal').modal("hide");
-        form.append("ip", $('#migrationModal').find('input[name=ipAddr]').val());
-        form.append("username", $('#migrationModal').find('input[name=username]').val());
-        form.append("password", $('#migrationModal').find('input[name=password]').val());
-        
-        request(API('migrate_domain'), form, function(response) {
-            console.log(response);
-            if(response == true){
-                showSwal('Migration başarısız', 'error', 7000);
-            }
-            else if(response == false){
-                migration();
-                showSwal('Migration başarılı', 'success', 7000);
-            }
-            else if(response == ""){
-                migration();
-                showSwal('Migration başarılı', 'success', 7000);
-            }
-            else{
-                showSwal('Migration başarısız...', 'error', 7000);
-
-            }
-
-        }, function(error) {
-            showSwal(error.message, 'error', 5000);
-        });
-    }
+    
 </script>

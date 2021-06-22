@@ -18,7 +18,7 @@
     </li>
 
     <li class="nav-item">
-        <a class="nav-link " onclick="migration()" href="#migration"  data-toggle="tab">
+        <a class="nav-link " onclick="checkMigrate()" href="#migration"  data-toggle="tab">
         <i class="fas fa-bezier-curve mr-2"></i>
         Migration</a>
     </li>
@@ -58,6 +58,10 @@
         @include('pages.service_status')
     </div>
 
+    <div id="migration" class="tab-pane">
+        @include('pages.migration')
+    </div>
+
     <div id="fsmo" class="tab-pane">
         @include('pages.fsmo')
     </div>
@@ -70,9 +74,7 @@
         @include('pages.replication')
     </div>
 
-    <div id="migration" class="tab-pane">
-        @include('pages.migration')
-    </div>
+    
 
 </div>
 

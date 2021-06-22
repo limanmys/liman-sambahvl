@@ -7,6 +7,10 @@
 
 // Create New Domain == Tab 2 ==
 
+
+
+
+
     function tab2(){
         var form = new FormData();
         request(API('verify_domain'), form, function(response) {
@@ -25,6 +29,7 @@
     }
 
     
+
     function createDomain(){
         var form = new FormData();
         $('#domainStatus').html("<b>Etki alanı oluşturuluyor. Lütfen bekleyiniz.</b>");

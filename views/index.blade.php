@@ -72,11 +72,11 @@
     </li>
     
     <li class="nav-item">
-        <a class="nav-link " onclick="tab5()" href="#tab5" data-toggle="tab">Etki Alanı Oluştur</a>
+        <a class="nav-link " onclick="tab2()" href="#tab2" data-toggle="tab">Etki Alanı Oluştur</a>
     </li>
 
     <li class="nav-item">
-        <a class="nav-link "  onclick="tab2()" href="#tab2" data-toggle="tab">Samba Servis Durumu</a>
+        <a class="nav-link "  onclick="tab3()" href="#tab3" data-toggle="tab">Samba Servis Durumu</a>
     </li>
 
     <li class="nav-item">
@@ -101,17 +101,13 @@
         @include('pages.installation')
     </div>
 
-    <div id="tab2" class="tab-pane">   
-        <pre id="sambaLog">   
-        
-        </pre>
+    <div id="tab2" class="tab-pane">  
+        @include('pages.createdomain')
     </div>
 
-    <div id="tab5" class="tab-pane">  
-        <p>Etki alanı kurmak için lütfen aşağıdaki butonu kullanın.</p>
-        <button class="btn btn-success mb-2" id="createDomainButton" onclick="createDomain()" type="button">Etki Alanı Oluştur</button>
-        <div id="domainStatus"></div> 
-        <pre id="domainLogs" class="tab-pane">    
+    <div id="tab3" class="tab-pane">   
+        <pre id="sambaLog">   
+        
         </pre>
     </div>
 
@@ -166,7 +162,7 @@
 
     // Create New Domain == Tab 2 ==
 
-    function tab5(){
+    function tab2(){
         var form = new FormData();
         request(API('verify_domain'), form, function(response) {
             message = JSON.parse(response)["message"];
@@ -183,47 +179,23 @@
         });
     }
 
-    
-    function createDomain(){
-        var form = new FormData();
-        $('#domainStatus').html("<b>Etki alanı oluşturuluyor. Lütfen bekleyiniz.</b>");
-        request(API('create_samba_domain'), form, function(response) {
-            returnDomainInformations();
-        }, function(error) {
-            showSwal(error.message, 'error', 3000);
-            console.log(error);
-        });
-    }
-    
-
-    function returnDomainInformations(){
-        var form = new FormData();
-        request(API('return_domain_informations'), form, function(response) {
-            message = JSON.parse(response)["message"];
-            $('#domainStatus').html("<b>Etki alanı bilgileri :</b>");
-            $('#domainLogs').html("\n" + message);
-        }, function(error) {
-            showSwal(error.message, 'error', 3000);
-            console.log(error);
-        });
-    }
 
     // Control Samba4.service Status == Tab 3 ==
 
-    function tab2(){
+    function tab3(){
         var form = new FormData();
         request(API('return_samba_service_status'), form, function(response) {
             message = JSON.parse(response)["message"];
             if(message == true){
                 isActiveButton = '<button type="button" class="btn btn-success" disabled>Samba Servisi Aktif !</button>' ;
-                $('#tab2').html(isActiveButton);
+                $('#tab3').html(isActiveButton);
 
                 var d1 = document.getElementById('tab2');
                 d1.insertAdjacentHTML('beforeend', '<pre id="sambaLog">   </pre>');
                 sambaLog();
             } else{
                 isActiveButton = '<button type="button" class="btn btn-danger" disabled>Samba Servisi Aktif Değil !</button>' ;
-                $('#tab2').html(isActiveButton);
+                $('#tab3').html(isActiveButton);
 
             }
         }, function(error) {

@@ -41,9 +41,7 @@
         Replication Info</a>
     </li>
 
-    
 </ul>
-
 
 <div class="tab-content">
     <div id="tab1" class="tab-pane active">
@@ -73,8 +71,6 @@
     <div id="replication" class="tab-pane">
         @include('pages.replication')
     </div>
-
-    
 
 </div>
 

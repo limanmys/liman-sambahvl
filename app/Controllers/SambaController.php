@@ -300,7 +300,7 @@ class SambaController{
         $ip = request("ip");
         $username = request("username");
         $password = request("password");
-        runCommand(sudo()."smb-migrate-domain -s ".$ip." -a ".$username." -p ".$password,200);
+        runCommand(sudo()."smb-migrate-domain -s ".$ip." -a ".$username." -p ".$password." 2>&1 > /tmp/smb-migrate-logs.txt",200);
 
         if($this->checkMigrate2() == true){
             //migrate edilebilir yani migrate edilmemiş.

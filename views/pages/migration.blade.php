@@ -1,10 +1,10 @@
 @component('modal-component',[
-        "id" => "migrationModal",
+        "id" => "domainMigration",
         "title" => "Giriş",
         "footer" => [
             "text" => "OK",
             "class" => "btn-success",
-            "onclick" => "hideMigrationModal()"
+            "onclick" => "hideDomainMigration()"
         ]
     ])
     @include('inputs', [
@@ -17,12 +17,12 @@
 @endcomponent
 
 @component('modal-component',[
-        "id" => "migrationModal2",
+        "id" => "siteMigration",
         "title" => "Giriş",
         "footer" => [
             "text" => "OK",
             "class" => "btn-success",
-            "onclick" => "hideMigrationModal2()"
+            "onclick" => "hideSiteMigration()"
         ]
     ])
     @include('inputs', [
@@ -35,93 +35,87 @@
     ])
 @endcomponent
 
+<div class="text-area" id="checkInfo"></div>
 <br />
-<div class="text-area" id="textarea"></div>
-<br />
-<button class="btn btn-success mb-2" id="btn3" onclick="showMigrationModal()" type="button">Migrate Et</button>
-<button class="btn btn-success mb-2" id="btn4" onclick="showMigrationModal2()" type="button">Migrate Et - Site</button>
-<pre id="migrationInfo">   </pre>
+<button class="btn btn-success mb-2" id="domain" onclick="showDomainMigration()" type="button">Migrate Et</button>
+<button class="btn btn-success mb-2" id="site" onclick="showSiteMigration()" type="button">Migrate Et - Site</button>
+<pre id="migrationInfo"></pre>
 
 <script>
 
-    function migration(){
+    function checkMigrate(){
         var form = new FormData();
-        let x = document.getElementById("btn3");
-        let y = document.getElementById("btn4");
-        x.disabled = true;
-        y.disabled = true;
-        $('#textarea').html("Sunucu kontrol ediliyor lütfen bekleyiniz ... ");
+        let domain_btn = document.getElementById("domain");
+        let site_btn = document.getElementById("site");
+        domain_btn.disabled = true;
+        site_btn.disabled = true;
+
+        $('#checkInfo').html("Sunucu kontrol ediliyor lütfen bekleyiniz ... ");
+
         request(API('check_migrate'), form, function(response) {
             message = JSON.parse(response)["message"];
             if(message==false){
-                x.disabled = true;
-                y.disabled = true;
-                $('#textarea').html("Bu sunucu bu işlemler için uygun değil.");
+
+                domain_btn.disabled = true;
+                site_btn.disabled = true;
+                $('#checkInfo').html("Bu sunucu bu işlemler için uygun değil.");
             }
             else{
-                x.disabled = false;
-                y.disabled = false;
-                $('#textarea').html("Migration işlemi için aşağıdaki butonu kullanabilirsiniz.");
+                domain_btn.disabled = false;
+                site_btn.disabled = false;
+                $('#checkInfo').html("Migration için aşağıdaki butonları kullanabilirsiniz.");
             }
         }, function(error) {
-            showSwal(error.message, 'error', 5000);
+            showSwal(error.message,'error',2000);
         });
     }
 
-    function showMigrationModal(){
+    function showDomainMigration(){
         showSwal('Yükleniyor...','info',2000);
-        $('#migrationModal').modal("show");
+        $('#domainMigration').modal("show");
     }
 
-    function hideMigrationModal(){
+    function hideDomainMigration(){
 
         var form = new FormData();
-        $('#migrationModal').modal("hide");
-        form.append("ip", $('#migrationModal').find('input[name=ipAddr]').val());
-        form.append("username", $('#migrationModal').find('input[name=username]').val());
-        form.append("password", $('#migrationModal').find('input[name=password]').val());
-        showSwal('İşleminiz devam ediyor', 'info', 30000);
+        $('#domainMigration').modal("hide");
+        form.append("ip", $('#domainMigration').find('input[name=ipAddr]').val());
+        form.append("username", $('#domainMigration').find('input[name=username]').val());
+        form.append("password", $('#domainMigration').find('input[name=password]').val());
+
+        showSwal('İşleminiz kontrol ediliyor...', 'info');
         
         request(API('migrate_domain'), form, function(response) {
-            //message = JSON.parse(response)["message"];
-            console.log(response);
-            if(response == true){
-                showSwal('Migration başarısız', 'error', 7000);
-            }
-            else if(response == false){
-                migration();
-                showSwal('Migration başarılı', 'success', 7000);
-            }
-            else if(response == ""){
-                migration();
-                showSwal('Migration başarılı', 'success', 7000);
-            }
-            else{
-                showSwal('Migration başarısız...', 'error', 7000);
-            }
+
+            showSwal('Migration işlemi başladı...', 'info', 3000);
+            migrateLog();
+            
         }, function(error) {
             showSwal(error.message, 'error', 5000);
         });
     }
 
-    function showMigrationModal2(){
+    function showSiteMigration(){
         showSwal('Yükleniyor...','info',2000);
-        $('#migrationModal2').modal("show");
+        $('#siteMigration').modal("show");
     }
 
-    function hideMigrationModal2(){
+    function hideSiteMigration(){
 
         var form = new FormData();
-        $('#migrationModal2').modal("hide");
-        form.append("ip", $('#migrationModal2').find('input[name=ipAddr]').val());
-        form.append("username", $('#migrationModal2').find('input[name=username]').val());
-        form.append("password", $('#migrationModal2').find('input[name=password]').val());
-        form.append("site", $('#migrationModal2').find('input[name=site]').val());
-        showSwal('İşleminiz kontrol ediliyor...', 'info', 10000);
+        $('#siteMigration').modal("hide");
+        form.append("ip", $('#siteMigration').find('input[name=ipAddr]').val());
+        form.append("username", $('#siteMigration').find('input[name=username]').val());
+        form.append("password", $('#siteMigration').find('input[name=password]').val());
+        form.append("site", $('#siteMigration').find('input[name=site]').val());
+
+        showSwal('İşleminiz kontrol ediliyor...', 'info');
 
         request(API('migrate_site'), form, function(response) {
-            showSwal('Migrate islemi basladi...', 'info', 3000);
-            migrateLog("");
+
+            showSwal('Migration işlemi başladı...', 'info', 3000);
+            migrateLog();
+
         }, function(response){
           let error = JSON.parse(response);
           showSwal(error.message,'error',2000);
@@ -141,8 +135,8 @@
                 }, 100);
             }
             else{
-                showSwal("Migrate basari ile tamamlandi!",'success',2000);
-                migration();
+                showSwal("Migrate başarı ile tamamlandı !",'success',3000);
+                checkMigrate();
             }
         }, function(response){
           let error = JSON.parse(response);

@@ -17,6 +17,17 @@ class SambaController{
         }
     }
 
+    function deleteSambaPackage(){
+        $deletePackage = "apt -y autoremove samba";
+        runCommand(sudo() . $deletePackage);
+
+        if(trim(runCommand('dpkg -s samba | grep "Status" | grep -w "install" 1>/dev/null 2>/dev/null && echo "1" || echo "0"')) == "1"){
+            return respond(false,202);
+        }else{
+            return respond(true,200);
+        }
+    }
+
     function verifyInstallationPhp(){
         if(trim(runCommand('dpkg -s sambahvl | grep "Status" | grep -w "install" 1>/dev/null 2>/dev/null && echo "1" || echo "0"')) == "1"){
             return true;

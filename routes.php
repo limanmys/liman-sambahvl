@@ -7,6 +7,7 @@ return [
     "set_hostname" => "HostnameController@set",
     "verify_installation" => "SambaController@verifyInstallation",
     "install_smb_package" => "SambaController@installSmbPackage",
+    "delete_smb_package" => "SambaController@deleteSambaPackage",
     "observe_installation" => "SambaController@observeInstallation",
     "verify_domain" => "SambaController@verifyDomain",
     "create_samba_domain" => "SambaController@createSambaDomain",

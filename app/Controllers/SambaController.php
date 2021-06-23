@@ -4,21 +4,25 @@ namespace App\Controllers;
 use Liman\Toolkit\Shell\Command;
 
 class SambaController{
+    
     function verifyInstallation(){
         if(trim(runCommand('dpkg -s sambahvl | grep "Status" | grep -w "install" 1>/dev/null 2>/dev/null && echo "1" || echo "0"')) == "1"){
             return respond(true,200);
         }else{
-            return respond(false,200);
+            if(trim(runCommand('dpkg -s samba | grep "Status" | grep -w "install" 1>/dev/null 2>/dev/null && echo "1" || echo "0"')) == "1"){
+                return respond("Samba error !",202);
+            }else{
+                return respond(false,200);
+            }
         }
-    } 
+    }
 
     function verifyInstallationPhp(){
-        if(trim(runCommand('dpkg -s smbpy | grep "Status" | grep -w "install" 1>/dev/null 2>/dev/null && echo "1" || echo "0"')) == "1"){
+        if(trim(runCommand('dpkg -s sambahvl | grep "Status" | grep -w "install" 1>/dev/null 2>/dev/null && echo "1" || echo "0"')) == "1"){
             return true;
         }else{
             return false;
         }
-
     }
 
     function installSmbPackage(){   

@@ -12,8 +12,8 @@
 <p>SambaHVL paketini kurmak için lütfen aşağıdaki butonu kullanın.</p>
 <button class="btn btn-success mb-2" id="install" onclick="installSmbPackage()" style="float:left;">SambaHVL Paketini Kur</button>
 <button class="btn btn-danger mb-2" id="delete" style="float:left;margin-left:10px;visibility:hidden;"></button>
-<div id="smbInstallStatus">  </div>
-<pre id="smbinstall">   </pre>
+<div id="smbInstallStatus"> </div>
+<pre id="smbinstall" style="margin-top:5%;"></pre>
 <div id="smblast">  </div>
 
 <script>

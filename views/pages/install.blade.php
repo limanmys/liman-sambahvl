@@ -56,7 +56,7 @@
 
         request(API('delete_smb_package'), form, function(response) {
             showSwal("Paket başarıyla kaldırıldı !", 'success', 3000);
-            tab1();
+            window.location.reload();
         }, function(error) {
             showSwal(error.message, 'error', 3000);
             console.log(error);

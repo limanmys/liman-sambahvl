@@ -389,20 +389,31 @@ class SambaController{
         
         if($type == "samba"){
             $output = runCommand(sudo() . "dpkg -s samba");
-            $version = runCommand(sudo() . "samba --version");
-            $output = $output."\n".$version;
 
         }
         else if($type == "sambahvl"){
             $output = runCommand(sudo() . "dpkg -s sambahvl");
-            $version = runCommand(sudo() . "samba --version");
-            $output = $output."\n".$version;
 
         }
         else{
-            $output = "Samba not installed.";
+            $output = "Samba is not installed.";
         }
         return respond($output,200);
+
+    }
+
+    function getSambaVersion(){
+
+        $type = $this->checkSambaType();
+
+        if($type !== "not installed"){
+            $version = runCommand(sudo() . "samba --version");
+            return respond($version,200);
+        }
+        else{
+            return respond("Samba is not installed.",200);
+
+        }
 
     }
 

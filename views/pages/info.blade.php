@@ -1,7 +1,7 @@
 <div class="row">
   <div class="col-3">
     <div class="nav flex-column nav-pills" id="v-pills-tab" role="tablist" aria-orientation="vertical">
-      <a class="nav-link active" onclick="info()" id="v-pills-info-tab" data-toggle="pill" href="#v-pills-info" role="tab" aria-controls="v-pills-info" aria-selected="true">Info</a>
+      <a class="nav-link active" onclick="getInfo()" id="v-pills-info-tab" data-toggle="pill" href="#v-pills-info" role="tab" aria-controls="v-pills-info" aria-selected="true">Detaylar</a>
       <a class="nav-link" onclick="serviceStatus()" id="v-pills-servicestatus-tab" data-toggle="pill" href="#v-pills-servicestatus" role="tab" aria-controls="v-pills-servicestatus" aria-selected="false">Servis Durumu</a>
       <a class="nav-link" onclick="listPaths()" id="v-pills-paths-tab" data-toggle="pill" href="#v-pills-paths" role="tab" aria-controls="v-pills-paths" aria-selected="false">Paths</a>
       <a class="nav-link" onclick="listHave()" id="v-pills-have-tab" data-toggle="pill" href="#v-pills-have" role="tab" aria-controls="v-pills-have" aria-selected="false">Have</a>
@@ -14,18 +14,10 @@
   <div class="col-9">
     <div class="tab-content" id="v-pills-tabContent">
       <div class="tab-pane fade show active" id="v-pills-info" role="tabpanel" aria-labelledby="v-pills-info-tab">
-        <!-- This text will not be displayed on the Web page 
-        <h5 class="card-title">Detaylar</h5>
-        <pre id="type"></pre>
-        <pre id="details"></pre>
-
-        <h5 class="card-title">Samba Build Version</h5>
-        -->  
         <div class="row">
         <div class="col-sm-6">
             <div class="card">
             <div class="card-body">
-                <h5 class="card-title">Detaylar</h5>
                 <pre id="details"></pre>
             </div>
             </div>
@@ -33,7 +25,6 @@
         <div class="col-sm-6">
             <div class="card">
             <div class="card-body">
-                <h5 class="card-title">Build Versiyonu</h5>
                 <pre id="version"></pre>
             </div>
             </div>
@@ -76,11 +67,11 @@
 
 <script>
 
-    function info(){
+    function getInfo(){
         showSwal('Yükleniyor...','info',2000);
         var form = new FormData();
 
-        request(API('samba_details'), form, function(response) {
+        request(API('get_samba_details'), form, function(response) {
             
             message = JSON.parse(response)["message"];
             $('#details').html(message);
@@ -89,17 +80,18 @@
             let error = JSON.parse(response);
             showSwal(error.message, 'error', 3000);
         });
+        getVersion();
 
         
     }
-    function info(){
+    function getVersion(){
         showSwal('Yükleniyor...','info',2000);
         var form = new FormData();
 
         request(API('get_samba_version'), form, function(response) {
             
             message = JSON.parse(response)["message"];
-            $('#details').html(message);
+            $('#version').html(message);
             
         }, function(response) {
             let error = JSON.parse(response);

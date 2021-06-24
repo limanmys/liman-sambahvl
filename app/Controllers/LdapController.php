@@ -43,7 +43,7 @@ class LdapController
 
         return view('table', [
             "value" => $data,
-            "title" => ["Users"],
+            "title" => ["Kullanıcı"],
             "display" => ["name"]
         ]);
 
@@ -73,7 +73,7 @@ class LdapController
     
         return view('table', [
             "value" => $data,
-            "title" => ["Group"],
+            "title" => ["Grup"],
             "display" => ["name"]
         ]);
     
@@ -97,7 +97,7 @@ class LdapController
     
         return view('table', [
             "value" => $data,
-            "title" => ["Computers"],
+            "title" => ["Bilgisayar"],
             "display" => ["name"]
         ]);
     

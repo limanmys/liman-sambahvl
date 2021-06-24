@@ -2,7 +2,7 @@
 
 return [
     "index" => "HomeController@index",
-
+    "install_task" => "HostnameController@get",
     "get_hostname" => "HostnameController@get",
     "set_hostname" => "HostnameController@set",
     "verify_installation" => "SambaController@verifyInstallation",

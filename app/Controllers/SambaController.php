@@ -373,7 +373,7 @@ class SambaController{
         return respond($log, 200);
     }
 
-    function checkSambaType(){
+    function getSambaType(){
         if(trim(runCommand('dpkg -s sambahvl | grep "Status" | grep -w "install" 1>/dev/null 2>/dev/null && echo "1" || echo "0"')) == "1"){
             return "sambahvl";
         }else{
@@ -384,8 +384,8 @@ class SambaController{
         }
     }
     
-    function sambaDetails(){
-        $type = $this->checkSambaType();
+    function getSambaDetails(){
+        $type = $this->getSambaType();
         
         if($type == "samba"){
             $output = runCommand(sudo() . "dpkg -s samba");
@@ -404,7 +404,7 @@ class SambaController{
 
     function getSambaVersion(){
 
-        $type = $this->checkSambaType();
+        $type = $this->getSambaType();
 
         if($type !== "not installed"){
             $version = runCommand(sudo() . "samba --version");

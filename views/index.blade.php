@@ -12,12 +12,6 @@
     </li>
 
     <li class="nav-item">
-        <a class="nav-link "  onclick="tab3()" href="#tab3" data-toggle="tab">
-        <i class="fas fa-info mr-2"></i>
-        Samba Servis Durumu</a>
-    </li>
-
-    <li class="nav-item">
         <a class="nav-link " onclick="checkMigrate()" href="#migration"  data-toggle="tab">
         <i class="fas fa-bezier-curve mr-2"></i>
         Migration</a>
@@ -82,9 +76,6 @@
         @include('pages.domain')
     </div>
 
-    <div id="tab3" class="tab-pane">   
-        @include('pages.service_status')
-    </div>
 
     <div id="migration" class="tab-pane">
         @include('pages.migration')

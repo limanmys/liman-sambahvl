@@ -31,7 +31,24 @@ return [
     "migrate_domain" => "SambaController@migrateDomain",
     "migrate_site" => "SambaController@migrateSite",
     "migrate_log" => "SambaController@migrateLog",
-    
-    
+
+    "list_users" => "LdapController@listUsers",
+    "list_groups" => "LdapController@listGroups",
+    "list_computers" => "LdapController@listComputers",
+
+    "create_site" => "LdapController@createSite",
+    "delete_site" => "LdapController@deleteSite",
+    "list_sites" => "LdapController@listSites",
+    "servers_of_site" => "LdapController@serversOfSite",
+    "add_server_to_site" => "LdapController@addServerToSite",
+    "add_this_server" => "LdapController@addThisServer",
+
+    "check_samba_type" => "SambaController@checkSambaType",
+    "list_paths" => "SambaController@listPaths",
+    "list_have" => "SambaController@listHave",
+    "list_build_options" => "SambaController@listBuildOptions",
+    "list_with_options" => "SambaController@listWithOptions",
+    "list_modules" => "SambaController@listModules",
+    "samba_details" => "SambaController@sambaDetails",
 
 ];

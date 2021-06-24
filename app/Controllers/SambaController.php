@@ -52,7 +52,7 @@ class SambaController{
         return respond($a,200);
     }*/
 
-    function installSmbPackage()
+    public function installSmbPackage()
 	{
 		return respond(
 			view('components.task', [

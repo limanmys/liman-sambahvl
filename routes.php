@@ -5,6 +5,10 @@ return [
     "install_task" => "HostnameController@get",
     "get_hostname" => "HostnameController@get",
     "set_hostname" => "HostnameController@set",
+
+    "runTask" => "TaskController@runTask",
+    "checkTask" => "TaskController@checkTask",
+
     "verify_installation" => "SambaController@verifyInstallation",
     "install_smb_package" => "SambaController@installSmbPackage",
     "delete_smb_package" => "SambaController@deleteSambaPackage",

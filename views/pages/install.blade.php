@@ -1,11 +1,17 @@
+@component('modal-component',[
+    "id" => "packageInstallerModal",
+    "title" => "Görev İşleniyor",
+])
+@endcomponent
+
 <div id="errorDiv" style="visibility:none;"></div>
 
 <div class="alert alert-primary d-flex align-items-center " role="alert">
-  <svg class="bi flex-shrink-0 me-2" width="24" height="24" role="img" aria-label="Info:"><use xlink:href="#info-fill"/></svg>
-  <i class="fas fa-icon mr-2"></i>
-  <div>
-  SambaHVL paketini kurmak için lütfen aşağıdaki butonu kullanın.
-  </div>
+    <svg class="bi flex-shrink-0 me-2" width="24" height="24" role="img" aria-label="Info:"><use xlink:href="#info-fill"/></svg>
+    <i class="fas fa-icon mr-2"></i>
+    <div>
+        SambaHVL paketini kurmak için lütfen aşağıdaki butonu kullanın.
+    </div>
 </div>
 
 <button class="btn btn-success mb-2" id="install" onclick="installSmbPackage()" style="float:left;">SambaHVL Paketini Kur</button>
@@ -63,13 +69,29 @@
 
     function installSmbPackage(){
         var form = new FormData();
-        $('#smbInstallStatus').html("<b>SambaHvl kuruluyor. Lütfen kayıtları takip ediniz.</b>");
-        request(API('install_smb_package'), form, function(response) {
-            observe();
-        }, function(error) {
-            showSwal(error.message, 'error', 3000);
-            console.log(error);
-        });
+        showSwal('{{__("Loading")}}...','info',2000);
+        request(API('install_smb_package'), new FormData(), function (response) {
+            const output = JSON.parse(response).message;
+            $("#install").attr("disabled","true");
+            $('#packageInstallerModal').modal({backdrop: 'static', keyboard: false})
+            $('#packageInstallerModal').find('.modal-body').html(output);
+            $('#packageInstallerModal').modal("show"); 
+        }, function(response){
+            const error = JSON.parse(response).message;
+            showSwal(error,'error',2000);
+      })
+    }
+
+    function onTaskSuccess(){
+        showSwal('{{__("Your request has been successfully completed")}}', 'success', 2000);
+        setTimeout(function(){
+          $('#packageInstallerModal').modal("hide"); 
+        }, 2000);
+        window.location.href = 'index';
+    }
+
+    function onTaskFail(){
+        showSwal('{{__("An error occurred while processing your request")}}!', 'error', 2000);
     }
     
     function observe(){

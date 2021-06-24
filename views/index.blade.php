@@ -72,8 +72,8 @@
     </li>
 
     <li class="nav-item">
-        <a class="nav-link" onclick="info()" href="#info"  data-toggle="tab">
-        <i class="fas fa-question-circle mr-2"></i>
+        <a class="nav-link" onclick="getInfo()" href="#info"  data-toggle="tab">
+        <i class="fas fa-info mr-2"></i>
         Samba Bilgileri</a>
     </li>
 

@@ -369,7 +369,7 @@ class SambaController{
         }
         return view('table', [
             "value" => $data,
-            "title" => ["Paths"],
+            "title" => ["Path"],
             "display" => ["name"],
         ]);
 
@@ -406,7 +406,7 @@ class SambaController{
         }
         return view('table', [
             "value" => $data,
-            "title" => ["Have"],
+            "title" => ["Build option"],
             "display" => ["name"],
         ]);
 
@@ -425,7 +425,7 @@ class SambaController{
         }
         return view('table', [
             "value" => $data,
-            "title" => ["Have"],
+            "title" => ["With option"],
             "display" => ["name"],
         ]);
 
@@ -444,7 +444,7 @@ class SambaController{
         }
         return view('table', [
             "value" => $data,
-            "title" => ["Have"],
+            "title" => ["Module"],
             "display" => ["name"],
         ]);
 

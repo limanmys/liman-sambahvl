@@ -68,7 +68,6 @@
 <script>
 
     function getInfo(){
-        showSwal('Yükleniyor...','info',2000);
         var form = new FormData();
 
         request(API('get_samba_details'), form, function(response) {
@@ -85,7 +84,6 @@
         
     }
     function getVersion(){
-        showSwal('Yükleniyor...','info',2000);
         var form = new FormData();
 
         request(API('get_samba_version'), form, function(response) {
@@ -137,7 +135,6 @@
     }
 
     function listPaths(){
-        showSwal('Yükleniyor...','info',2000);
         var form = new FormData();
         request(API('list_paths'), form, function(response) {
             $('#pathsTable').html(response).find('table').DataTable({
@@ -154,7 +151,6 @@
     }
 
     function listHave(){
-        showSwal('Yükleniyor...','info',2000);
         var form = new FormData();
         request(API('list_have'), form, function(response) {
             $('#haveTable').html(response).find('table').DataTable({
@@ -170,7 +166,6 @@
     }
 
     function listBuildOptions(){
-        showSwal('Yükleniyor...','info',2000);
         var form = new FormData();
         request(API('list_build_options'), form, function(response) {
             $('#buildOptionsTable').html(response).find('table').DataTable({
@@ -186,7 +181,6 @@
     }
 
     function listWithOptions(){
-        showSwal('Yükleniyor...','info',2000);
         var form = new FormData();
         request(API('list_with_options'), form, function(response) {
             $('#withOptionsTable').html(response).find('table').DataTable({
@@ -202,7 +196,6 @@
     }
 
     function listModules(){
-        showSwal('Yükleniyor...','info',2000);
         var form = new FormData();
         request(API('list_modules'), form, function(response) {
             $('#modulesTable').html(response).find('table').DataTable({

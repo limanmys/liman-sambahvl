@@ -50,7 +50,7 @@ return [
     "list_build_options" => "SambaController@listBuildOptions",
     "list_with_options" => "SambaController@listWithOptions",
     "list_modules" => "SambaController@listModules",
-    "samba_details" => "SambaController@sambaDetails",
+    "get_samba_details" => "SambaController@getSambaDetails",
     "get_samba_version" => "SambaController@getSambaVersion",
 
 ];

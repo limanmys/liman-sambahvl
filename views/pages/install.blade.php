@@ -86,7 +86,6 @@
         setTimeout(function(){
           $('#packageInstallerModal').modal("hide"); 
         }, 2000);
-        window.location.href = 'index';
     }
 
     function onTaskFail(){

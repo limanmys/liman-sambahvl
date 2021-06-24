@@ -328,9 +328,9 @@ class SambaController{
 
     function checkMigrate(){
         //check => true ise migrate edilebilir.
-        $output=runCommand(sudo()."net ads info",200);
+        $output=runCommand(sudo()."net ads info");
         if($output==""){
-            $output=runCommand(sudo()."net ads info 2>&1",200);
+            $output=runCommand(sudo()."net ads info 2>&1");
         }
         if(str_contains($output, "Can't load /etc/samba/smb.conf")){
             return respond(true,200);

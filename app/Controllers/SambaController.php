@@ -194,68 +194,7 @@ class SambaController{
         return respond($output,200);
     }
 
-    //Trust
-    function trustedServers(){
-        $allData = runCommand(sudo() . "samba-tool domain trust list 2>&1");
-        $allDataList = explode("\n", $allData);
-
-        $data=[];
-        foreach($allDataList as $item){
-            if($item){
-                $itemInfos = explode("[", $item);
-                $data[] = [
-                    "type" => substr($itemInfos[1], 0, strpos($itemInfos[1], "]")),
-                    "transitive" => substr($itemInfos[2], 0, strpos($itemInfos[2], "]")),
-                    "direction" => substr($itemInfos[3], 0, strpos($itemInfos[3], "]")),
-                    "name" => substr($itemInfos[4], 0, strpos($itemInfos[4], "]"))
-                ];
-            }
-        }                
-
-        return view('table', [
-            "value" => $data,
-            "title" => ["Names of Servers", "*hidden*", "*hidden*", "*hidden*"],
-            "display" => ["name", "type:type", "transitive:transitive", "direction:direction"],
-            "onclick" => "showTrustedServerDetailsModal",
-            "menu" => [
-
-                "Delete" => [
-                    "target" => "showDeleteTrustedServerModal",
-                    "icon" => "fas fa-trash-alt"
-                ],
-
-            ],
-        ]);
-    }
-
-    function destroyTrustRelation(){
-        $name = request("name");
-        $password = request("password");
-        $output = runCommand(sudo() . "samba-tool domain trust delete " . $name .
-                            " -U administrator@" . $name .
-                            " --password=" . $password);
-        return respond("Trust relation with " . $name . " was destroyed", 200);
-    }
-
-    function createTrustRelation(){
-        $domainName = request("newDomainName");
-        $ipAddr = request("newIpAddr");
-        $type = request("newType");
-        $direction = request("newDirection");
-        $createLocation = request("newCreateLocation");
-        $username = request("newUsername");
-        $password = request("password");
-
-        if(!($domainName && $ipAddr && $type && $direction && $createLocation && $username && $password))
-            return respond("Please fill all fields!", 202);
-
-        runCommand(sudo() . "samba-tool domain trust create " . $domainName .
-                    " --type=" . $type . " --direction=" . $direction .
-                    " --create-location=" . $createLocation . " -U " . $username .
-                    "@" . $domainName . " --password=" . $password);
-        return respond("Trust relation with " . $domainName . " has been created", 200);
-    }
-
+    
     //Replication
     function replicationOrganized(){
         $hostNameTo = runCommand("hostname");

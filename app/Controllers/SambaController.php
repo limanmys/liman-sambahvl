@@ -358,5 +358,133 @@ class SambaController{
         return respond($log, 200);
     }
 
+    function checkSambaType(){
+        if(trim(runCommand('dpkg -s sambahvl | grep "Status" | grep -w "install" 1>/dev/null 2>/dev/null && echo "1" || echo "0"')) == "1"){
+            return "sambahvl";
+        }else{
+            if(trim(runCommand('dpkg -s samba | grep "Status" | grep -w "install" 1>/dev/null 2>/dev/null && echo "1" || echo "0"')) == "1"){
+                return "samba";
+            }
+            return "not installed";
+        }
+    }
+    
+    function sambaDetails(){
+        $type = $this->checkSambaType();
+        
+        if($type == "samba"){
+            $output = runCommand(sudo() . "dpkg -s samba");
+            $version = runCommand(sudo() . "samba --version");
+            $output = $output."\n".$version;
+
+        }
+        else if($type == "sambahvl"){
+            $output = runCommand(sudo() . "dpkg -s sambahvl");
+            $version = runCommand(sudo() . "samba --version");
+            $output = $output."\n".$version;
+
+        }
+        else{
+            $output = "Samba not installed.";
+        }
+        return respond($output,200);
+
+    }
+
+    function listPaths(){
+        $command = "smbd -b | sed -n -e '/Paths:/,/System Headers:/ p' | head -n -2 | sed '1d;'";
+        $output = runCommand(sudo().$command);
+        $allDataList = explode("\n",$output);
+        $data = [];
+        for($i=0; $i<count($allDataList); $i++){
+            $item = $allDataList[$i];
+            $data[] = [
+                "name" => $item,
+            ];  
+        }
+        return view('table', [
+            "value" => $data,
+            "title" => ["Paths"],
+            "display" => ["name"],
+        ]);
+
+    }
+
+    function listHave(){
+        $command = "smbd -b | grep HAVE";
+        $output = runCommand(sudo().$command);
+        $allDataList = explode("\n",$output);
+        $data = [];
+        for($i=0; $i<count($allDataList); $i++){
+            $item = $allDataList[$i];
+            $data[] = [
+                "name" => $item,
+            ];  
+        }
+        return view('table', [
+            "value" => $data,
+            "title" => ["Have"],
+            "display" => ["name"],
+        ]);
+
+    }
+    function listBuildOptions(){
+        $command = "smbd -b | sed -n -e '/Build Options:/,/Cluster support features:/ p' | head -n -2 | sed '1d;'";
+        $output = runCommand(sudo().$command);
+        $allDataList = explode("\n",$output);
+        $data = [];
+        for($i=0; $i<count($allDataList); $i++){
+            $item = $allDataList[$i];
+            $data[] = [
+                "name" => $item,
+            ];  
+        }
+        return view('table', [
+            "value" => $data,
+            "title" => ["Have"],
+            "display" => ["name"],
+        ]);
+
+    }
+
+    function listWithOptions(){
+        $command = "smbd -b | sed -n -e '/--with Options:/,/Build Options:/ p' | head -n -2 | sed '1d;'";
+        $output = runCommand(sudo().$command);
+        $allDataList = explode("\n",$output);
+        $data = [];
+        for($i=0; $i<count($allDataList); $i++){
+            $item = $allDataList[$i];
+            $data[] = [
+                "name" => $item,
+            ];  
+        }
+        return view('table', [
+            "value" => $data,
+            "title" => ["Have"],
+            "display" => ["name"],
+        ]);
+
+    }
+
+    function listModules(){
+        $command = "smbd -b | grep 'Builtin modules:' -A1 | sed '1d;'";
+        $output = runCommand(sudo().$command);
+        $allDataList = explode(" ",$output);
+        $data = [];
+        for($i=0; $i<count($allDataList); $i++){
+            $item = $allDataList[$i];
+            $data[] = [
+                "name" => $item,
+            ];  
+        }
+        return view('table', [
+            "value" => $data,
+            "title" => ["Have"],
+            "display" => ["name"],
+        ]);
+
+    }
+    
+
 }
 ?>

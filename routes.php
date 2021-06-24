@@ -43,4 +43,12 @@ return [
     "add_server_to_site" => "LdapController@addServerToSite",
     "add_this_server" => "LdapController@addThisServer",
 
+    "check_samba_type" => "SambaController@checkSambaType",
+    "list_paths" => "SambaController@listPaths",
+    "list_have" => "SambaController@listHave",
+    "list_build_options" => "SambaController@listBuildOptions",
+    "list_with_options" => "SambaController@listWithOptions",
+    "list_modules" => "SambaController@listModules",
+    "samba_details" => "SambaController@sambaDetails",
+
 ];

@@ -24,6 +24,12 @@
     </li>
 
     <li class="nav-item">
+        <a class="nav-link" onclick="getInfo()" href="#info"  data-toggle="tab">
+        <i class="fas fa-info mr-2"></i>
+        Samba Bilgileri</a>
+    </li>
+
+    <li class="nav-item">
         <a class="nav-link " onclick="checkMigrate()" href="#migration"  data-toggle="tab">
         <i class="fas fa-bezier-curve mr-2"></i>
         Migration</a>
@@ -36,15 +42,9 @@
     </li>
 
     <li class="nav-item">
-        <a class="nav-link "  onclick="trustedServers()" href="#trustRelation" data-toggle="tab">
-        <i class="fas fa-shield-alt mr-2"></i>
-        Trusted Servers</a>
-    </li>
-
-    <li class="nav-item">
         <a class="nav-link "  onclick="replicationInfo()" href="#replication" data-toggle="tab">
         <i class="fas fa-retweet mr-2"></i>
-        Replication Info</a>
+        Replikasyon Bilgisi</a>
     </li>
 
     <li class="nav-item">
@@ -71,11 +71,7 @@
         Site Listesi</a>
     </li>
 
-    <li class="nav-item">
-        <a class="nav-link" onclick="getInfo()" href="#info"  data-toggle="tab">
-        <i class="fas fa-info mr-2"></i>
-        Samba Bilgileri</a>
-    </li>
+    
 
 </ul>
 
@@ -88,6 +84,9 @@
         @include('pages.domain')
     </div>
 
+    <div id="info" class="tab-pane">
+        @include('pages.info')
+    </div>
 
     <div id="migration" class="tab-pane">
         @include('pages.migration')
@@ -97,10 +96,6 @@
         @include('pages.fsmo')
     </div>
 
-    <div id="trustRelation" class="tab-pane">
-        @include('pages.trust')
-    </div>
-    
     <div id="replication" class="tab-pane">
         @include('pages.replication')
     </div>
@@ -121,9 +116,7 @@
         @include('pages.sites')
     </div>
 
-    <div id="info" class="tab-pane">
-        @include('pages.info')
-    </div>
+    
 
 </div>
 

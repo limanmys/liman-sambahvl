@@ -64,6 +64,13 @@
         <i class="fas fa-network-wired mr-2"></i>
         Site Listesi</a>
     </li>
+
+    <li class="nav-item">
+        <a class="nav-link" onclick="info()" href="#info"  data-toggle="tab">
+        <i class="fas fa-question-circle mr-2"></i>
+        Samba Bilgileri</a>
+    </li>
+
 </ul>
 
 <div class="tab-content">
@@ -109,6 +116,10 @@
 
     <div id="sites" class="tab-pane">
         @include('pages.sites')
+    </div>
+
+    <div id="info" class="tab-pane">
+        @include('pages.info')
     </div>
 
 </div>

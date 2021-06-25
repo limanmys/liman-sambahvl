@@ -60,6 +60,11 @@ class SambaController{
 				'onSuccess' => 'onTaskSuccess',
 				'tasks' => [
 					0 => [
+						'name' => 'InstallDependencies',
+						'attributes' => []
+                    ],
+
+                    1 => [
 						'name' => 'InstallPackage',
 						'attributes' => []
 					]

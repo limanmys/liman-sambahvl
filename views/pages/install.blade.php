@@ -17,6 +17,24 @@
 <button class="btn btn-success mb-2" id="install" onclick="installSmbPackage()" style="float:left;">SambaHVL Paketini Kur</button>
 <button class="btn btn-danger mb-2" id="delete" style="float:left;margin-left:10px;visibility:hidden;"></button>
 
+<ul class="nav nav-pills nav-fill" id="nestedList" style="display:none;">
+  <li class="nav-item">
+    <a class="nav-link active" href="#newDomain" data-toggle="tab">Create Domain</a>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link" href="#migrateDomain" data-toggle="tab">Migrate Domain</a>
+  </li>
+</ul>
+
+<div class="tab-content">
+    <div id="newDomain" class="tab-pane active">
+        @include('pages.domain')
+    </div>
+
+    <div id="migrateDomain" class="tab-pane">
+        @include('pages.migration')
+    </div>
+</div>
 <script>
 // Install SambaHvl Package == Tab 1 == 
     function tab1(){
@@ -54,6 +72,9 @@
         let installButton = document.getElementById("install");
         installButton.remove();
 
+        let deleteButton = document.getElementById("delete");
+        deleteButton.remove();
+
         let infoAlert = document.getElementById("infoAlert");
         infoAlert.remove();
 
@@ -65,6 +86,9 @@
                     'Sunucuda SambaHvl paketi tespit edildi !'+
                 '</div>'+
             '</div>');
+        
+        let navBar = document.getElementById("nestedList");
+        navBar.style.display = null;
     }
 
     function removeSambaPackage(){

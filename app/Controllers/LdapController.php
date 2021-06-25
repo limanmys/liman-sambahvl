@@ -3,13 +3,18 @@ namespace App\Controllers;
 
 class LdapController
 {
+    private $basedn = "";
 	function connect(){
-        $domainname= "okkali.lab";
+        $ip = $this->getIP();
+        $domainname= extensionDb('domainName');
         $user = "administrator@".$domainname;
-        $pass = "123123Aa";
-        $server = 'ldaps://192.168.1.71';
+        $pass = extensionDb('domainPassword');
+        $server = 'ldaps://'.$ip;
         $port="636";
-        $binddn = "DC=okkali,DC=lab";
+        
+        $str = explode(".",$domainname);
+        $this->basedn = "DC=".$str[0].",DC=".$str[1];
+
         $ldap = ldap_connect($server);
         ldap_set_option($ldap, LDAP_OPT_PROTOCOL_VERSION, 3);
         ldap_set_option($ldap, LDAP_OPT_X_TLS_REQUIRE_CERT, LDAP_OPT_X_TLS_NEVER);
@@ -20,15 +25,22 @@ class LdapController
         }
         return $ldap;
     }
+
     function close($ldap){
         ldap_close($ldap);
+    }
+
+    function getIP(){
+        $command = "hostname -I | awk '{print $1}'";
+        $ip = runCommand(sudo().$command);
+        return $ip;
     }
 
     function listUsers(){
         $ldap = $this->connect();
 
         $filter = "objectClass=user";
-        $result = ldap_search($ldap, "DC=okkali,DC=lab", $filter);
+        $result = ldap_search($ldap, $this->basedn, $filter);
         $entries = ldap_get_entries($ldap,$result);
 
         $count = ldap_count_entries($ldap, $result);
@@ -58,7 +70,7 @@ class LdapController
         else if($groupType == "distribution")
             $filter = "(&(objectCategory=group)(!(groupType:1.2.840.113556.1.4.803:=2147483648)))";
         
-        $result = ldap_search($ldap, "DC=okkali,DC=lab", $filter);
+        $result = ldap_search($ldap, $this->basedn, $filter);
         $entries = ldap_get_entries($ldap,$result);
     
         $count = ldap_count_entries($ldap, $result);
@@ -82,7 +94,7 @@ class LdapController
         $ldap = $this->connect();
     
         $filter = "objectClass=computer";
-        $result = ldap_search($ldap, "DC=okkali,DC=lab", $filter);
+        $result = ldap_search($ldap, $this->basedn, $filter);
         $entries = ldap_get_entries($ldap,$result);
     
         $count = ldap_count_entries($ldap, $result);
@@ -106,13 +118,10 @@ class LdapController
     //Site
     function listSites(){
 
-        //$binddn = extensionDb('binddn');
-        $binddn = "DC=okkali,DC=lab";
-
         $ldap = $this->connect();
 
         $filter = "objectClass=site";
-        $result = ldap_search($ldap, "CN=Configuration,".$binddn, $filter);
+        $result = ldap_search($ldap, "CN=Configuration,".$this->basedn, $filter);
         $entries = ldap_get_entries($ldap,$result);
 
         $count = ldap_count_entries($ldap, $result);
@@ -165,13 +174,11 @@ class LdapController
     function serversOfSite(){
 
         $siteName = request("siteName");
-        //$binddn = extensionDb('binddn');
-        $binddn = "DC=okkali,DC=lab";
 
         $ldap = $this->connect();
         $filter = "objectClass=server";
 
-        $result = ldap_search($ldap, "CN=Configuration,".$binddn, $filter);
+        $result = ldap_search($ldap, "CN=Configuration,".$this->basedn, $filter);
         $entries = ldap_get_entries($ldap,$result);
         $count = ldap_count_entries($ldap, $result);
         $data = [];
@@ -195,11 +202,9 @@ class LdapController
     function addServerToSite(){
 
         $newSiteName = request("newSiteName");
-        //$binddn = extensionDb('binddn');
-        $binddn = "DC=okkali,DC=lab";
         $ldap = $this->connect();
         $filter = "objectClass=server";
-        $result = ldap_search($ldap, "CN=Configuration,".$binddn, $filter);
+        $result = ldap_search($ldap, "CN=Configuration,".$this->basedn, $filter);
         $entries = ldap_get_entries($ldap,$result);
         $count = ldap_count_entries($ldap, $result);
         $data = [];
@@ -229,11 +234,9 @@ class LdapController
         $dnOfServer = request("dnOfServer");
         $newSiteName = request("newSiteName");
         $ldap = $this->connect();
-        //$binddn = extensionDb('binddn');
-        $binddn = "DC=okkali,DC=lab";
 
         $newRDN = substr($dnOfServer, 0, strpos($dnOfServer, ","));
-        $newParent = "CN=Servers,CN=".$newSiteName.",CN=Sites,CN=Configuration,".$binddn;
+        $newParent = "CN=Servers,CN=".$newSiteName.",CN=Sites,CN=Configuration,".$this->basedn;
 
         if(ldap_rename($ldap, $dnOfServer, $newRDN, $newParent, true)){
             $this->close($ldap);

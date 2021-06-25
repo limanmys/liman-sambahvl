@@ -289,6 +289,30 @@ class SambaController{
         }
     }
 
+    function migrateDomainNew(){
+        $ip = request("ip");
+        $username = request("username");
+        $password = request("password");
+
+        return respond(
+			view('components.task', [
+				'onFail' => 'onTaskFail',
+				'onSuccess' => 'onTaskSuccess',
+				'tasks' => [
+					0 => [
+						'name' => 'Migrate',
+						'attributes' => [
+							'ip' => $ip,
+							'username' => $username,
+                            'password' => $password
+						]
+                    ],
+				]
+			]),
+			200
+		);
+    }
+
     function checkMigrate(){
         //check => true ise migrate edilebilir.
         $output=runCommand(sudo()."net ads info");

@@ -53,4 +53,7 @@ return [
     "get_samba_details" => "SambaController@getSambaDetails",
     "get_samba_version" => "SambaController@getSambaVersion",
 
+    "check_sambahvl" => "SambaController@checkSambahvl",
+    "check_domain" => "SambaController@checkDomain",
+
 ];

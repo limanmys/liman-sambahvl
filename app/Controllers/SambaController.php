@@ -449,7 +449,24 @@ class SambaController{
         ]);
 
     }
-    
+
+    function checkSambahvl(){
+        if(trim(runCommand('dpkg -s sambahvl | grep "Status" | grep -w "install" 1>/dev/null 2>/dev/null && echo "1" || echo "0"')) == "1"){
+            return respond(true,200);
+        }
+        else{
+            return respond(false,200);
+        }
+    }
+    function checkDomain(){
+        //if(trim(runCommand('net ads info | grep Realm: 1>/dev/null 2>/dev/null && echo "1" || echo "0"')) == "1"){
+        if(trim(runCommand('getent passwd administrator| grep administrator 1>/dev/null 2>/dev/null && echo "1" || echo "0"')) == "1"){
+            return respond(true,200);
+        }
+        else{
+            return respond(false,200);
+        }
+    }
 
 }
 ?>

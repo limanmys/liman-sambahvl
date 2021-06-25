@@ -194,68 +194,7 @@ class SambaController{
         return respond($output,200);
     }
 
-    //Trust
-    function trustedServers(){
-        $allData = runCommand(sudo() . "samba-tool domain trust list 2>&1");
-        $allDataList = explode("\n", $allData);
-
-        $data=[];
-        foreach($allDataList as $item){
-            if($item){
-                $itemInfos = explode("[", $item);
-                $data[] = [
-                    "type" => substr($itemInfos[1], 0, strpos($itemInfos[1], "]")),
-                    "transitive" => substr($itemInfos[2], 0, strpos($itemInfos[2], "]")),
-                    "direction" => substr($itemInfos[3], 0, strpos($itemInfos[3], "]")),
-                    "name" => substr($itemInfos[4], 0, strpos($itemInfos[4], "]"))
-                ];
-            }
-        }                
-
-        return view('table', [
-            "value" => $data,
-            "title" => ["Names of Servers", "*hidden*", "*hidden*", "*hidden*"],
-            "display" => ["name", "type:type", "transitive:transitive", "direction:direction"],
-            "onclick" => "showTrustedServerDetailsModal",
-            "menu" => [
-
-                "Delete" => [
-                    "target" => "showDeleteTrustedServerModal",
-                    "icon" => "fas fa-trash-alt"
-                ],
-
-            ],
-        ]);
-    }
-
-    function destroyTrustRelation(){
-        $name = request("name");
-        $password = request("password");
-        $output = runCommand(sudo() . "samba-tool domain trust delete " . $name .
-                            " -U administrator@" . $name .
-                            " --password=" . $password);
-        return respond("Trust relation with " . $name . " was destroyed", 200);
-    }
-
-    function createTrustRelation(){
-        $domainName = request("newDomainName");
-        $ipAddr = request("newIpAddr");
-        $type = request("newType");
-        $direction = request("newDirection");
-        $createLocation = request("newCreateLocation");
-        $username = request("newUsername");
-        $password = request("password");
-
-        if(!($domainName && $ipAddr && $type && $direction && $createLocation && $username && $password))
-            return respond("Please fill all fields!", 202);
-
-        runCommand(sudo() . "samba-tool domain trust create " . $domainName .
-                    " --type=" . $type . " --direction=" . $direction .
-                    " --create-location=" . $createLocation . " -U " . $username .
-                    "@" . $domainName . " --password=" . $password);
-        return respond("Trust relation with " . $domainName . " has been created", 200);
-    }
-
+    
     //Replication
     function replicationOrganized(){
         $hostNameTo = runCommand("hostname");
@@ -373,7 +312,7 @@ class SambaController{
         return respond($log, 200);
     }
 
-    function checkSambaType(){
+    function getSambaType(){
         if(trim(runCommand('dpkg -s sambahvl | grep "Status" | grep -w "install" 1>/dev/null 2>/dev/null && echo "1" || echo "0"')) == "1"){
             return "sambahvl";
         }else{
@@ -384,25 +323,36 @@ class SambaController{
         }
     }
     
-    function sambaDetails(){
-        $type = $this->checkSambaType();
+    function getSambaDetails(){
+        $type = $this->getSambaType();
         
         if($type == "samba"){
             $output = runCommand(sudo() . "dpkg -s samba");
-            $version = runCommand(sudo() . "samba --version");
-            $output = $output."\n".$version;
 
         }
         else if($type == "sambahvl"){
             $output = runCommand(sudo() . "dpkg -s sambahvl");
-            $version = runCommand(sudo() . "samba --version");
-            $output = $output."\n".$version;
 
         }
         else{
-            $output = "Samba not installed.";
+            $output = "Samba is not installed.";
         }
         return respond($output,200);
+
+    }
+
+    function getSambaVersion(){
+
+        $type = $this->getSambaType();
+
+        if($type !== "not installed"){
+            $version = runCommand(sudo() . "samba --version");
+            return respond($version,200);
+        }
+        else{
+            return respond("Samba is not installed.",200);
+
+        }
 
     }
 
@@ -419,7 +369,7 @@ class SambaController{
         }
         return view('table', [
             "value" => $data,
-            "title" => ["Paths"],
+            "title" => ["Path"],
             "display" => ["name"],
         ]);
 
@@ -456,7 +406,7 @@ class SambaController{
         }
         return view('table', [
             "value" => $data,
-            "title" => ["Have"],
+            "title" => ["Build option"],
             "display" => ["name"],
         ]);
 
@@ -475,7 +425,7 @@ class SambaController{
         }
         return view('table', [
             "value" => $data,
-            "title" => ["Have"],
+            "title" => ["With option"],
             "display" => ["name"],
         ]);
 
@@ -494,12 +444,29 @@ class SambaController{
         }
         return view('table', [
             "value" => $data,
-            "title" => ["Have"],
+            "title" => ["Module"],
             "display" => ["name"],
         ]);
 
     }
-    
+
+    function checkSambahvl(){
+        if(trim(runCommand('dpkg -s sambahvl | grep "Status" | grep -w "install" 1>/dev/null 2>/dev/null && echo "1" || echo "0"')) == "1"){
+            return respond(true,200);
+        }
+        else{
+            return respond(false,200);
+        }
+    }
+    function checkDomain(){
+        //if(trim(runCommand('net ads info | grep Realm: 1>/dev/null 2>/dev/null && echo "1" || echo "0"')) == "1"){
+        if(trim(runCommand('getent passwd administrator| grep administrator 1>/dev/null 2>/dev/null && echo "1" || echo "0"')) == "1"){
+            return respond(true,200);
+        }
+        else{
+            return respond(false,200);
+        }
+    }
 
 }
 ?>

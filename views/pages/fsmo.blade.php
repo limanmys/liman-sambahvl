@@ -1,3 +1,14 @@
+<div id="errorDivFsmo" style="visibility:none;"></div>
+<div class="alert alert-primary d-flex align-items-center " id="infoDivFsmo" role="alert">
+  <svg class="bi flex-shrink-0 me-2" width="24" height="24" role="img" aria-label="Info:"><use xlink:href="#info-fill"/></svg>
+  <i class="fas fa-icon mr-2"></i>
+  <div>
+  Tablo üzerinde sağ tuş ile bir rolü üzerinize alabilir veya tüm rolleri almak için butonu kullanabilirsiniz.
+  </div>
+</div>
+<button class="btn btn-success mb-2" id="takeallroles_btn" onclick="showInfoModal()" type="button">Tüm rolleri al</button>
+<div class="table-responsive" id="fsmoTable"></div>
+
 @component('modal-component',[
         "id" => "infoModal",
         "title" => "Sonuç Bilgisi",
@@ -9,30 +20,6 @@
     ])
 @endcomponent
 
-@component('modal-component',[
-        "id" => "changeModal",
-        "title" => "Rol Seçimi",
-        "footer" => [
-            "text" => "AL",
-            "class" => "btn-success",
-            "onclick" => "hideChangeModal()"
-        ]
-    ])
-    @include('inputs', [
-        "inputs" => [
-            "Roller:newType" => [
-                "SchemaMasterRole" => "schema",
-                "InfrastructureMasterRole" => "infrastructure",
-                "RidAllocationMasterRole" => "rid",
-                "PdcEmulationMasterRole" => "pdc",
-                "DomainNamingMasterRole" => "naming",
-                "DomainDnsZonesMasterRole" => "domaindns",
-                "ForestDnsZonesMasterRole" => "forestdns",
-                "All" => "all"
-            ]
-        ]
-    ])
-@endcomponent
 
 @component('modal-component',[
         "id" => "warningModal",
@@ -47,17 +34,12 @@
 @endcomponent
 
 
-<p>Tablo üzerinde sağ tuş ile bir rolü üzerinize alabilir veya bunun için butonları kullanabilirsiniz.</p>
-<br />
-<button class="btn btn-success mb-2" id="btn1" onclick="showInfoModal()" type="button">Tüm rolleri al</button>
-<button class="btn btn-success mb-2" id="btn2" onclick="showChangeModal()" type="button">Belirli bir rolü al</button>
-<div class="table-responsive" id="fsmoTable"></div>
 
 
 <script>
     // == Printing Table ==
     function printTable(){
-        showSwal('Yükleniyor...','info',2000);
+        checkSambahvl();
         var form = new FormData();
         request(API('roles_table'), form, function(response) {
             $('#fsmoTable').html(response).find('table').DataTable({
@@ -66,6 +48,65 @@
                 url : "/turkce.json"
             }
             });;
+        }, function(response) {
+            let error = JSON.parse(response);
+            showSwal(error.message, 'error', 3000);
+        });
+        
+    }
+
+    function checkSambahvl(){
+        var form = new FormData();
+        request(API('check_sambahvl'), form, function(response) {
+            message = JSON.parse(response)["message"];
+            if(!message){
+
+                let e1 = document.getElementById("takeallroles_btn");
+                e1.style.visibility = "hidden";
+                let e2 = document.getElementById("infoDivFsmo");
+                e2.style.visibility = "hidden";
+                let e3 = document.getElementById("fsmoTable");
+                e3.style.visibility = "hidden";
+
+                $('#errorDivFsmo').html(
+                '<div class="alert alert-danger d-flex align-items-center"  role="alert">' +
+                    '<svg class="bi flex-shrink-0 me-2" width="24" height="24" role="img" aria-label="Danger:"><use xlink:href="#exclamation-triangle-fill" /></svg>' +
+                    '<i class="fas fa-icon mr-2"></i>'+
+                    '<div>'+
+                        'Hata : Sunucuda Sambahvl Paketi Bulunamadı !'+
+                    '</div>'+
+                '</div>');
+            }
+            else{
+                checkDomain();
+            }
+        }, function(response) {
+            let error = JSON.parse(response);
+            showSwal(error.message, 'error', 3000);
+        });
+        
+    }
+
+    function checkDomain(){
+        var form = new FormData();
+        request(API('check_domain'), form, function(response) {
+            message = JSON.parse(response)["message"];
+            console.log(message);
+            if(!message){
+                let e1 = document.getElementById("takeallroles_btn");
+                e1.disabled = "true";
+                let e2 = document.getElementById("infoDivFsmo");
+                e2.style.visibility = "hidden";
+
+                $('#errorDivFsmo').html(
+                '<div class="alert alert-danger d-flex align-items-center"  role="alert">' +
+                    '<svg class="bi flex-shrink-0 me-2" width="24" height="24" role="img" aria-label="Danger:"><use xlink:href="#exclamation-triangle-fill" /></svg>' +
+                    '<i class="fas fa-icon mr-2"></i>'+
+                    '<div>'+
+                        'Hata : Domain Bilgisi Bulunamadı !'+
+                    '</div>'+
+                '</div>');
+            }
         }, function(response) {
             let error = JSON.parse(response);
             showSwal(error.message, 'error', 3000);
@@ -85,6 +126,7 @@
                 showSwal(message,'success',7000);
             }
             else if(message.includes("already")){
+                //This DC already has the 'schema' FSMO role
                 showSwal(message,'info',7000);
             }
             else if(message.includes("WERR_HOST_UNREACHABLE")){
@@ -120,40 +162,6 @@
         printTable();
     }
 
-    // == Change Modal ==
-    function showChangeModal(){
-        showSwal('Yükleniyor...','info',2000);
-        $('#changeModal').modal("show");
-    }
-
-    function hideChangeModal(){
-        var form = new FormData();
-        let contraction = $('#changeModal').find('select[name=newType]').val();
-        form.append("contraction",contraction);
-        $('#changeModal').modal("hide");
-        showSwal('Yükleniyor...','info',5000);
-
-        request(API('take_the_role'), form, function(response) {
-            message = JSON.parse(response)["message"];
-            if(message.includes("successful")){
-                printTable();
-                showSwal(message,'success',7000);
-            }
-            else if(message.includes("already")){
-                showSwal(message,'info',7000);
-            }
-            else if(message.includes("WERR_HOST_UNREACHABLE")){                
-                showSwal('WERR_HOST_UNREACHABLE \nTrying to seize... ','info',5000);
-                showWarningModal();
-            }                
-            else{
-                showSwal('Hata oluştu.', 'error', 7000);
-            }
-        }, function(error) {
-            $('#changeModal').modal("hide");
-            showSwal(error.message, 'error', 5000);
-        });
-    }
 
     // == Seize Role ==
     function seizeTheRole(contraction){

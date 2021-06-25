@@ -59,5 +59,4 @@ return [
 
     "check_sambahvl" => "SambaController@checkSambahvl",
     "check_domain" => "SambaController@checkDomain",
-
 ];

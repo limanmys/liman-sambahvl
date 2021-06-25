@@ -3,6 +3,7 @@
     <div class="nav flex-column nav-pills" id="v-pills-tab" role="tablist" aria-orientation="vertical">
       <a class="nav-link active" onclick="getInfo()" id="v-pills-info-tab" data-toggle="pill" href="#v-pills-info" role="tab" aria-controls="v-pills-info" aria-selected="true">Detaylar</a>
       <a class="nav-link" onclick="serviceStatus()" id="v-pills-servicestatus-tab" data-toggle="pill" href="#v-pills-servicestatus" role="tab" aria-controls="v-pills-servicestatus" aria-selected="false">Servis Durumu</a>
+      <a class="nav-link" onclick="verifyDomain()" id="v-pills-domainstatus-tab" data-toggle="pill" href="#v-pills-domainstatus" role="tab" aria-controls="v-pills-domainstatus" aria-selected="false">Etki Alanı</a>
       <a class="nav-link" onclick="listPaths()" id="v-pills-paths-tab" data-toggle="pill" href="#v-pills-paths" role="tab" aria-controls="v-pills-paths" aria-selected="false">Paths</a>
       <a class="nav-link" onclick="listHave()" id="v-pills-have-tab" data-toggle="pill" href="#v-pills-have" role="tab" aria-controls="v-pills-have" aria-selected="false">Have</a>
       <a class="nav-link" onclick="listBuildOptions()" id="v-pills-buildoptions-tab" data-toggle="pill" href="#v-pills-buildoptions" role="tab" aria-controls="v-pills-buildoptions" aria-selected="false">Build Options</a>
@@ -34,7 +35,12 @@
       </div>
 
       <div class="tab-pane fade" id="v-pills-servicestatus" role="tabpanel" aria-labelledby="v-pills-servicestatus-tab">
-        <pre id="sambaLog">   </pre>
+        <pre id="sambaLog"></pre>
+      </div>
+
+      <div class="tab-pane fade" id="v-pills-domainstatus" role="tabpanel" aria-labelledby="v-pills-domainstatus-tab">
+    
+        
       </div>
 
       <div class="tab-pane fade" id="v-pills-paths" role="tabpanel" aria-labelledby="v-pills-paths-tab">
@@ -105,15 +111,15 @@
         request(API('return_samba_service_status'), form, function(response) {
             message = JSON.parse(response)["message"];
             if(message == true){
-                isActiveButton = '<div class="alert alert-success" role="alert">Samba Servisi Aktif</div>' ;
-                $('#v-pills-servicestatus').html(isActiveButton);
+                isActive = '<div class="alert alert-success" role="alert">Samba Servisi Aktif</div>' ;
+                $('#v-pills-servicestatus').html(isActive);
 
                 var d1 = document.getElementById('v-pills-servicestatus');
                 d1.insertAdjacentHTML('beforeend', '<pre id="sambaLog">   </pre>');
                 sambaLog();
             } else{
-                isActiveButton = '<div class="alert alert-danger" role="alert">Samba Servisi Aktif Değil !</div>' ;
-                $('#v-pills-servicestatus').html(isActiveButton);
+                isActive = '<div class="alert alert-danger" role="alert">Samba Servisi Aktif Değil !</div>' ;
+                $('#v-pills-servicestatus').html(isActive);
 
             }
         }, function(error) {
@@ -122,11 +128,46 @@
         });
     }
 
+    function verifyDomain(){
+        var form = new FormData();
+        request(API('verify_domain'), form, function(response) {
+            message = JSON.parse(response)["message"];
+            if(message == true){
+                isActive = '<div class="alert alert-success" role="alert">Etki Alanı Mevcut</div>' ;
+                $('#v-pills-domainstatus').html(isActive);
+                returnDomainInformations();
+            } else{
+                isActive = '<div class="alert alert-danger" role="alert">Etki Alanı Mevcut Değil !</div>' ;
+                $('#v-pills-domainstatus').html(isActive);
+            }
+        }, function(error) {
+            showSwal(error.message, 'error', 3000);
+            console.log(error);
+        });
+    }
+
+    function returnDomainInformations(){
+        var form = new FormData();
+        request(API('return_domain_informations'), form, function(response) {
+            message = JSON.parse(response)["message"];
+            console.log(message);
+            //$('#domainLogs').html("<b>Etki alanı bilgileri :</b>");
+            var d1 = document.getElementById('v-pills-domainstatus');
+            d1.insertAdjacentHTML('beforeend', '<pre id="domainLog">   </pre>');
+            $('#domainLog').html("\n" + message);
+        }, function(error) {
+            showSwal(error.message, 'error', 3000);
+            console.log(error);
+        });
+    }
+
+    
+
     function sambaLog(){
         var form = new FormData();
         request(API('return_samba_service_log'), form, function(response) {
             message = JSON.parse(response)["message"];
-            console.log(message);
+            //console.log(message);
             $('#sambaLog').html(message);
         }, function(error) {
             showSwal(error.message, 'error', 3000);

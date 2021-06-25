@@ -24,33 +24,15 @@
     </li>
 
     <li class="nav-item">
-        <a class="nav-link "  onclick="tab3()" href="#tab3" data-toggle="tab">
+        <a class="nav-link" onclick="getInfo()" href="#info"  data-toggle="tab">
         <i class="fas fa-info mr-2"></i>
-        Samba Servis Durumu</a>
+        Samba Bilgileri</a>
     </li>
 
     <li class="nav-item">
         <a class="nav-link " onclick="checkMigrate()" href="#migration"  data-toggle="tab">
         <i class="fas fa-bezier-curve mr-2"></i>
         Migration</a>
-    </li>
-    
-    <li class="nav-item">
-        <a class="nav-link "  onclick="printTable()" href="#fsmo" data-toggle="tab">
-        <i class="fas fa-id-card mr-2"></i>
-        FSMO Rol Yönetimi</a>
-    </li>
-
-    <li class="nav-item">
-        <a class="nav-link "  onclick="trustedServers()" href="#trustRelation" data-toggle="tab">
-        <i class="fas fa-shield-alt mr-2"></i>
-        Trusted Servers</a>
-    </li>
-
-    <li class="nav-item">
-        <a class="nav-link "  onclick="replicationInfo()" href="#replication" data-toggle="tab">
-        <i class="fas fa-retweet mr-2"></i>
-        Replication Info</a>
     </li>
 
     <li class="nav-item">
@@ -70,18 +52,26 @@
         <i class="fas fa-desktop mr-2"></i>
         Bilgisayarlar</a>
     </li>
+    
+    <li class="nav-item">
+        <a class="nav-link "  id="fsmoli" onclick="printTable()" href="#fsmo" data-toggle="tab">
+        <i class="fas fa-id-card mr-2"></i>
+        FSMO Rol Yönetimi</a>
+    </li>
 
     <li class="nav-item">
-        <a class="nav-link" onclick="listSites()" href="#sites"  data-toggle="tab">
+        <a class="nav-link "  onclick="replicationInfo()" href="#replication" data-toggle="tab">
+        <i class="fas fa-retweet mr-2"></i>
+        Replikasyon Bilgisi</a>
+    </li>
+
+    <li class="nav-item">
+        <a class="nav-link"  onclick="listSites()" href="#sites"  data-toggle="tab">
         <i class="fas fa-network-wired mr-2"></i>
         Site Listesi</a>
     </li>
 
-    <li class="nav-item">
-        <a class="nav-link" onclick="info()" href="#info"  data-toggle="tab">
-        <i class="fas fa-question-circle mr-2"></i>
-        Samba Bilgileri</a>
-    </li>
+    
 
 </ul>
 
@@ -94,24 +84,12 @@
         @include('pages.domain')
     </div>
 
-    <div id="tab3" class="tab-pane">   
-        @include('pages.service_status')
+    <div id="info" class="tab-pane">
+        @include('pages.info')
     </div>
 
     <div id="migration" class="tab-pane">
         @include('pages.migration')
-    </div>
-
-    <div id="fsmo" class="tab-pane">
-        @include('pages.fsmo')
-    </div>
-
-    <div id="trustRelation" class="tab-pane">
-        @include('pages.trust')
-    </div>
-    
-    <div id="replication" class="tab-pane">
-        @include('pages.replication')
     </div>
 
     <div id="users" class="tab-pane">
@@ -126,13 +104,19 @@
         @include('pages.computers')
     </div>
 
+    <div id="fsmo" class="tab-pane">
+        @include('pages.fsmo')
+    </div>
+
+    <div id="replication" class="tab-pane">
+        @include('pages.replication')
+    </div>
+
     <div id="sites" class="tab-pane">
         @include('pages.sites')
     </div>
 
-    <div id="info" class="tab-pane">
-        @include('pages.info')
-    </div>
+    
 
 </div>
 
@@ -141,5 +125,59 @@
     if(location.hash === ""){
         tab1();
     }
+    //check();
+
+    /*function check(){
+        checkSambahvl();
+        checkDomain();
+    }
+    function checkSambahvl(){
+        var form = new FormData();
+        request(API('check_sambahvl'), form, function(response) {
+            message = JSON.parse(response)["message"];
+            console.log(message);
+            //return message;
+            if(!message){
+                let e1 = document.getElementById("fsmoli");
+                e1.style.display = "none";
+                let e2 = document.getElementById("replication");
+                e2.style.visibility = "hidden";
+                let e3 = document.getElementById("sites");
+                e3.style.visibility = "hidden";
+            }
+            else{
+                let e1 = document.getElementById("tab1");
+                e1.style.visibility = "hidden";
+            }
+        }, function(response) {
+            let error = JSON.parse(response);
+            showSwal(error.message, 'error', 3000);
+        });
+        
+    }
+    function checkDomain(){
+        var form = new FormData();
+        request(API('check_domain'), form, function(response) {
+            message = JSON.parse(response)["message"];
+            console.log(message);
+            if(!message){
+                let e1 = document.getElementById("fsmoli");
+                e1.style.display = "none";
+                let e2 = document.getElementById("replication");
+                e2.style.visibility = "hidden";
+                let e3 = document.getElementById("sites");
+                e3.style.visibility = "hidden";
+            }
+            else{
+                let e1 = document.getElementById("tab1");
+                e1.style.visibility = "hidden";
+            }
+        }, function(response) {
+            let error = JSON.parse(response);
+            showSwal(error.message, 'error', 3000);
+        });
+        
+    }*/
+
     
 </script>

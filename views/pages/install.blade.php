@@ -1,8 +1,9 @@
 <div id="errorDiv" style="visibility:none;"></div>
-<div class="alert alert-primary d-flex align-items-center" role="alert">
-  <svg class="bi flex-shrink-0 me-2" width="24" height="24" role="img" aria-label="Info:" style="margin-right:1%;"><use xlink:href="#info-fill"/></svg>
+<div class="alert alert-primary d-flex align-items-center " role="alert">
+  <svg class="bi flex-shrink-0 me-2" width="24" height="24" role="img" aria-label="Info:"><use xlink:href="#info-fill"/></svg>
+  <i class="fas fa-icon mr-2"></i>
   <div>
-  <p>SambaHVL paketini kurmak için lütfen aşağıdaki butonu kullanın.</p>
+  SambaHVL paketini kurmak için lütfen aşağıdaki butonu kullanın.
   </div>
 </div>
 

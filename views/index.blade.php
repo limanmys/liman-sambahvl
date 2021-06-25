@@ -12,7 +12,7 @@
 
 <ul class="nav nav-tabs" role="tablist" style="margin-bottom: 15px;">
     <li class="nav-item">
-        <a class="nav-link active"  onclick="tab1()" href="#tab1" data-toggle="tab">
+        <a class="nav-link active" id="tab1_li" onclick="tab1()" href="#tab1" data-toggle="tab">
         <i class="fas fa-download mr-2"></i>
         Kurulum</a>
     </li>
@@ -54,19 +54,19 @@
     </li>
     
     <li class="nav-item">
-        <a class="nav-link "  id="fsmoli" onclick="printTable()" href="#fsmo" data-toggle="tab">
+        <a class="nav-link "  id="fsmo_li" onclick="printTable()" href="#fsmo" data-toggle="tab">
         <i class="fas fa-id-card mr-2"></i>
         FSMO Rol Yönetimi</a>
     </li>
 
     <li class="nav-item">
-        <a class="nav-link "  onclick="replicationInfo()" href="#replication" data-toggle="tab">
+        <a class="nav-link " id="replication_li" onclick="replicationInfo()" href="#replication" data-toggle="tab">
         <i class="fas fa-retweet mr-2"></i>
         Replikasyon Bilgisi</a>
     </li>
 
     <li class="nav-item">
-        <a class="nav-link"  onclick="listSites()" href="#sites"  data-toggle="tab">
+        <a class="nav-link" id="sites_li" onclick="listSites()" href="#sites"  data-toggle="tab">
         <i class="fas fa-network-wired mr-2"></i>
         Site Listesi</a>
     </li>
@@ -125,29 +125,28 @@
     if(location.hash === ""){
         tab1();
     }
-    //check();
+    check();
 
-    /*function check(){
+    function check(){
         checkSambahvl();
-        checkDomain();
+        
     }
     function checkSambahvl(){
         var form = new FormData();
         request(API('check_sambahvl'), form, function(response) {
             message = JSON.parse(response)["message"];
             console.log(message);
-            //return message;
             if(!message){
-                let e1 = document.getElementById("fsmoli");
+                let e1 = document.getElementById("fsmo_li");
                 e1.style.display = "none";
-                let e2 = document.getElementById("replication");
-                e2.style.visibility = "hidden";
-                let e3 = document.getElementById("sites");
-                e3.style.visibility = "hidden";
+                let e2 = document.getElementById("replication_li");
+                e2.style.display = "none";
+                let e3 = document.getElementById("sites_li");
+                e3.style.display = "none";
+
             }
             else{
-                let e1 = document.getElementById("tab1");
-                e1.style.visibility = "hidden";
+                checkDomain();
             }
         }, function(response) {
             let error = JSON.parse(response);
@@ -161,23 +160,24 @@
             message = JSON.parse(response)["message"];
             console.log(message);
             if(!message){
-                let e1 = document.getElementById("fsmoli");
+                let e1 = document.getElementById("fsmo_li");
                 e1.style.display = "none";
-                let e2 = document.getElementById("replication");
-                e2.style.visibility = "hidden";
-                let e3 = document.getElementById("sites");
-                e3.style.visibility = "hidden";
+                let e2 = document.getElementById("replication_li");
+                e2.style.display = "none";
+                let e3 = document.getElementById("sites_li");                
+                e3.style.display = "none";
+
             }
             else{
-                let e1 = document.getElementById("tab1");
-                e1.style.visibility = "hidden";
+                let e1 = document.getElementById("tab1_li");
+                e1.style.display = "none";
             }
         }, function(response) {
             let error = JSON.parse(response);
             showSwal(error.message, 'error', 3000);
         });
         
-    }*/
+    }
 
     
 </script>

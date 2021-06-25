@@ -5,6 +5,7 @@
 @endcomponent
 
 <div id="errorDiv" style="visibility:none;"></div>
+<div id="successDiv" style="visibility:none;"></div>
 <div class="alert alert-primary d-flex align-items-center " role="alert" id="infoAlert">
     <svg class="bi flex-shrink-0 me-2" width="24" height="24" role="img" aria-label="Info:"><use xlink:href="#info-fill"/></svg>
     <i class="fas fa-icon mr-2"></i>
@@ -24,14 +25,46 @@
             message = JSON.parse(response)["message"];
             let x = document.getElementById("install");
             if(message == true){
-                x.disabled = true;
-                $('#smbinstall').html("\nPaket zaten yüklü !");
+                afterInstallationSteps();
             } else{
                 x.disabled = false;
             }
         }, function(error) {
             removeSambaPackageSteps();
         });
+    }
+
+    function installSmbPackage(){
+        var form = new FormData();
+        showSwal('{{__("Loading")}}...','info',2000);
+        request(API('install_smb_package'), new FormData(), function (response) {
+            const output = JSON.parse(response).message;
+            $("#install").attr("disabled","true");
+            $('#packageInstallerModal').modal({backdrop: 'static', keyboard: false})
+            $('#packageInstallerModal').find('.modal-body').html(output);
+            $('#packageInstallerModal').modal("show"); 
+            tab1();
+        }, function(response){
+            const error = JSON.parse(response).message;
+            showSwal(error,'error',2000);
+      })
+    }
+
+    function afterInstallationSteps(){
+        let installButton = document.getElementById("install");
+        installButton.remove();
+
+        let infoAlert = document.getElementById("infoAlert");
+        infoAlert.remove();
+
+        $('#successDiv').html(
+            '<div class="alert alert-success d-flex align-items-center" role="alert">' +
+                '<svg class="bi flex-shrink-0 me-2" width="24" height="24" role="img" aria-label="Success:"><use xlink:href="#check-circle-fill"/></svg>' +
+                '<i class="fas fa-icon mr-2"></i>' +
+                '<div>'+
+                    'Sunucuda SambaHvl paketi tespit edildi !'+
+                '</div>'+
+            '</div>');
     }
 
     function removeSambaPackage(){
@@ -56,6 +89,7 @@
         $('#errorDiv').html(
             '<div class="alert alert-danger d-flex align-items-center"  role="alert">' +
                 '<svg class="bi flex-shrink-0 me-2" width="24" height="24" role="img" aria-label="Danger:"><use xlink:href="#exclamation-triangle-fill" /></svg>' +
+                '<i class="fas fa-icon mr-2"></i>' +
                 '<div>'+
                     'Hata : Sunucuda kurulu Samba Paketi tespit edildi !'+
                 '</div>'+
@@ -65,22 +99,6 @@
         deleteButton.onclick = function() {removeSambaPackage()};
         deleteButton.innerText = "Samba Paketini Kaldır";
         deleteButton.style.visibility = "visible";
-    }
-
-
-    function installSmbPackage(){
-        var form = new FormData();
-        showSwal('{{__("Loading")}}...','info',2000);
-        request(API('install_smb_package'), new FormData(), function (response) {
-            const output = JSON.parse(response).message;
-            $("#install").attr("disabled","true");
-            $('#packageInstallerModal').modal({backdrop: 'static', keyboard: false})
-            $('#packageInstallerModal').find('.modal-body').html(output);
-            $('#packageInstallerModal').modal("show"); 
-        }, function(response){
-            const error = JSON.parse(response).message;
-            showSwal(error,'error',2000);
-      })
     }
 
     function onTaskSuccess(){

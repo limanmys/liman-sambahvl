@@ -21,7 +21,6 @@
 
 <script>
 // Install SambaHvl Package == Tab 1 == 
-
     function tab1(){
         var form = new FormData();
         request(API('verify_installation'), form, function(response) {
@@ -37,7 +36,6 @@
         }, function(error) {
             let x = document.getElementById("install");
             x.disabled = true;
-
             $('#errorDiv').html(
                 '<div class="alert alert-danger d-flex align-items-center"  role="alert">' +
                     '<svg class="bi flex-shrink-0 me-2" width="24" height="24" role="img" aria-label="Danger:"><use xlink:href="#exclamation-triangle-fill" /></svg>' +
@@ -52,11 +50,9 @@
                 deleteButton.style.visibility = "visible";
         });
     }
-
     function deleteSambaPackage(){
         var form = new FormData();
         showSwal("Samba paketi kaldırılıyor.", 'info', 3000);
-
         request(API('delete_smb_package'), form, function(response) {
             showSwal("Paket başarıyla kaldırıldı !", 'success', 3000);
             window.location.reload();
@@ -65,7 +61,6 @@
             console.log(error);
         });
     }
-
     function installSmbPackage(){
         var form = new FormData();
         showSwal('{{__("Loading")}}...','info',2000);
@@ -80,14 +75,12 @@
             showSwal(error,'error',2000);
       })
     }
-
     function onTaskSuccess(){
         showSwal('{{__("Your request has been successfully completed")}}', 'success', 2000);
         setTimeout(function(){
           $('#packageInstallerModal').modal("hide"); 
         }, 2000);
     }
-
     function onTaskFail(){
         showSwal('{{__("An error occurred while processing your request")}}!', 'error', 2000);
     }
@@ -107,7 +100,6 @@
            } else{
             showSwal(error, 'error', 3000);
            }
-
         });
     }
 </script>

@@ -39,7 +39,7 @@
 <script>
     // == Printing Table ==
     function printTable(){
-        checkSambahvl();
+        //checkSambahvl();
         var form = new FormData();
         request(API('roles_table'), form, function(response) {
             $('#fsmoTable').html(response).find('table').DataTable({
@@ -55,7 +55,7 @@
         
     }
 
-    function checkSambahvl(){
+    /*function checkSambahvl(){
         var form = new FormData();
         request(API('check_sambahvl'), form, function(response) {
             message = JSON.parse(response)["message"];
@@ -113,7 +113,7 @@
         });
         
     }
-
+*/
     // == Transfer Role ==
     function takeTheRole(line){
         var form = new FormData();

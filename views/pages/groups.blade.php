@@ -1,3 +1,10 @@
+<div class="alert alert-primary d-flex align-items-center " id="infoDivGroups" role="alert">
+  <svg class="bi flex-shrink-0 me-2" width="24" height="24" role="img" aria-label="Info:"><use xlink:href="#info-fill"/></svg>
+  <i class="fas fa-icon mr-2"></i>
+  <div>
+        Istediğiniz grup türünü açılır pencereden seçip buton yardımı ile listeletebilirsiniz.
+  </div>
+</div>
 <select name="groups" id="groupType">
     <option value="none" >Tümü</option>
     <option value="security">Security</option>

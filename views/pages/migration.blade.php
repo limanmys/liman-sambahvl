@@ -7,6 +7,31 @@
             "onclick" => "hideDomainMigration()"
         ]
     ])
+
+    <ul class="nav nav-tabs" role="tablist" style="margin-bottom: 15px;">
+        <li class="nav-item">
+            <a class="nav-link active" id="tab1_liw" href="#deneme1" data-toggle="tab">
+            <i class="fas fa-download mr-2"></i>
+            Kurulum</a>
+        </li>
+        
+        <li class="nav-item">
+            <a class="nav-link " href="#deneme2" data-toggle="tab">
+            <i class="fas fa-rss-square mr-2"></i>
+            Etki Alanı Oluştur</a>
+        </li>
+    </ul>
+
+    <div class="tab-content">
+        <div id="deneme1" class="tab-pane active">
+            
+        </div>
+
+        <div id="deneme2" class="tab-pane">  
+             
+        </div>
+    </div>
+    
     @include('inputs', [
         "inputs" => [
             "IP Addresi" => "ipAddr:text",

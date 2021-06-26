@@ -31,6 +31,9 @@ class MigrateDomain extends Task
 
 swal("Good job!", "You clicked the button!", "success")
 
+function checkIsMigrateSuccess(){
+    
+}
 
 
 

@@ -9,9 +9,9 @@
     ])
     @include('inputs', [
         "inputs" => [
-            "IP Addresi" => "ipAddr:text",
-            "Kullanıcı Adı" => "username:text",
-            "Şifre" => "password:password"
+            "IP Addresi" => "ipAddr:text:192.168.1.1",
+            "Kullanıcı Adı" => "username:text:Administrator",
+            "Şifre" => "password:password:Password"
         ]
     ])
 @endcomponent
@@ -27,14 +27,48 @@
     ])
     @include('inputs', [
         "inputs" => [
-            "IP Addresi" => "ipAddr:text",
-            "Kullanıcı Adı" => "username:text",
-            "Şifre" => "password:password",
-            "İstenilen Site" => "site:site"
+            "IP Addresi" => "ipAddr:text:192.168.1.1",
+            "Kullanıcı Adı" => "username:text:Administrator",
+            "Şifre" => "password:password:Password",
+            "Site:newSite" => [
+                "forest" => "forest",
+                "external" => "external"
+            ],
         ]
     ])
+    <ul class="nav nav-tabs" role="tablist" style="margin-bottom: 15px;">
+        <li class="nav-item">
+            <a class="nav-link active"  href="#deneme1" data-toggle="tab">
+            <i class="fas fa-download mr-2"></i>
+            Kurulum</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" href="#deneme2"  data-toggle="tab">
+            <i class="fas fa-info mr-2"></i>
+            Samba Bilgileri</a>
+        </li>
+    </ul>
+    <div class="tab-content">
+        <div id="deneme1" class="tab-pane active">
+            asdasdcajsdsa
+        </div>
+        <div id="deneme2" class="tab-pane">  
+            sadsadsac
+        </div>
+    </div>
+
 @endcomponent
 
+<div class="p-3 text-center ">
+    <h1 class="mb-3">Migration İşlemleri</h1>
+</div>
+<div class="alert alert-primary d-flex align-items-center " role="alert" id="infoAlert">
+    <svg class="bi flex-shrink-0 me-2" width="24" height="24" role="img" aria-label="Info:"><use xlink:href="#info-fill"/></svg>
+    <i class="fas fa-icon mr-2"></i>
+    <div>
+    Migration işlemleri için aşağıdaki butonları kullanabilirsiniz.
+    </div>
+</div>
 <div class="text-area" id="checkInfo"></div>
 <br />
 <button class="btn btn-success mb-2" id="domain" onclick="showDomainMigration()" type="button">Migrate Et</button>
@@ -98,6 +132,7 @@
     function showSiteMigration(){
         showSwal('Yükleniyor...','info',2000);
         $('#siteMigration').modal("show");
+        listSites2();
     }
 
     function hideSiteMigration(){
@@ -141,6 +176,17 @@
         }, function(response){
           let error = JSON.parse(response);
           showSwal(error.message,'error',2000);
+        });
+    }
+
+    function listSites2(){
+        var form = new FormData();
+        request(API('list_sites2'), form, function(response) {
+            message = JSON.parse(response)["message"];
+            console.log(message);
+        }, function(response) {
+            let error = JSON.parse(response);
+            showSwal(error.message, 'error', 3000);
         });
     }
 

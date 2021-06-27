@@ -9,30 +9,34 @@
     <svg class="bi flex-shrink-0 me-2" width="24" height="24" role="img" aria-label="Info:"><use xlink:href="#info-fill"/></svg>
     <i class="fas fa-icon mr-2"></i>
     <div>
-        SambaHVL paketini kurmak için lütfen aşağıdaki butonu kullanın.
+        SambaHVL paketini kurmak için lütfen aşağıdaki butonu kullanabilirsiniz.
     </div>
 </div>
 <button class="btn btn-success mb-2" id="install" onclick="installSmbPackage()" style="float:left;">SambaHVL Paketini Kur</button>
 <button class="btn btn-danger mb-2" id="delete" style="float:left;margin-left:10px;visibility:hidden;"></button>
 
-<ul class="nav nav-pills nav-fill" id="nestedList" style="display:none;">
-  <li class="nav-item">
-    <a class="nav-link active" href="#newDomain" data-toggle="tab">Create Domain</a>
-  </li>
-  <li class="nav-item">
-    <a class="nav-link" href="#migrateDomain" data-toggle="tab">Migrate Domain</a>
-  </li>
-</ul>
+<br>
+<br>
+<br>
 
-<div class="tab-content">
-    <div id="newDomain" class="tab-pane active">
-        @include('pages.domain')
+<div id="nestedList" class="row" style="display:none;">
+    <div class="col-sm-6">
+        <div class="card">
+        <div class="card-body">
+            @include('pages.domain')
+
+        </div>
+        </div>
     </div>
-
-    <div id="migrateDomain" class="tab-pane">
-        @include('pages.migration')
+    <div class="col-sm-6">
+        <div class="card">
+        <div class="card-body">
+            @include('pages.migration')
+        </div>
+        </div>
     </div>
 </div>
+
 <script>
 // Install SambaHvl Package == Tab 1 == 
     function tab1(){

@@ -63,7 +63,6 @@
             $('#packageInstallerModal').modal({backdrop: 'static', keyboard: false})
             $('#packageInstallerModal').find('.modal-body').html(output);
             $('#packageInstallerModal').modal("show"); 
-            tab1();
         }, function(response){
             const error = JSON.parse(response).message;
             showSwal(error,'error',2000);
@@ -122,6 +121,7 @@
         showSwal('{{__("Your request has been successfully completed")}}', 'success', 2000);
         setTimeout(function(){
           $('#packageInstallerModal').modal("hide"); 
+          window.location.reload();
         }, 2000);
     }
     function onTaskFail(){

@@ -59,6 +59,12 @@
         Site Listesi</a>
     </li>
 
+    <li class="nav-item">
+        <a class="nav-link" id="sites_li" onclick="getClocks()" href="#clock"  data-toggle="tab">
+        <i class="fas fa-clock mr-2"></i>
+        Sistem Saati</a>
+    </li>
+
     
 
 </ul>
@@ -98,6 +104,10 @@
 
     <div id="sites" class="tab-pane">
         @include('pages.sites')
+    </div>
+
+    <div id="clock" class="tab-pane">
+        @include('pages.clock')
     </div>
 
     

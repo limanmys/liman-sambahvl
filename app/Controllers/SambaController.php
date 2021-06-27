@@ -58,9 +58,6 @@ class SambaController{
 		);
 	}
 
-
-
-
     function observeInstallation(){
         if(verifyInstallationPhp() == true){
             $res = "smbHVL paketi zaten var !";
@@ -257,23 +254,8 @@ class SambaController{
     }
 
     //Migration
-    
+
     function migrateDomain(){
-        $ip = request("ip");
-        $username = request("username");
-        $password = request("password");
-        runCommand(sudo()."smb-migrate-domain -s ".$ip." -a ".$username." -p ".$password." 2>&1 > /tmp/smb-migrate-logs.txt",200);
-
-        if($this->checkMigrate2() == true){
-            //migrate edilebilir yani migrate edilmemiş.
-            return respond(true,200);
-        }
-        else{
-            return respond(false,200);
-        }
-    }
-
-    function migrateDomainNew(){
         $ip = request("ip");
         $username = request("username");
         $password = request("password");
@@ -284,7 +266,7 @@ class SambaController{
 				'onSuccess' => 'onTaskSuccess',
 				'tasks' => [
 					0 => [
-						'name' => 'Migrate',
+						'name' => 'MigrateDomain',
 						'attributes' => [
 							'ip' => $ip,
 							'username' => $username,

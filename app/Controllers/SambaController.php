@@ -36,22 +36,6 @@ class SambaController{
         }
     }
 
-    /*function installSmbPackage(){   
-        $commandLine1 = "apt install gnupg2 ca-certificates -y";
-        $commandLine2 = "echo 'deb [arch=amd64] http://depo.aciklab.org/ onyedi main' | sudo tee /etc/apt/sources.list.d/acikdepo.list";
-        $commandLine3 = "wget --no-check-certificate -qO - http://depo.aciklab.org/public.key | sudo apt-key add -";
-        $commandLine4 = "apt update";
-        $commandLine5 = "bash -c 'DEBIAN_FRONTEND=noninteractive apt install sambahvl -qqy >/tmp/smbpyLog 2>&1 & disown'";
-
-        runCommand(sudo() . $commandLine1);
-        runCommand(sudo() . $commandLine2);
-        runCommand(sudo() . $commandLine3);
-        runCommand(sudo() . $commandLine4);
-        runCommand(sudo() . $commandLine5);
-
-        return respond($a,200);
-    }*/
-
     public function installSmbPackage()
 	{
 		return respond(

@@ -2,41 +2,17 @@
         "id" => "domainMigration",
         "title" => "Giriş",
         "footer" => [
-            "text" => "OK",
+            "text" => "Başlat",
             "class" => "btn-success",
             "onclick" => "hideDomainMigration()"
         ]
     ])
 
-    <ul class="nav nav-tabs" role="tablist" style="margin-bottom: 15px;">
-        <li class="nav-item">
-            <a class="nav-link active" id="tab1_liw" href="#deneme1" data-toggle="tab">
-            <i class="fas fa-download mr-2"></i>
-            Kurulum</a>
-        </li>
-        
-        <li class="nav-item">
-            <a class="nav-link " href="#deneme2" data-toggle="tab">
-            <i class="fas fa-rss-square mr-2"></i>
-            Etki Alanı Oluştur</a>
-        </li>
-    </ul>
-
-    <div class="tab-content">
-        <div id="deneme1" class="tab-pane active">
-            
-        </div>
-
-        <div id="deneme2" class="tab-pane">  
-             
-        </div>
-    </div>
-    
     @include('inputs', [
         "inputs" => [
-            "IP Addresi" => "ipAddr:text:192.168.1.1",
-            "Kullanıcı Adı" => "username:text:Administrator",
-            "Şifre" => "password:password:Password"
+            "IP Adresi" => "ipAddr:text:Migrate edeceğiniz domainin kurulu olduğu sunucu ip adresinı giriniz (192.168.1.10).",
+            "Kullanıcı Adı" => "username:text:Migrate edilecek domain yetkili kullanıcısını giriniz (Administrator).",
+            "Şifre" => "password:password:Migrate edilecek domain yetkili kullanıcısının parolasını giriniz."
         ]
     ])
 @endcomponent

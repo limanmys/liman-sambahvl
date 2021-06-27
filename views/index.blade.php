@@ -16,12 +16,6 @@
         <i class="fas fa-download mr-2"></i>
         Kurulum</a>
     </li>
-    
-    <li class="nav-item">
-        <a class="nav-link " onclick="tab2()" href="#tab2" data-toggle="tab">
-        <i class="fas fa-rss-square mr-2"></i>
-        Etki Alanı Oluştur</a>
-    </li>
 
     <li class="nav-item">
         <a class="nav-link" onclick="getInfo()" href="#info"  data-toggle="tab">
@@ -30,25 +24,19 @@
     </li>
 
     <li class="nav-item">
-        <a class="nav-link " onclick="checkMigrate()" href="#migration"  data-toggle="tab">
-        <i class="fas fa-bezier-curve mr-2"></i>
-        Migration</a>
-    </li>
-
-    <li class="nav-item">
-        <a class="nav-link "  onclick="listUsers()" href="#users" data-toggle="tab">
+        <a class="nav-link " id="users_li" onclick="listUsers()" href="#users" data-toggle="tab">
         <i class="fas fa-user mr-2"></i>
         Kullanıcılar</a>
     </li>
 
     <li class="nav-item">
-        <a class="nav-link " href="#groups" data-toggle="tab">
+        <a class="nav-link " id="groups_li" href="#groups" data-toggle="tab">
         <i class="fas fa-users mr-2"></i>
         Gruplar</a>
     </li>
 
     <li class="nav-item">
-        <a class="nav-link "onclick="listComputers()" href="#computers"  data-toggle="tab">
+        <a class="nav-link " id="computers_li" onclick="listComputers()" href="#computers"  data-toggle="tab">
         <i class="fas fa-desktop mr-2"></i>
         Bilgisayarlar</a>
     </li>
@@ -86,10 +74,6 @@
 
     <div id="info" class="tab-pane">
         @include('pages.info')
-    </div>
-
-    <div id="migration" class="tab-pane">
-        @include('pages.migration')
     </div>
 
     <div id="users" class="tab-pane">
@@ -137,13 +121,12 @@
             message = JSON.parse(response)["message"];
             console.log(message);
             if(!message){
-                let e1 = document.getElementById("fsmo_li");
-                e1.style.display = "none";
-                let e2 = document.getElementById("replication_li");
-                e2.style.display = "none";
-                let e3 = document.getElementById("sites_li");
-                e3.style.display = "none";
-
+                document.getElementById("fsmo_li").style.display = "none";
+                document.getElementById("replication_li").style.display = "none";
+                document.getElementById("sites_li").style.display = "none";
+                document.getElementById("users_li").style.display = "none";
+                document.getElementById("groups_li").style.display = "none";
+                document.getElementById("computers_li").style.display = "none";
             }
             else{
                 checkDomain();
@@ -160,17 +143,15 @@
             message = JSON.parse(response)["message"];
             console.log(message);
             if(!message){
-                let e1 = document.getElementById("fsmo_li");
-                e1.style.display = "none";
-                let e2 = document.getElementById("replication_li");
-                e2.style.display = "none";
-                let e3 = document.getElementById("sites_li");                
-                e3.style.display = "none";
-
+                document.getElementById("fsmo_li").style.display = "none";
+                document.getElementById("replication_li").style.display = "none";
+                document.getElementById("sites_li").style.display = "none";
+                document.getElementById("users_li").style.display = "none";
+                document.getElementById("groups_li").style.display = "none";
+                document.getElementById("computers_li").style.display = "none";
             }
             else{
-                let e1 = document.getElementById("tab1_li");
-                e1.style.display = "none";
+                document.getElementById("tab1_li").style.display = "none";
             }
         }, function(response) {
             let error = JSON.parse(response);

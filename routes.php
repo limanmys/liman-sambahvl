@@ -59,4 +59,7 @@ return [
 
     "check_sambahvl" => "SambaController@checkSambahvl",
     "check_domain" => "SambaController@checkDomain",
+
+    "list_sites2" => "LdapController@listSites2",
+
 ];

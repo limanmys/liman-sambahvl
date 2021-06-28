@@ -74,7 +74,7 @@
 <br />
 <button class="btn btn-success mb-2" id="domain" onclick="showDomainMigration()" type="button">Migrate Et</button>
 <button class="btn btn-success mb-2" id="site" onclick="showSiteMigration()" type="button">Migrate Et - Site</button>
-<pre id="migrationInfo"></pre>
+<div id="migrationInfo"></div>
 <pre id="migrationLogs" style="overflow:auto;height:200px"> </pre>
 
 <script>
@@ -86,7 +86,7 @@
             window.setInterval(function() {
                 var elem = document.getElementById('migrationLogs');
                 elem.scrollTop = elem.scrollHeight;
-            }, 1);
+            }, 1000);
             if(message == "Kurulum başarıyla tamamlandı."){
                 showSwal(message, 'success', 3000);
                 testCreate()

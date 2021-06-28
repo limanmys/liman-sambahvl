@@ -310,7 +310,8 @@ class SambaController{
         $password = request("password");
         $site = request("site");
 
-        $command = "smb-migrate-domain -s ".$ip." -a ".$username." -p ".$password." -t ".$site." 2>&1 > /tmp/smb-migrate-logs.txt";
+        $command = "bash -c 'DEBIAN_FRONTEND=noninteractive smb-migrate-domain -s " . $ip . " -a " . $username . " -p " . $password . " -t ". $site . " > /tmp/migrateLog 2>&1 & disown'";
+        
         runCommand(sudo().$command);
         return respond("Success", 200);
     }

@@ -4,7 +4,7 @@
         "footer" => [
             "text" => "Başlat",
             "class" => "btn-success",
-            "onclick" => "hideDomainMigration()"
+            "onclick" => "startDomainMigration()"
         ]
     ])
 
@@ -78,7 +78,7 @@
               
           ]
       ])
-      <button class="btn btn-success" onclick="hideSiteMigration()" style="float:right;">Migrate</button>
+      <button class="btn btn-success" onclick="startSiteMigration()" style="float:right;">Başlat</button>
 
     </div>
     
@@ -127,7 +127,7 @@
         });
     }
 
-    function hideDomainMigration(){
+    function startDomainMigration(){
         var form = new FormData();
         $('#domainMigration').modal("hide");
         form.append("ip", $('#domainMigration').find('input[name=ipAddr]').val());
@@ -228,27 +228,28 @@
       document.getElementById("chooseSiteTab").style.pointerEvents = "auto";
       document.getElementById("chooseSiteTab").style.opacity = null;
       showSwal('Bağlantı başarı ile kuruldu, lütfen site seçimi yapınız.','success',2000);
+      $('.nav-tabs a[href="#chooseSite"]').tab('show');
     }
 
     function showSiteMigration(){
       $('#siteMigrate').modal("show");
     }
         
-    function hideSiteMigration(){
+    function startSiteMigration(){
 
       var form = new FormData();
-      let selectedSite = document.getElementById("select_site").value;
+      let selectedSite = $('#siteMigrate').find('select[name=select_site]').val();
       form.append("site", site);
       form.append("ip",ip);
       form.append("username",username);
       form.append("domainname",domainname);
       form.append("password",password);
-      $('#siteMigrate').modal("hide");
+      $('#migrationInfo').html("<b>Makine migrate ediliyor. Lütfen bekleyiniz.</b>");
       request(API('migrate_site'), form, function(response) {
 
           showSwal('Migration işlemi başladı...', 'info', 3000);
           $('#siteMigrate').modal("hide");
-          //migrateLog();
+          observeMigration();
 
       }, function(response){
         let error = JSON.parse(response);

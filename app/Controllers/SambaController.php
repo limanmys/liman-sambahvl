@@ -62,17 +62,21 @@ class SambaController{
 	}
 
     function observeInstallation(){
-        if(verifyInstallationPhp() == true){
-            $res = "smbHVL paketi zaten var !";
-            
-            return respond($res, 202);
+        $log = runCommand(sudo() . 'cat /tmp/domainLog');
+        $check = "tail -n 1 /tmp/domainLog";
+        if(runCommand(sudo() . $check)  == "Created symlink /etc/systemd/system/multi-user.target.wants/samba4.service → /etc/systemd/system/samba4.service."){
+            return respond($log .= "\n\nKurulum başarıyla tamamlandı.", 200);
         }
+        return respond($log, 200);
+    }
 
-        if(verifyInstallationPhp() == false){
-            $log = runCommand(sudo() . 'cat /tmp/smbpyLog');
-            
-            return respond($log, 200);
+    function migrateLog(){
+        $log = runCommand(sudo() . 'cat /tmp/migrateLog');
+        $check = "tail -n 1 /tmp/domainLog";
+        if(runCommand(sudo() . $check)  == "Created symlink /etc/systemd/system/multi-user.target.wants/samba4.service → /etc/systemd/system/samba4.service."){
+            return respond($log .= "\n\nKurulum başarıyla tamamlandı.", 200);
         }
+        return respond($log, 200);
     }
 
     function isFileExists($filePath){
@@ -104,8 +108,10 @@ class SambaController{
     function createSambaDomain(){
         $domainName = extensionDb('domainName');
         $domainPassword = extensionDb('domainPassword');
-
-        $createDomainCommand = "smb-create-domain -d " . $domainName . " -p " . $domainPassword;
+        //sudo smb-create-domain -d zeki.lab -p 123123Aa >/tmp/domainLog 2>&1 & disown
+        //bash -c 'DEBIAN_FRONTEND=noninteractive smb-create-domain -d zeki.lab -p 123123Aa > /tmp/domainLog 2>&1 & disown'
+        $createDomainCommand ="bash -c 'DEBIAN_FRONTEND=noninteractive smb-create-domain -d " . $domainName . " -p " . $domainPassword . " > /tmp/domainLog 2>&1 & disown'";
+        //$createDomainCommand = "smb-create-domain -d " . $domainName . " -p " . $domainPassword . " > /tmp/domainLog 2>&1 & disown";
         runCommand(sudo() . $createDomainCommand);
     }
 
@@ -262,14 +268,9 @@ class SambaController{
         $ip = request("ip");
         $username = request("username");
         $password = request("password");
-        runCommand(sudo()."smb-migrate-domain -s ".$ip." -a ".$username." -p ".$password." 2>&1 > /tmp/smb-migrate-logs.txt",200);
-        if($this->checkMigrate2() == true){
-            //migrate edilebilir yani migrate edilmemiş.
-            return respond(true,200);
-        }
-        else{
-            return respond(false,200);
-        }
+        $migrateCommand = "bash -c 'DEBIAN_FRONTEND=noninteractive smb-migrate-domain -s " . $ip . " -a " . $username . " -p " . $password . " > /tmp/migrateLog 2>&1 & disown'";
+
+        runCommand(sudo(). $migrateCommand);
     }
 
     function checkMigrate(){
@@ -310,16 +311,6 @@ class SambaController{
         return respond("Success", 200);
     }
 
-    function migrateLog(){
-
-        $log = runCommand(sudo() . 'cat /tmp/smb-migrate-logs.txt');
-        if(str_contains($log, "servisler yeniden başlatılıyor")){
-            return respond("bitti", 200);
-        }
-        return respond($log, 200);
-    }
-
-    //INFO
     function getSambaType(){
         if(trim(runCommand('dpkg -s sambahvl | grep "Status" | grep -w "install" 1>/dev/null 2>/dev/null && echo "1" || echo "0"')) == "1"){
             return "sambahvl";
@@ -491,7 +482,17 @@ class SambaController{
     }
     function checkDomain(){
         //if(trim(runCommand('net ads info | grep Realm: 1>/dev/null 2>/dev/null && echo "1" || echo "0"')) == "1"){
-        if(trim(runCommand('getent passwd administrator| grep administrator 1>/dev/null 2>/dev/null && echo "1" || echo "0"')) == "1"){
+        if(trim(runCommand('getent passwd Administrator| grep Administrator 1>/dev/null 2>/dev/null && echo "1" || echo "0"')) == "1"){
+            return respond(true,200);
+        }
+        else{
+            return respond(false,200);
+        }
+    }
+
+    function checkDomain2(){
+        $path="/etc/systemd/system/samba4.service";
+        if($this->isFileExists($path) == true){
             return respond(true,200);
         }
         else{

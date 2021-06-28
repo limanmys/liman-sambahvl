@@ -95,9 +95,52 @@
 <br />
 <button class="btn btn-success mb-2" id="domain" onclick="showDomainMigration()" type="button">Migrate Et</button>
 <button class="btn btn-success mb-2" id="site" onclick="showSiteMigration()" type="button">Migrate Et - Site</button>
-<pre id="migrationInfo"></pre>
+<div id="migrationInfo"></div>
+<pre id="migrationLogs" style="overflow:auto;height:200px"> </pre>
 
 <script>
+    function observeMigration(){
+        var form = new FormData();
+        request(API('migrate_log'), form, function(response) {
+            message = JSON.parse(response)["message"];
+            $("#migrationLogs").text(message);
+            window.setInterval(function() {
+                var elem = document.getElementById('migrationLogs');
+                elem.scrollTop = elem.scrollHeight;
+            }, 1000);
+            if(message == "Kurulum başarıyla tamamlandı."){
+                showSwal(message, 'success', 3000);
+                testCreate()
+            }
+            else{
+                setTimeout(() => {
+                observeMigration();
+            }, 3000);
+            }
+        }, function(error) {
+            showSwal(error.message, 'error', 3000);
+            console.log(error);
+        });
+    }
+
+    function hideDomainMigration(){
+        var form = new FormData();
+        $('#domainMigration').modal("hide");
+        form.append("ip", $('#domainMigration').find('input[name=ipAddr]').val());
+        form.append("username", $('#domainMigration').find('input[name=username]').val());
+        form.append("password", $('#domainMigration').find('input[name=password]').val());
+
+        $('#migrationInfo').html("<b>Makine migrate ediliyor. Lütfen bekleyiniz.</b>");
+        
+        request(API('migrate_domain'), form, function(response) {
+
+            showSwal('Migration işlemi başladı...', 'info', 3000);
+            observeMigration();
+            
+        }, function(error) {
+            showSwal(error.message, 'error', 5000);
+        });
+    }
 
     function checkMigrate(){
         var form = new FormData();
@@ -130,43 +173,30 @@
         showSwal('Yükleniyor...','info',2000);
         $('#domainMigration').modal("show");
     }
+    
+    
 
-    function hideDomainMigration(){
-
-        var form = new FormData();
-        $('#domainMigration').modal("hide");
-        form.append("ip", $('#domainMigration').find('input[name=ipAddr]').val());
-        form.append("username", $('#domainMigration').find('input[name=username]').val());
-        form.append("password", $('#domainMigration').find('input[name=password]').val());
-
-        showSwal('İşleminiz kontrol ediliyor...', 'info');
-        
-        request(API('migrate_domain'), form, function(response) {
-
-            showSwal('Migration işlemi başladı...', 'info', 3000);
-            migrateLog();
-            
-        }, function(error) {
-            showSwal(error.message, 'error', 5000);
-        });
+    function showSiteMigration(){
+        showSwal('Yükleniyor...','info',2000);
+        $('#siteMigration').modal("show");
+        listSites2();
     }
 
-    function migrateLog(){
-
+    function hideSiteMigration(){
         var form = new FormData();
-        request(API('migrate_log'), form, function(response) {
-            message = JSON.parse(response)["message"];
-            if(message != "bitti"){
-                console.log(message);
-                $("#migrationInfo").text(message);
-                setTimeout(() => {
-                    migrateLog();
-                }, 100);
-            }
-            else{
-                showSwal("Migrate başarı ile tamamlandı !",'success',3000);
-                checkMigrate();
-            }
+        $('#siteMigration').modal("hide");
+        form.append("ip", $('#siteMigration').find('input[name=ipAddr]').val());
+        form.append("username", $('#siteMigration').find('input[name=username]').val());
+        form.append("password", $('#siteMigration').find('input[name=password]').val());
+        form.append("site", $('#siteMigration').find('input[name=site]').val());
+
+        showSwal('İşleminiz kontrol ediliyor...', 'info');
+
+        request(API('migrate_site'), form, function(response) {
+
+            showSwal('Migration işlemi başladı...', 'info', 3000);
+            //migrateLog();
+
         }, function(response){
           let error = JSON.parse(response);
           showSwal(error.message,'error',2000);

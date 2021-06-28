@@ -70,6 +70,15 @@ class SambaController{
         return respond($log, 200);
     }
 
+    function migrateLog(){
+        $log = runCommand(sudo() . 'cat /tmp/migrateLog');
+        $check = "tail -n 1 /tmp/domainLog";
+        if(runCommand(sudo() . $check)  == "smb-migrate-domain: servisler yeniden başlatılıyor"){
+            return respond($log .= "\n\nKurulum başarıyla tamamlandı.", 200);
+        }
+        return respond($log, 200);
+    }
+
     function isFileExists($filePath){
         $existsCommand = 'test -e '. $filePath .' && echo 1 || echo 0';
         $existsFlag = runCommand(sudo() . $existsCommand);
@@ -259,24 +268,9 @@ class SambaController{
         $ip = request("ip");
         $username = request("username");
         $password = request("password");
+        $migrateCommand = "bash -c 'DEBIAN_FRONTEND=noninteractive smb-migrate-domain -s " . $ip . " -a " . $username . " -p " . $password . " > /tmp/migrateLog 2>&1 & disown'";
 
-        return respond(
-			view('components.task', [
-				'onFail' => 'onTaskFail',
-				'onSuccess' => 'onTaskSuccess',
-				'tasks' => [
-					0 => [
-						'name' => 'MigrateDomain',
-						'attributes' => [
-							'ip' => $ip,
-							'username' => $username,
-                            'password' => $password
-						]
-                    ],
-				]
-			]),
-			200
-		);
+        runCommand(sudo(). $migrateCommand);
     }
 
     function checkMigrate(){
@@ -315,15 +309,6 @@ class SambaController{
         $command = "smb-migrate-domain -s ".$ip." -a ".$username." -p ".$password." -t ".$site." 2>&1 > /tmp/smb-migrate-logs.txt";
         runCommand(sudo().$command);
         return respond("Success", 200);
-    }
-
-    function migrateLog(){
-
-        $log = runCommand(sudo() . 'cat /tmp/smb-migrate-logs.txt');
-        if(str_contains($log, "servisler yeniden başlatılıyor")){
-            return respond("bitti", 200);
-        }
-        return respond($log, 200);
     }
 
     function getSambaType(){

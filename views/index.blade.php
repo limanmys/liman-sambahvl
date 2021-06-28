@@ -162,8 +162,8 @@
             }
             else{
                 document.getElementById("tab1_li").style.display = "none";
-                //document.getElementById("info_li").className += " active"
-                //getInfo();
+                $('.nav-tabs a[href="#info"]').tab('show');
+                getInfo();
             }
         }, function(response) {
             let error = JSON.parse(response);

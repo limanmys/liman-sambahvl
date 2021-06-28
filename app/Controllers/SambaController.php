@@ -450,24 +450,29 @@ class SambaController{
     }
 
     function getInstallLogs(){
-
-        $output = runCommand(sudo() . "cat /tmp/smbHvlLog.txt");
-        return respond($output,200);
+        $flag1 = $this->isFileExists("/tmp/smbHvlLog.txt");
+        if($flag1){
+            $output = runCommand(sudo() . "cat /tmp/smbHvlLog.txt");
+            return respond($output,200);
+        }
+        else{
+            return respond("Bu eklenti ile bu makineye daha önce hiç sambahvl kurulmamış.",200);
+        }
 
     }
 
     function getOtherLogs(){
-        $flag1 = $this->isFileExists("tmp/migrateLog");
-        $flag2 = $this->isFileExists("tmp/domainLog");
+        $flag1 = $this->isFileExists("/tmp/migrateLog");
+        $flag2 = $this->isFileExists("/tmp/domainLog");
         if($flag1){
-            $output = runCommand(sudo() . "cat tmp/migrateLog");
+            $output = runCommand(sudo() . "cat /tmp/migrateLog");
             return respond($output,200);
         }
         if($flag2){
-            $output = runCommand(sudo() . "cat tmp/domainLog");
+            $output = runCommand(sudo() . "cat /tmp/domainLog");
             return respond($output,200);
         }
-        return respond("Daha önce hiç etki alanı oluşturulmamış veya göç yapılmamış",200);
+        return respond("Bu eklenti ile bu makinede etki alanı oluşturma \nveya göç işlemi yapılmamış.",200);
         
 
     }
@@ -482,7 +487,7 @@ class SambaController{
     }
     function checkDomain(){
         //if(trim(runCommand('net ads info | grep Realm: 1>/dev/null 2>/dev/null && echo "1" || echo "0"')) == "1"){
-        if(trim(runCommand('getent passwd Administrator| grep Administrator 1>/dev/null 2>/dev/null && echo "1" || echo "0"')) == "1"){
+        if(trim(runCommand('getent passwd Administrator| grep administrator 1>/dev/null 2>/dev/null && echo "1" || echo "0"')) == "1"){
             return respond(true,200);
         }
         else{

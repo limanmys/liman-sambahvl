@@ -9,6 +9,7 @@
       <a class="nav-link" onclick="listBuildOptions()" id="v-pills-buildoptions-tab" data-toggle="pill" href="#v-pills-buildoptions" role="tab" aria-controls="v-pills-buildoptions" aria-selected="false">Build Options</a>
       <a class="nav-link" onclick="listWithOptions()" id="v-pills-withoptions-tab" data-toggle="pill" href="#v-pills-withoptions" role="tab" aria-controls="v-pills-withoptions" aria-selected="false">With Options</a>
       <a class="nav-link" onclick="listModules()" id="v-pills-modules-tab" data-toggle="pill" href="#v-pills-modules" role="tab" aria-controls="v-pills-modules" aria-selected="false">Modules</a>
+      <a class="nav-link" onclick="getInstallLogs()" id="v-pills-logs-tab" data-toggle="pill" href="#v-pills-logs" role="tab" aria-controls="v-pills-logs" aria-selected="false">Loglar</a>
 
     </div>
   </div>
@@ -65,6 +66,31 @@
 
       <div class="tab-pane fade" id="v-pills-modules" role="tabpanel" aria-labelledby="v-pills-modules-tab">
         <div class="table-responsive" id="modulesTable"></div>
+      </div>
+
+      <div class="tab-pane fade" id="v-pills-logs" role="tabpanel" aria-labelledby="v-pills-logs-tab">
+        <div class="row">
+            <div class="col-sm-6">
+                <div class="card">
+                <div class="p-2 text-center ">
+                    <h5 class="mb-3">Kurulum</h5>
+                </div>
+                <div class="card-body">
+                    <pre id="install-logs" style="height:300px;width:400px;margin-left: auto;margin-right: auto;"></pre>
+                </div>
+                </div>
+            </div>
+            <div class="col-sm-6">
+                <div class="card">
+                <div class="p-2 text-center ">
+                    <h5 class="mb-3">Etki Alanı</h5>
+                </div>
+                <div class="card-body">
+                    <pre id="other-logs"></pre>
+                </div>
+                </div>
+            </div>
+            </div>
       </div>
 
     </div>
@@ -250,4 +276,34 @@
             showSwal(error.message, 'error', 3000);
         });
     }
+    function getInstallLogs(){
+        var form = new FormData();
+
+        request(API('get_install_logs'), form, function(response) {
+            
+            message = JSON.parse(response)["message"];
+            $('#install-logs').html(message);
+            
+        }, function(response) {
+            let error = JSON.parse(response);
+            showSwal(error.message, 'error', 3000);
+        });
+        getOtherLogs();
+
+    }
+
+    function getOtherLogs(){
+        var form = new FormData();
+
+        request(API('get_other_logs'), form, function(response) {
+            
+            message = JSON.parse(response)["message"];
+            $('#other-logs').html(message);
+            
+        }, function(response) {
+            let error = JSON.parse(response);
+            showSwal(error.message, 'error', 3000);
+        });
+    }
+
 </script>

@@ -10,7 +10,7 @@
 
     @include('inputs', [
         "inputs" => [
-            "IP Adresi" => "ipAddr:text:Migrate edeceğiniz domainin kurulu olduğu sunucu ip adresinı giriniz (192.168.1.10).",
+            "IP Adresi" => "ipAddr:text:Migrate edeceğiniz domainin kurulu olduğu sunucu IP adresini giriniz (192.168.1.10).",
             "Kullanıcı Adı" => "username:text:Migrate edilecek domain yetkili kullanıcısını giriniz (Administrator).",
             "Şifre" => "password:password:Migrate edilecek domain yetkili kullanıcısının parolasını giriniz."
         ]
@@ -24,11 +24,11 @@
 
     <ul class="nav nav-tabs" role="tablist" style="margin-bottom: 15px;">
       <li class="nav-item">
-        <a class="nav-link active" id="ldapLoginTab" href="#ldapLogin" data-toggle="tab">Login Ldap</a>
+        <a class="nav-link active" id="ldapLoginTab" href="#ldapLogin" data-toggle="tab">LDAP'a Bağlan</a>
       </li>
 
       <li class="nav-item">
-        <a id="chooseSiteTab" class="nav-link" href="#chooseSite" data-toggle="tab" style="pointer-events: none;opacity: 0.4;">Choose Site</a>
+        <a id="chooseSiteTab" class="nav-link" href="#chooseSite" data-toggle="tab" style="pointer-events: none;opacity: 0.4;">Site Seçimi</a>
       </li>
 
       <li class="nav-item">
@@ -40,7 +40,7 @@
     <div id="ldapLogin" class="tab-pane active">
       <form>
         <div class="form-group">
-          <label for="migrateIpAdress">Ip Adresi</label>
+          <label for="migrateIpAdress">IP Adresi</label>
           <input class="form-control" id="migrateIpAdress" aria-describedby="migrateIpAdressHelp" placeholder="Ip adresi">
           <small id="migrateIpAdressHelp" class="form-text text-muted">Göç edeceğiniz sunucunun IP adresini giriniz (192.168.1.10).</small>
         </div>
@@ -69,16 +69,36 @@
           <svg class="bi flex-shrink-0 me-2" width="24" height="24" role="img" aria-label="Info:"><use xlink:href="#info-fill"/></svg>
           <i class="fas fa-icon mr-2"></i>
           <div>
-              Site seçiminizi aşağıdaki listeden yapabilirsiniz.
+              Site seçiminizi aşağıdaki listeden yapabilirsiniz veya buton yardımıyla yeni bir site oluşturabilirsiniz.         
           </div>
       </div>
       <br />
-        @include('inputs', [
+      @include('inputs', [
           "inputs" => [
               "Site Listesi:select_site" => [
               ],
           ]
       ])
+      <div>
+          @component('modal-component',[
+            "id" => "createSiteModal",
+            "title" => "Please enter the new site name!",
+            "footer" => [
+                "text" => "OK.",
+                "class" => "btn-success",
+                "onclick" => "createSite()"
+            ]
+          ]) 
+            @include('inputs', [
+              "inputs" => [
+                  "New Site Name: " => "newSiteName:text:"
+              ]
+            ])
+          @endcomponent
+              
+      </div>
+      <br />
+      <br />
       <button class="btn btn-success" onclick="startSiteMigration()" style="float:right;">Başlat</button>
 
     </div>
@@ -120,6 +140,7 @@
 <pre id="migrationLogs" style="overflow:auto;height:200px"> </pre>
 
 <script>
+
     function observeMigration(){
         var form = new FormData();
         request(API('migrate_log'), form, function(response) {
@@ -162,58 +183,6 @@
         });
     }
 
-    function createNewSite(){
-        var form = new FormData();
-        let newSiteName = $('#createSite').find('input[name=newSiteName]').val();
-        form.append("newSiteName", newSiteName);
-        request(API('create_site'), form, function(response) {
-
-          showSwal('Site başarı ile oluşturuldu, site seçimi yapınız.','success',2000);
-          $('.nav-tabs a[href="#chooseSite"]').tab('show');
-          listSitesAfterLogin();
-        }, function(error) {
-            showSwal(error.message, 'error', 5000);
-        });
-    }
-
-    function checkMigrate(){
-        var form = new FormData();
-        let domain_btn = document.getElementById("domain");
-        let site_btn = document.getElementById("site");
-        domain_btn.disabled = true;
-        site_btn.disabled = true;
-
-        $('#checkInfo').html("Sunucu kontrol ediliyor lütfen bekleyiniz ... ");
-
-        request(API('check_migrate'), form, function(response) {
-            message = JSON.parse(response)["message"];
-            if(message==false){
-
-                domain_btn.disabled = true;
-                site_btn.disabled = true;
-                $('#checkInfo').html("Bu sunucu bu işlemler için uygun değil.");
-            }
-            else{
-                domain_btn.disabled = false;
-                site_btn.disabled = false;
-                $('#checkInfo').html("Migration için aşağıdaki butonları kullanabilirsiniz.");
-            }
-        }, function(error) {
-            showSwal(error.message,'error',2000);
-        });
-    }
-
-    function showDomainMigration(){
-        showSwal('Yükleniyor...','info',2000);
-        $('#domainMigration').modal("show");
-    }
-
-    function showSiteMigration(){
-        showSwal('Yükleniyor...','info',2000);
-        $('#siteMigration').modal("show");
-        listSites2();
-    }
-
     var ip,domainname,username,password;
     function ldapLogin(){
         var form = new FormData();
@@ -253,10 +222,6 @@
     }
 
     function setActiveSiteTab(){
-      // burada
-      //document.getElementById("ldapLoginTab").style.pointerEvents = "none";
-      //document.getElementById("ldapLoginTab").style.opacity = 0.4;
-      //$('.nav-tabs a[href="#chooseSite"]').tab('show');
       document.getElementById("chooseSiteTab").style.pointerEvents = "auto";
       document.getElementById("chooseSiteTab").style.opacity = null;
 
@@ -294,6 +259,20 @@
 
       ip,domainname,username,password = null;
 
+    }
+
+    function createSite(){
+        $('#createSiteModal').modal("hide");
+        let newSiteName = $('#createSiteModal').find('input[name=newSiteName]').val();
+        var form = new FormData();
+        form.append("newSiteName", newSiteName);
+        request(API('create_site'), form, function(response) {
+            message = JSON.parse(response)["message"];
+            showSwal(message, 'success', 3000);
+        }, function(response) {
+            let error = JSON.parse(response);
+            showSwal(error.message, 'error', 3000);
+        });
     }
 
 </script>

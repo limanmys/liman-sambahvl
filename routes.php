@@ -32,7 +32,6 @@ return [
     "create_bound" => "SambaController@createBound",
     "show_update_time" => "SambaController@showUpdateTime",
 
-    "check_migrate" => "SambaController@checkMigrate",
     "migrate_domain" => "SambaController@migrateDomain",
     "migrate_site" => "SambaController@migrateSite",
     "migrate_log" => "SambaController@migrateLog",

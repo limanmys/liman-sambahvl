@@ -18,46 +18,67 @@
 @endcomponent
 
 @component('modal-component',[
-        "id" => "siteMigration",
-        "title" => "Giriş",
-        "footer" => [
-            "text" => "OK",
-            "class" => "btn-success",
-            "onclick" => "hideSiteMigration()"
-        ]
+        "id" => "siteMigrate",
+        "title" => "Migrate Site",
     ])
-    @include('inputs', [
-        "inputs" => [
-            "IP Addresi" => "ipAddr:text:192.168.1.1",
-            "Kullanıcı Adı" => "username:text:Administrator",
-            "Şifre" => "password:password:Password",
-            "Site:newSite" => [
-                "forest" => "forest",
-                "external" => "external"
-            ],
-        ]
-    ])
+
     <ul class="nav nav-tabs" role="tablist" style="margin-bottom: 15px;">
-        <li class="nav-item">
-            <a class="nav-link active"  href="#deneme1" data-toggle="tab">
-            <i class="fas fa-download mr-2"></i>
-            Kurulum</a>
-        </li>
-        <li class="nav-item">
-            <a class="nav-link" href="#deneme2"  data-toggle="tab">
-            <i class="fas fa-info mr-2"></i>
-            Samba Bilgileri</a>
-        </li>
+      <li class="nav-item">
+        <a class="nav-link active" href="#ldapLogin" data-toggle="tab">Login Ldap</a>
+      </li>
+
+      <li class="nav-item">
+        <a id="chooseSiteTab" class="nav-link" href="#chooseSite" data-toggle="tab" style="pointer-events: none;opacity: 0.4;">Choose Site</a>
+      </li>
     </ul>
+
     <div class="tab-content">
-        <div id="deneme1" class="tab-pane active">
-            asdasdcajsdsa
+    <div id="ldapLogin" class="tab-pane active">
+      <form>
+        <div class="form-group">
+          <label for="migrateIpAdress">Ip Adresi</label>
+          <input class="form-control" id="migrateIpAdress" aria-describedby="migrateIpAdressHelp" placeholder="Ip adresi">
+          <small id="migrateIpAdressHelp" class="form-text text-muted">Göç edeceğiniz sunucunun IP adresini giriniz (192.168.1.10).</small>
         </div>
-        <div id="deneme2" class="tab-pane">  
-            sadsadsac
+        <div class="form-group">
+          <label for="migrateDomainName">Etki alanı adı</label>
+          <input class="form-control" id="migrateDomainName" aria-describedby="migrateDomainNameHelp" placeholder="Etki alanı adı">
+          <small id="migrateDomainNameHelp" class="form-text text-muted">Göç edeceğiniz etki alanının adını giriniz.</small>
         </div>
+        <div class="form-group">
+          <label for="migrateUsername">Kullanıcı adı</label>
+          <input class="form-control" id="migrateUsername" aria-describedby="migrateUsernameHelp" placeholder="Kullanıcı adı">
+          <small id="migrateUsernameHelp" class="form-text text-muted">Göç edeceğiniz sunucunun kullanıcı adını giriniz.</small>
+        </div>
+        <div class="form-group">
+          <label for="migratePassword">Parola</label>
+          <input type="password" class="form-control" id="migratePassword" placeholder="Parola">
+          <small id="migrateIpAdressHelp" class="form-text text-muted">Göç edeceğiniz sunucunun kullanıcı parolasını giriniz.</small>
+        </div>
+      </form>
+    <button class="btn btn-primary" onclick="ldapLogin()" style="float:right;">Bağlantıyı Kontrol Et <i class="fas fa-plug"></i></button>
+
     </div>
 
+    <div id="chooseSite" class="tab-pane bd-example">
+      <div class="alert alert-primary d-flex align-items-center " role="alert">
+          <svg class="bi flex-shrink-0 me-2" width="24" height="24" role="img" aria-label="Info:"><use xlink:href="#info-fill"/></svg>
+          <i class="fas fa-icon mr-2"></i>
+          <div>
+              Site seçiminizi aşağıdaki listeden yapabilirsiniz.
+          </div>
+      </div>
+      <br />
+      <form>
+        <select class="form-select form-select-lg mb-3" id="select_site" aria-label=".form-select-lg example">
+        </select>
+      </form>
+      <button class="btn btn-success" onclick="hideSiteMigration()" style="float:right;">Migrate</button>
+
+    </div>
+    
+</div>
+    
 @endcomponent
 
 <div class="p-3 text-center ">
@@ -130,34 +151,6 @@
         });
     }
 
-    function showSiteMigration(){
-        showSwal('Yükleniyor...','info',2000);
-        $('#siteMigration').modal("show");
-        listSites2();
-    }
-
-    function hideSiteMigration(){
-
-        var form = new FormData();
-        $('#siteMigration').modal("hide");
-        form.append("ip", $('#siteMigration').find('input[name=ipAddr]').val());
-        form.append("username", $('#siteMigration').find('input[name=username]').val());
-        form.append("password", $('#siteMigration').find('input[name=password]').val());
-        form.append("site", $('#siteMigration').find('input[name=site]').val());
-
-        showSwal('İşleminiz kontrol ediliyor...', 'info');
-
-        request(API('migrate_site'), form, function(response) {
-
-            showSwal('Migration işlemi başladı...', 'info', 3000);
-            migrateLog();
-
-        }, function(response){
-          let error = JSON.parse(response);
-          showSwal(error.message,'error',2000);
-        });
-    }
-
     function migrateLog(){
 
         var form = new FormData();
@@ -179,16 +172,68 @@
           showSwal(error.message,'error',2000);
         });
     }
-
-    function listSites2(){
+    var ip,domainname,username,password;
+    function ldapLogin(){
         var form = new FormData();
-        request(API('list_sites2'), form, function(response) {
+        
+        ip = document.getElementById("migrateIpAdress").value;
+        domainname = document.getElementById("migrateDomainName").value;
+        username = document.getElementById("migrateUsername").value;
+        password = document.getElementById("migratePassword").value;
+        form.append("ip",ip);
+        form.append("domainname",domainname);
+        form.append("username",username);
+        form.append("password",password);
+        
+        request(API('ldap_login'), form, function(response) {
             message = JSON.parse(response)["message"];
-            console.log(message);
-        }, function(response) {
-            let error = JSON.parse(response);
-            showSwal(error.message, 'error', 3000);
+            if(message.length >= 1){
+              var sites = document.getElementById("select_site");
+              for(var i = 0; i < message.length; i++){
+                  var option = document.createElement("option");
+                  option.text = message[i];
+                  sites.add(option);
+              }
+              setActiveSiteTab();
+            }else{
+              console.log("No sites");
+            }
+        }, function(error) {
+          error = JSON.parse(error);
+            console.log(error.message);
         });
+    }
+    function setActiveSiteTab(){
+      // burada
+      document.getElementById("chooseSiteTab").style.pointerEvents = "auto";
+      document.getElementById("chooseSiteTab").style.opacity = null;
+      showSwal('Bağlantı başarı ile kuruldu, lütfen site seçimi yapınız.','success',2000);
+    }
+    function showSiteMigration(){
+      $('#siteMigrate').modal("show");
+    }
+        
+
+    function hideSiteMigration(){
+
+      var form = new FormData();
+      let selectedSite = document.getElementById("select_site").value;
+      form.append("site", site);
+      form.append("ip",ip);
+      form.append("username",username);
+      form.append("domainname",domainname);
+      form.append("password",password);
+
+      request(API('migrate_site'), form, function(response) {
+
+          showSwal('Migration işlemi başladı...', 'info', 3000);
+          $('#siteMigrate').modal("hide");
+          migrateLog();
+
+      }, function(response){
+        let error = JSON.parse(response);
+        showSwal(error.message,'error',2000);
+      });
     }
 
 </script>

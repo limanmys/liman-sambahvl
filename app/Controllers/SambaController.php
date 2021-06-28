@@ -18,8 +18,11 @@ class SambaController{
     }
 
     function deleteSambaPackage(){
-        $deletePackage = "apt -y autoremove samba";
+        $deletePackage = "apt -y autoremove samba*";
         runCommand(sudo() . $deletePackage);
+
+        $deleteConfig = "rm -rf /etc/samba/smb.conf";
+        runCommand(sudo() . $deleteConfig);
 
         if(trim(runCommand('dpkg -s samba | grep "Status" | grep -w "install" 1>/dev/null 2>/dev/null && echo "1" || echo "0"')) == "1"){
             return respond(false,202);

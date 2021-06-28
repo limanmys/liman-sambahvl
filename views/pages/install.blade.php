@@ -118,13 +118,13 @@
         deleteButton.style.visibility = "visible";
     }
     function onTaskSuccess(){
-        showSwal('{{__("Your request has been successfully completed")}}', 'success', 2000);
+        showSwal('{{__("Kurulum başarıyla tamamlandı.")}}', 'success', 2000);
         setTimeout(function(){
           $('#packageInstallerModal').modal("hide"); 
           window.location.reload();
         }, 2000);
     }
     function onTaskFail(){
-        showSwal('{{__("An error occurred while processing your request")}}!', 'error', 2000);
+        showSwal('{{__("Kurulum sırasında bir hata ile karşılaşıldı.")}}!', 'error', 2000);
     }
 </script>

@@ -12,7 +12,7 @@
 <button class="btn btn-success mb-2" id="createDomainButton" onclick="createDomain()" type="button">Etki Alanı Oluştur</button>
 <div id="domainStatus"></div> 
 <pre id="createDomainLogs" style="overflow:auto;height:200px"> </pre>
-<pre id="domainLogs" class="tab-pane"></pre>
+
 
 
 <script>
@@ -59,7 +59,8 @@
             }, 1);
             if(message == "Kurulum başarıyla tamamlandı."){
                 showSwal(message, 'success', 3000);
-                testCreate()
+                window.location.reload();
+                swal("Başarılı!", "Etki alanı başarıyla kuruldu !", "success")
             }
             else{
                 setTimeout(() => {

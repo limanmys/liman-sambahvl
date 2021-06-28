@@ -63,7 +63,10 @@ class SambaController{
 
     function observeInstallation(){
         $log = runCommand(sudo() . 'cat /tmp/domainLog');
-            
+        $check = "tail -n 1 /tmp/domainLog";
+        if(runCommand(sudo() . $check)  == "Created symlink /etc/systemd/system/multi-user.target.wants/samba4.service → /etc/systemd/system/samba4.service."){
+            return respond($log .= "\n\nKurulum başarıyla tamamlandı.", 200);
+        }
         return respond($log, 200);
     }
 

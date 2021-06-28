@@ -75,6 +75,7 @@
 <button class="btn btn-success mb-2" id="domain" onclick="showDomainMigration()" type="button">Migrate Et</button>
 <button class="btn btn-success mb-2" id="site" onclick="showSiteMigration()" type="button">Migrate Et - Site</button>
 <pre id="migrationInfo"></pre>
+<pre id="migrationLogs" style="overflow:auto;height:200px"> </pre>
 
 <script>
 

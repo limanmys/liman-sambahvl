@@ -2,16 +2,17 @@
         "id" => "domainMigration",
         "title" => "Giriş",
         "footer" => [
-            "text" => "OK",
+            "text" => "Başlat",
             "class" => "btn-success",
             "onclick" => "hideDomainMigration()"
         ]
     ])
+
     @include('inputs', [
         "inputs" => [
-            "IP Addresi" => "ipAddr:text:192.168.1.1",
-            "Kullanıcı Adı" => "username:text:Administrator",
-            "Şifre" => "password:password:Password"
+            "IP Adresi" => "ipAddr:text:Migrate edeceğiniz domainin kurulu olduğu sunucu ip adresinı giriniz (192.168.1.10).",
+            "Kullanıcı Adı" => "username:text:Migrate edilecek domain yetkili kullanıcısını giriniz (Administrator).",
+            "Şifre" => "password:password:Migrate edilecek domain yetkili kullanıcısının parolasını giriniz."
         ]
     ])
 @endcomponent

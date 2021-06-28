@@ -38,6 +38,7 @@
 </div>
 
 <script>
+
 // Install SambaHvl Package == Tab 1 == 
     function tab1(){
         var form = new FormData();
@@ -62,7 +63,6 @@
             $('#packageInstallerModal').modal({backdrop: 'static', keyboard: false})
             $('#packageInstallerModal').find('.modal-body').html(output);
             $('#packageInstallerModal').modal("show"); 
-            tab1();
         }, function(response){
             const error = JSON.parse(response).message;
             showSwal(error,'error',2000);
@@ -118,12 +118,13 @@
         deleteButton.style.visibility = "visible";
     }
     function onTaskSuccess(){
-        showSwal('{{__("Your request has been successfully completed")}}', 'success', 2000);
+        showSwal('{{__("Kurulum başarıyla tamamlandı.")}}', 'success', 2000);
         setTimeout(function(){
           $('#packageInstallerModal').modal("hide"); 
+          window.location.reload();
         }, 2000);
     }
     function onTaskFail(){
-        showSwal('{{__("An error occurred while processing your request")}}!', 'error', 2000);
+        showSwal('{{__("Kurulum sırasında bir hata ile karşılaşıldı.")}}!', 'error', 2000);
     }
 </script>

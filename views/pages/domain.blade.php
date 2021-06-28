@@ -41,6 +41,8 @@
         $('#domainStatus').html("<b>Etki alanı oluşturuluyor. Lütfen bekleyiniz.</b>");
         request(API('create_samba_domain'), form, function(response) {
             returnDomainInformations();
+            window.location.reload();
+            getInfo();
         }, function(error) {
             showSwal(error.message, 'error', 3000);
             console.log(error);

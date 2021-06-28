@@ -9,7 +9,7 @@ use Liman\Toolkit\Shell\Command;
 
 class InstallDependencies extends Task
 {
-	protected $description = 'Installing package...';
+	protected $description = 'Installing dependencies...';
 	protected $sudoRequired = true;
 
 	public function __construct(array $attrbs=[])

@@ -62,4 +62,7 @@ return [
 
     "list_sites2" => "LdapController@listSites2",
 
+    "get_system_clock" => "ClockController@getSystemClock",
+    "get_hardware_clock" => "ClockController@getHardwareClock"
+
 ];

@@ -6,14 +6,23 @@ class LdapController
     private $basedn = "";
 	function connect(){
         $ip = $this->getIP();
-        $domainname= extensionDb('domainName');
+        $domainname= strtolower(extensionDb('domainName'));
         $user = "administrator@".$domainname;
         $pass = extensionDb('domainPassword');
         $server = 'ldaps://'.$ip;
         $port="636";
         
         $str = explode(".",$domainname);
-        $this->basedn = "DC=".$str[0].",DC=".$str[1];
+        $tmp = "";
+        for($i=0 ; $i<count($str) ; $i++){
+            if($str[$i] == end($str)){
+                $tmp .= "DC=".$str[$i];
+            }
+            else{
+                $tmp .= "DC=".$str[$i].",";
+            }
+        }
+        $this->basedn = $tmp;
 
         $ldap = ldap_connect($server);
         ldap_set_option($ldap, LDAP_OPT_PROTOCOL_VERSION, 3);
@@ -272,7 +281,7 @@ class LdapController
     function ldapLogin(){
         $ip = request("ip");
         $pass = request("password");
-        $domainname= request("domainname");
+        $domainname= strtolower(request("domainname"));
         $user ="administrator@" . $domainname;
         $server = 'ldaps://'.$ip;
         $port="636";

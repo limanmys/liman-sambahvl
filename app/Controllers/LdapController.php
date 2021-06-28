@@ -268,4 +268,40 @@ class LdapController
             return respond("Error!",201);
         }
     }
+
+    function ldapLogin(){
+        $ip = request("ip");
+        $pass = request("password");
+        $domainname= request("domainname");
+        $user ="administrator@" . $domainname;
+        $server = 'ldaps://'.$ip;
+        $port="636";
+        
+        $str = explode(".",$domainname);
+        $basedn = "DC=".$str[0].",DC=".$str[1];
+
+        $ldap = ldap_connect($server);
+        ldap_set_option($ldap, LDAP_OPT_PROTOCOL_VERSION, 3);
+        ldap_set_option($ldap, LDAP_OPT_X_TLS_REQUIRE_CERT, LDAP_OPT_X_TLS_NEVER);
+        ldap_set_option($ldap, LDAP_OPT_REFERRALS, 0);
+        $bind=ldap_bind($ldap, $user, $pass);
+        if (!$bind) {
+            exit('Binding failed');
+        }
+
+        $filter = "objectClass=site";
+        $result = ldap_search($ldap, "CN=Configuration,".$basedn, $filter);
+        $entries = ldap_get_entries($ldap,$result);
+        $count = ldap_count_entries($ldap, $result);
+
+        for($i=0 ; $i<$count ; $i++){
+            $nameItem[] = $entries[$i]["name"][0];
+        }
+
+        $this->close($ldap);
+        
+        return respond($nameItem,200);
+    }
+
+    
 }

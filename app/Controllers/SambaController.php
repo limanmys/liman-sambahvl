@@ -449,6 +449,29 @@ class SambaController{
 
     }
 
+    function getInstallLogs(){
+
+        $output = runCommand(sudo() . "cat /tmp/smbHvlLog.txt");
+        return respond($output,200);
+
+    }
+
+    function getOtherLogs(){
+        $flag1 = $this->isFileExists("tmp/migrateLog");
+        $flag2 = $this->isFileExists("tmp/domainLog");
+        if($flag1){
+            $output = runCommand(sudo() . "cat tmp/migrateLog");
+            return respond($output,200);
+        }
+        if($flag2){
+            $output = runCommand(sudo() . "cat tmp/domainLog");
+            return respond($output,200);
+        }
+        return respond("Daha önce hiç etki alanı oluşturulmamış veya göç yapılmamış",200);
+        
+
+    }
+
     function checkSambahvl(){
         if(trim(runCommand('dpkg -s sambahvl | grep "Status" | grep -w "install" 1>/dev/null 2>/dev/null && echo "1" || echo "0"')) == "1"){
             return respond(true,200);

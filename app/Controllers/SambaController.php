@@ -62,17 +62,9 @@ class SambaController{
 	}
 
     function observeInstallation(){
-        if(verifyInstallationPhp() == true){
-            $res = "smbHVL paketi zaten var !";
+        $log = runCommand(sudo() . 'cat /tmp/domainLog');
             
-            return respond($res, 202);
-        }
-
-        if(verifyInstallationPhp() == false){
-            $log = runCommand(sudo() . 'cat /tmp/smbpyLog');
-            
-            return respond($log, 200);
-        }
+        return respond($log, 200);
     }
 
     function isFileExists($filePath){
@@ -104,8 +96,10 @@ class SambaController{
     function createSambaDomain(){
         $domainName = extensionDb('domainName');
         $domainPassword = extensionDb('domainPassword');
-
-        $createDomainCommand = "smb-create-domain -d " . $domainName . " -p " . $domainPassword;
+        //sudo smb-create-domain -d zeki.lab -p 123123Aa >/tmp/domainLog 2>&1 & disown
+        //bash -c 'DEBIAN_FRONTEND=noninteractive smb-create-domain -d zeki.lab -p 123123Aa > /tmp/domainLog 2>&1 & disown'
+        $createDomainCommand ="bash -c 'DEBIAN_FRONTEND=noninteractive smb-create-domain -d " . $domainName . " -p " . $domainPassword . " > /tmp/domainLog 2>&1 & disown'";
+        //$createDomainCommand = "smb-create-domain -d " . $domainName . " -p " . $domainPassword . " > /tmp/domainLog 2>&1 & disown";
         runCommand(sudo() . $createDomainCommand);
     }
 
@@ -477,7 +471,17 @@ class SambaController{
     }
     function checkDomain(){
         //if(trim(runCommand('net ads info | grep Realm: 1>/dev/null 2>/dev/null && echo "1" || echo "0"')) == "1"){
-        if(trim(runCommand('getent passwd administrator| grep administrator 1>/dev/null 2>/dev/null && echo "1" || echo "0"')) == "1"){
+        if(trim(runCommand('getent passwd Administrator| grep Administrator 1>/dev/null 2>/dev/null && echo "1" || echo "0"')) == "1"){
+            return respond(true,200);
+        }
+        else{
+            return respond(false,200);
+        }
+    }
+
+    function checkDomain2(){
+        $path="/etc/systemd/system/samba4.service";
+        if($this->isFileExists($path) == true){
             return respond(true,200);
         }
         else{

@@ -56,20 +56,20 @@
             window.setInterval(function() {
                 var elem = document.getElementById('createDomainLogs');
                 elem.scrollTop = elem.scrollHeight;
-            }, 1);
-            if(message == "Kurulum başarıyla tamamlandı."){
-                showSwal(message, 'success', 3000);
-                window.location.reload();
-                swal("Başarılı!", "Etki alanı başarıyla kuruldu !", "success")
-            }
-            else{
-                setTimeout(() => {
+            }, 1000);
+            setTimeout(() => {
                 observe();
             }, 3000);
-            }
-        }, function(error) {
-            showSwal(error.message, 'error', 3000);
-            console.log(error);
+           
+        }, function(response) {
+          let error = JSON.parse(response);
+           if(error["status"] == 202){
+            $('#createDomainLogs').append(error.message);
+            showSwal("Kurulum tamamlandı, detaylı kayıtları Samba Bilgileri > Logs sekmesinden görüntüleyebilirsiniz.", 'success', 5000);
+            window.location.reload();
+           } else{
+            $('#createDomainLogs').append("Kurulum sırasında hata oluştu.");
+           }
         });
     }
     

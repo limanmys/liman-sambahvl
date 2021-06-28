@@ -277,33 +277,6 @@ class SambaController{
         runCommand(sudo(). $migrateCommand);
     }
 
-    function checkMigrate(){
-        //check => true ise migrate edilebilir.
-        $output=runCommand(sudo()."net ads info");
-        if($output==""){
-            $output=runCommand(sudo()."net ads info 2>&1");
-        }
-        if(str_contains($output, "Can't load /etc/samba/smb.conf")){
-            return respond(true,200);
-        }
-        else{
-            return respond(false,200);
-        }
-    }
-
-    function checkMigrate2(){
-        //check => true migrate edilebilir.
-        $output=runCommand(sudo()."net ads info",200);
-        if($output==""){
-            $output=runCommand(sudo()."net ads info 2>&1",200);
-        }
-        if(str_contains($output, "Can't load /etc/samba/smb.conf")){
-            return true;
-        }
-        else{
-            return false;
-        }
-    }
     function migrateSite(){
         $ip = request("ip");
         $username = request("username");

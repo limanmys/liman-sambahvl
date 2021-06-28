@@ -18,7 +18,7 @@
     </li>
 
     <li class="nav-item">
-        <a class="nav-link" onclick="getInfo()" href="#info"  data-toggle="tab">
+        <a class="nav-link" onclick="getInfo()" id="info_li" href="#info"  data-toggle="tab">
         <i class="fas fa-info mr-2"></i>
         Samba Bilgileri</a>
     </li>
@@ -162,6 +162,8 @@
             }
             else{
                 document.getElementById("tab1_li").style.display = "none";
+                //document.getElementById("info_li").className += " active"
+                //getInfo();
             }
         }, function(response) {
             let error = JSON.parse(response);

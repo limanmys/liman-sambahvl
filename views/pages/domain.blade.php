@@ -12,7 +12,7 @@
 <button class="btn btn-success mb-2" id="createDomainButton" onclick="createDomain()" type="button">Etki Alanı Oluştur</button>
 <div id="domainStatus"></div> 
 <pre id="createDomainLogs" style="overflow:auto;height:200px"> </pre>
-<pre id="domainLogs" class="tab-pane"></pre>
+
 
 
 <script>
@@ -56,19 +56,19 @@
             window.setInterval(function() {
                 var elem = document.getElementById('createDomainLogs');
                 elem.scrollTop = elem.scrollHeight;
-            }, 1);
-            if(message == "Kurulum başarıyla tamamlandı."){
-                showSwal(message, 'success', 3000);
-                testCreate()
-            }
-            else{
-                setTimeout(() => {
+            }, 1000);
+            setTimeout(() => {
                 observe();
             }, 3000);
-            }
-        }, function(error) {
-            showSwal(error.message, 'error', 3000);
-            console.log(error);
+           
+        }, function(response) {
+          let error = JSON.parse(response);
+           if(error["status"] == 202){
+            $('#createDomainLogs').append(error.message);
+            refreshAfterLog();
+           } else{
+            $('#createDomainLogs').append("Kurulum sırasında hata oluştu.");
+           }
         });
     }
     

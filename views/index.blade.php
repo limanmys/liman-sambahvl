@@ -172,5 +172,19 @@
         
     }
 
+    async function refreshAfterLog(){
+      const { value: accept } = await Swal.fire({
+        type: 'success',
+        title: 'Başarılı !',
+        text: 'İşlem başarıyla gerçekleştirildi. Kayıtları Samba Bilgileri>Loglar sekmesinden görüntüleyebilirsiniz.',
+        confirmButtonText:
+          'Devam et <i class="fa fa-arrow-right"></i>',
+      })
+
+      if (accept) {
+        window.location.reload();
+      }
+    }
+
     
 </script>

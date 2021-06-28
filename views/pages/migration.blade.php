@@ -113,24 +113,18 @@
                 var elem = document.getElementById('migrationLogs');
                 elem.scrollTop = elem.scrollHeight;
             }, 1000);
-            if(message == "Kurulum başarıyla tamamlandı."){
-                showSwal(message, 'success', 3000);
-                testCreate()
-            }
-            else{
-                setTimeout(() => {
+            setTimeout(() => {
                 observeMigration();
             }, 3000);
-            }
-        }, function(error) {
-            showSwal(error.message, 'error', 3000);
-            console.log(error);
+        }, function(response) {
+          let error = JSON.parse(response);
+           if(error["status"] == 202){
+            $('#migrationLogs').append(error.message);
+            refreshAfterLog();
+           } else{
+            $('#migrationLogs').append("Kurulum sırasında hata oluştu.");
+           }
         });
-    }
-
-    function showDomainMigration(){
-        showSwal('Yükleniyor...','info',2000);
-        $('#domainMigration').modal("show");
     }
 
     function hideDomainMigration(){
@@ -179,7 +173,16 @@
         });
     }
 
-    
+    function showDomainMigration(){
+        showSwal('Yükleniyor...','info',2000);
+        $('#domainMigration').modal("show");
+    }
+
+    function showSiteMigration(){
+        showSwal('Yükleniyor...','info',2000);
+        $('#siteMigration').modal("show");
+        listSites2();
+    }
 
     var ip,domainname,username,password;
     function ldapLogin(){
@@ -244,7 +247,8 @@
       request(API('migrate_site'), form, function(response) {
 
           showSwal('Migration işlemi başladı...', 'info', 3000);
-          migrateLog();
+          $('#siteMigrate').modal("hide");
+          //migrateLog();
 
       }, function(response){
         let error = JSON.parse(response);

@@ -65,8 +65,7 @@
           let error = JSON.parse(response);
            if(error["status"] == 202){
             $('#createDomainLogs').append(error.message);
-            showSwal("Kurulum tamamlandı, detaylı kayıtları Samba Bilgileri > Logs sekmesinden görüntüleyebilirsiniz.", 'success', 5000);
-            window.location.reload();
+            refreshAfterLog();
            } else{
             $('#createDomainLogs').append("Kurulum sırasında hata oluştu.");
            }

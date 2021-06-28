@@ -115,8 +115,7 @@
           let error = JSON.parse(response);
            if(error["status"] == 202){
             $('#migrationLogs').append(error.message);
-            showSwal("Kurulum tamamlandı, detaylı kayıtları Samba Bilgileri > Logs sekmesinden görüntüleyebilirsiniz.", 'success', 5000);
-            window.location.reload();
+            refreshAfterLog();
            } else{
             $('#migrationLogs').append("Kurulum sırasında hata oluştu.");
            }

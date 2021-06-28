@@ -24,7 +24,7 @@
 
     <ul class="nav nav-tabs" role="tablist" style="margin-bottom: 15px;">
       <li class="nav-item">
-        <a class="nav-link active" href="#ldapLogin" data-toggle="tab">Login Ldap</a>
+        <a class="nav-link active" id="ldapLoginTab" href="#ldapLogin" data-toggle="tab">Login Ldap</a>
       </li>
 
       <li class="nav-item">
@@ -69,10 +69,15 @@
           </div>
       </div>
       <br />
-      <form>
-        <select class="form-select form-select-lg mb-3" id="select_site" aria-label=".form-select-lg example">
-        </select>
-      </form>
+        @include('inputs', [
+          "inputs" => [
+              "Site Listesi:select_site" => [
+                  
+                  
+              ],
+              
+          ]
+      ])
       <button class="btn btn-success" onclick="hideSiteMigration()" style="float:right;">Migrate</button>
 
     </div>
@@ -123,6 +128,11 @@
         });
     }
 
+    function showDomainMigration(){
+        showSwal('Yükleniyor...','info',2000);
+        $('#domainMigration').modal("show");
+    }
+
     function hideDomainMigration(){
         var form = new FormData();
         $('#domainMigration').modal("hide");
@@ -169,39 +179,8 @@
         });
     }
 
-    function showDomainMigration(){
-        showSwal('Yükleniyor...','info',2000);
-        $('#domainMigration').modal("show");
-    }
-    
     
 
-    function showSiteMigration(){
-        showSwal('Yükleniyor...','info',2000);
-        $('#siteMigration').modal("show");
-        listSites2();
-    }
-
-    function hideSiteMigration(){
-        var form = new FormData();
-        $('#siteMigration').modal("hide");
-        form.append("ip", $('#siteMigration').find('input[name=ipAddr]').val());
-        form.append("username", $('#siteMigration').find('input[name=username]').val());
-        form.append("password", $('#siteMigration').find('input[name=password]').val());
-        form.append("site", $('#siteMigration').find('input[name=site]').val());
-
-        showSwal('İşleminiz kontrol ediliyor...', 'info');
-
-        request(API('migrate_site'), form, function(response) {
-
-            showSwal('Migration işlemi başladı...', 'info', 3000);
-            //migrateLog();
-
-        }, function(response){
-          let error = JSON.parse(response);
-          showSwal(error.message,'error',2000);
-        });
-    }
     var ip,domainname,username,password;
     function ldapLogin(){
         var form = new FormData();
@@ -217,13 +196,17 @@
         
         request(API('ldap_login'), form, function(response) {
             message = JSON.parse(response)["message"];
+            var sites = document.getElementById("[name=select_site]");
             if(message.length >= 1){
-              var sites = document.getElementById("select_site");
-              for(var i = 0; i < message.length; i++){
-                  var option = document.createElement("option");
-                  option.text = message[i];
-                  sites.add(option);
-              }
+
+              $('[name=select_site]').find('option').remove();
+              $.each(message, function(index, value){
+                    $('[name=select_site]').append($("<option>",{
+                          value: value,
+                          text: value
+                    }));
+              }); 
+
               setActiveSiteTab();
             }else{
               console.log("No sites");
@@ -233,17 +216,21 @@
             console.log(error.message);
         });
     }
+
     function setActiveSiteTab(){
       // burada
+      //document.getElementById("ldapLoginTab").style.pointerEvents = "none";
+      //document.getElementById("ldapLoginTab").style.opacity = 0.4;
+      //$('.nav-tabs a[href="#chooseSite"]').tab('show');
       document.getElementById("chooseSiteTab").style.pointerEvents = "auto";
       document.getElementById("chooseSiteTab").style.opacity = null;
       showSwal('Bağlantı başarı ile kuruldu, lütfen site seçimi yapınız.','success',2000);
     }
+
     function showSiteMigration(){
       $('#siteMigrate').modal("show");
     }
         
-
     function hideSiteMigration(){
 
       var form = new FormData();
@@ -253,17 +240,19 @@
       form.append("username",username);
       form.append("domainname",domainname);
       form.append("password",password);
-
+      $('#siteMigrate').modal("hide");
       request(API('migrate_site'), form, function(response) {
 
           showSwal('Migration işlemi başladı...', 'info', 3000);
-          $('#siteMigrate').modal("hide");
           migrateLog();
 
       }, function(response){
         let error = JSON.parse(response);
         showSwal(error.message,'error',2000);
       });
+
+      ip,domainname,username,password = null;
+
     }
 
 </script>

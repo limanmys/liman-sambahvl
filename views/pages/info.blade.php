@@ -40,8 +40,6 @@
       </div>
 
       <div class="tab-pane fade" id="v-pills-domainstatus" role="tabpanel" aria-labelledby="v-pills-domainstatus-tab">
-    
-        
       </div>
 
       <div class="tab-pane fade" id="v-pills-paths" role="tabpanel" aria-labelledby="v-pills-paths-tab">
@@ -76,7 +74,7 @@
                     <h5 class="mb-3">Kurulum</h5>
                 </div>
                 <div class="card-body">
-                    <pre id="install-logs" style="height:300px;width:400px;margin-left: auto;margin-right: auto;"></pre>
+                    <pre id="install-logs" style="height:325px;overflow:auto;"></pre>
                 </div>
                 </div>
             </div>
@@ -86,7 +84,7 @@
                     <h5 class="mb-3">Etki Alanı</h5>
                 </div>
                 <div class="card-body">
-                    <pre id="other-logs"></pre>
+                    <pre id="other-logs" style="height:325px;overflow:auto;"></pre>
                 </div>
                 </div>
             </div>
@@ -112,9 +110,9 @@
             showSwal(error.message, 'error', 3000);
         });
         getVersion();
-
         
     }
+    
     function getVersion(){
         var form = new FormData();
 
@@ -127,10 +125,8 @@
             let error = JSON.parse(response);
             showSwal(error.message, 'error', 3000);
         });
-
-        
+ 
     }
-    
 
     function serviceStatus(){
         var form = new FormData();
@@ -276,6 +272,7 @@
             showSwal(error.message, 'error', 3000);
         });
     }
+
     function getInstallLogs(){
         var form = new FormData();
 

@@ -83,7 +83,12 @@ class SambaController{
         $lastLine2 = "smb-migrate-domain: servisler yeniden başlatılıyor";
 
         if(runCommand(sudo() . $check) == $lastLine1 or runCommand(sudo() . $check)  == $lastLine2){
-            return respond($log .= "\n\nKurulum başarıyla tamamlandı.", 202);
+            if($this->checkDomainPhp() == true){
+                return respond($log .= "\n\nKurulum başarıyla tamamlandı.", 202);
+            }
+            else{
+                return respond("Göç işlemi tamamlanamadı !",201);
+            }
         }
         return respond($log, 200);
     }
@@ -479,7 +484,6 @@ class SambaController{
     }
 
     function checkDomainPhp(){
-        //if(trim(runCommand('net ads info | grep Realm: 1>/dev/null 2>/dev/null && echo "1" || echo "0"')) == "1"){
         if(trim(runCommand('getent passwd Administrator| grep administrator 1>/dev/null 2>/dev/null && echo "1" || echo "0"')) == "1"){
             return true;
         }

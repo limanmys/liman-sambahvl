@@ -84,7 +84,4 @@
         });
     }
 
-    function testCreate(){
-        console.log();
-    }
 </script>

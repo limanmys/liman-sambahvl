@@ -77,7 +77,6 @@
         var siteName = line.querySelector("#name").innerHTML;
         var form = new FormData();
         form.append("siteName", siteName);
-        console.log(siteName);
         request(API('delete_site'), form, function(response) {
             message = JSON.parse(response)["message"];
             showSwal(message, 'success', 3000);

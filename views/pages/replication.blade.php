@@ -51,7 +51,6 @@
 
         request(API('show_update_time'), form, function(response) {
             message = JSON.parse(response)["message"];
-            console.log(message);
             showSwal(message, 'info', 3000);
         }, function(response) {
             let error = JSON.parse(response);

@@ -26,7 +26,6 @@
         showSwal('Yükleniyor...','info');
         var form = new FormData();
         var groupType = $('#test').find('select[name=groupType]').val();
-        console.log(groupType);
         form.append("groupType",groupType);
         request(API('list_groups'), form, function(response) {
             $('#groupsTable').html(response).find('table').DataTable({

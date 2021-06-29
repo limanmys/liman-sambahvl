@@ -172,8 +172,6 @@
         var form = new FormData();
         request(API('return_domain_informations'), form, function(response) {
             message = JSON.parse(response)["message"];
-            console.log(message);
-            //$('#domainLogs').html("<b>Etki alanı bilgileri :</b>");
             var d1 = document.getElementById('v-pills-domainstatus');
             d1.insertAdjacentHTML('beforeend', '<pre id="domainLog">   </pre>');
             $('#domainLog').html("\n" + message);

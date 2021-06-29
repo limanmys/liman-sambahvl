@@ -136,7 +136,7 @@
             $('#migrationLogs').append(error.message);
             refreshAfterLog();
            } else{
-            $('#migrationLogs').append("Kurulum sırasında hata oluştu.");
+            $('#migrationLogs').append("\n\nKurulum sırasında hata oluştu.");
            }
         });
     }

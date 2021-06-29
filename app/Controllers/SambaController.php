@@ -64,7 +64,7 @@ class SambaController{
 
     function observeInstallation(){
         $log = runCommand(sudo() . 'cat /tmp/domainLog');
-        $check = "tail -n 1 /tmp/domainLog";
+        /*$check = "tail -n 1 /tmp/domainLog";
         if(runCommand(sudo() . $check)  == "Created symlink /etc/systemd/system/multi-user.target.wants/samba4.service → /etc/systemd/system/samba4.service."){
             if($this->checkDomainPhp() == true){
                 return respond($log .= "\n\nKurulum başarıyla tamamlandı.", 202);
@@ -74,24 +74,37 @@ class SambaController{
             } 
         }
         return respond($log, 200);
+        */
+        $flag = $this->checkDomainPhp();
+
+        if($flag == true){
+            return respond($log .= "\n\nKurulum başarıyla tamamlandı.", 202);
+        }
+        else{
+            return respond($log, 200);
+
+        }
     }
 
     function migrateLog(){
         $log = runCommand(sudo() . 'cat /tmp/migrateLog');
-        $check = "tail -n 1 /tmp/migrateLog";
+        /*$check = "tail -n 1 /tmp/migrateLog";
 
         $lastLine1 = "Created symlink /etc/systemd/system/multi-user.target.wants/samba4.service → /etc/systemd/system/samba4.service.";
         $lastLine2 = "smb-migrate-domain: servisler yeniden başlatılıyor";
 
         if(runCommand(sudo() . $check) == $lastLine1 or runCommand(sudo() . $check)  == $lastLine2){
-            if($this->checkDomainPhp() == true){
-                return respond($log .= "\n\nKurulum başarıyla tamamlandı.", 202);
-            }
-            else{
-                return respond("Göç işlemi tamamlanamadı !",201);
-            }
+        */
+        $flag = $this->checkDomainPhp();
+
+        if($flag == true){
+            return respond($log .= "\n\nMigrate başarıyla tamamlandı.", 202);
         }
-        return respond($log, 200);
+        else{
+            return respond($log, 200);
+
+        }
+        //}
     }
 
     function isFileExists($filePath){
@@ -458,7 +471,7 @@ class SambaController{
             return respond($output,200);
         }
         else{
-            return respond("Bu eklenti ile bu makineye daha önce hiç sambahvl kurulmamış.",200);
+            return respond("Bu eklenti ile bu makineye daha önce \nsambahvl kurulmamış.",200);
         }
 
     }

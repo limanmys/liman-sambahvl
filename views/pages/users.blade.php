@@ -17,6 +17,7 @@
             Swal.close();
         }, function(response) {
             let error = JSON.parse(response);
+            Swal.close();
             showSwal(error.message, 'error', 3000);
         });
     }

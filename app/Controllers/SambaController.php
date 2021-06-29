@@ -288,7 +288,7 @@ class SambaController{
         $username = request("username");
         $password = request("password");
         $migrateCommand = "bash -c 'DEBIAN_FRONTEND=noninteractive smb-migrate-domain -s " . $ip . " -a " . $username . " -p " . $password . " > /tmp/migrateLog 2>&1 & disown'";
-
+        runCommand(sudo() . $migrateCommand);
     }
 
     function migrateSite(){

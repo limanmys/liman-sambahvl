@@ -286,7 +286,6 @@ class LdapController
 
         validate([
 			'ip' => 'required|string',
-			'domainname' => 'required|string',
 			'username' => 'required|string',
 			'password' => 'required|string'
 

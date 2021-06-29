@@ -129,7 +129,6 @@
         var form = new FormData();
         request(API('check_sambahvl'), form, function(response) {
             message = JSON.parse(response)["message"];
-            console.log(message);
             if(!message){
                 document.getElementById("fsmo_li").style.display = "none";
                 document.getElementById("replication_li").style.display = "none";
@@ -151,7 +150,6 @@
         var form = new FormData();
         request(API('check_domain'), form, function(response) {
             message = JSON.parse(response)["message"];
-            console.log(message);
             if(!message){
                 document.getElementById("fsmo_li").style.display = "none";
                 document.getElementById("replication_li").style.display = "none";

@@ -4,7 +4,7 @@
 <script>
 
     function listComputers(){
-        showSwal('Yükleniyor...','info',2000);
+        showSwal('Yükleniyor...','info');
         var form = new FormData();
         request(API('list_computers'), form, function(response) {
             $('#computersTable').html(response).find('table').DataTable({
@@ -13,6 +13,7 @@
                 url : "/turkce.json"
             }
             });;
+            Swal.close();
         }, function(response) {
             let error = JSON.parse(response);
             showSwal(error.message, 'error', 3000);

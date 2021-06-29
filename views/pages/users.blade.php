@@ -5,7 +5,7 @@
 <script>
 
     function listUsers(){
-        showSwal('Yükleniyor...','info',2000);
+        showSwal('Yükleniyor...','info');
         var form = new FormData();
         request(API('list_users'), form, function(response) {
             $('#usersTable').html(response).find('table').DataTable({
@@ -14,6 +14,7 @@
                 url : "/turkce.json"
             }
             });;
+            Swal.close();
         }, function(response) {
             let error = JSON.parse(response);
             showSwal(error.message, 'error', 3000);

@@ -1,15 +1,15 @@
 @component('modal-component',[
         "id" => "createSiteModal",
-        "title" => "Please enter the new site name!",
+        "title" => "Lütfen oluşturmak istediğiniz site ismini yazınız",
         "footer" => [
-            "text" => "OK.",
+            "text" => "Oluştur",
             "class" => "btn-success",
             "onclick" => "createSite()"
         ]
     ]) 
     @include('inputs', [
         "inputs" => [
-            "New Site Name: " => "newSiteName:text:"
+            "Yeni site adı: " => "newSiteName:text:"
         ]
     ])
 @endcomponent
@@ -34,13 +34,14 @@
 @include('modal-button', [
         "class" => "btn btn-success mb-2",
         "target_id" => "createSiteModal",
-        "text" => "Create Site"
+        "text" => "Site Oluştur"
         ])
 <div class="table-responsive" id="table3"></div>
 
 <script>
 
     function listSites(){
+        showSwal('Yükleniyor...','info');
         var form = new FormData();
         request(API('list_sites'), form, function(response) {
             $('#table3').html(response).find('table').DataTable({
@@ -49,6 +50,7 @@
                 url : "/turkce.json"
             }
             });;
+            Swal.close();
         }, function(response) {
             let error = JSON.parse(response);
             showSwal(error.message, 'error', 3000);
@@ -56,11 +58,11 @@
     }
 
     function createSite(){
-        $('#createSiteModal').modal("hide");
         let newSiteName = $('#createSiteModal').find('input[name=newSiteName]').val();
         var form = new FormData();
         form.append("newSiteName", newSiteName);
         request(API('create_site'), form, function(response) {
+            $('#createSiteModal').modal("hide");
             message = JSON.parse(response)["message"];
             showSwal(message, 'success', 3000);
             listSites();

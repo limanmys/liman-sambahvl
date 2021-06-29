@@ -34,12 +34,11 @@
 @endcomponent
 
 
-
-
 <script>
     // == Printing Table ==
     function printTable(){
-        //checkSambahvl();
+        showSwal('Yükleniyor...','info');
+
         var form = new FormData();
         request(API('roles_table'), form, function(response) {
             $('#fsmoTable').html(response).find('table').DataTable({
@@ -48,72 +47,13 @@
                 url : "/turkce.json"
             }
             });;
+            Swal.close();
         }, function(response) {
             let error = JSON.parse(response);
             showSwal(error.message, 'error', 3000);
         });
         
     }
-
-    /*function checkSambahvl(){
-        var form = new FormData();
-        request(API('check_sambahvl'), form, function(response) {
-            message = JSON.parse(response)["message"];
-            if(!message){
-
-                let e1 = document.getElementById("takeallroles_btn");
-                e1.style.visibility = "hidden";
-                let e2 = document.getElementById("infoDivFsmo");
-                e2.style.visibility = "hidden";
-                let e3 = document.getElementById("fsmoTable");
-                e3.style.visibility = "hidden";
-
-                $('#errorDivFsmo').html(
-                '<div class="alert alert-danger d-flex align-items-center"  role="alert">' +
-                    '<svg class="bi flex-shrink-0 me-2" width="24" height="24" role="img" aria-label="Danger:"><use xlink:href="#exclamation-triangle-fill" /></svg>' +
-                    '<i class="fas fa-icon mr-2"></i>'+
-                    '<div>'+
-                        'Hata : Sunucuda Sambahvl Paketi Bulunamadı !'+
-                    '</div>'+
-                '</div>');
-            }
-            else{
-                checkDomain();
-            }
-        }, function(response) {
-            let error = JSON.parse(response);
-            showSwal(error.message, 'error', 3000);
-        });
-        
-    }
-
-    function checkDomain(){
-        var form = new FormData();
-        request(API('check_domain'), form, function(response) {
-            message = JSON.parse(response)["message"];
-            console.log(message);
-            if(!message){
-                let e1 = document.getElementById("takeallroles_btn");
-                e1.disabled = "true";
-                let e2 = document.getElementById("infoDivFsmo");
-                e2.style.visibility = "hidden";
-
-                $('#errorDivFsmo').html(
-                '<div class="alert alert-danger d-flex align-items-center"  role="alert">' +
-                    '<svg class="bi flex-shrink-0 me-2" width="24" height="24" role="img" aria-label="Danger:"><use xlink:href="#exclamation-triangle-fill" /></svg>' +
-                    '<i class="fas fa-icon mr-2"></i>'+
-                    '<div>'+
-                        'Hata : Domain Bilgisi Bulunamadı !'+
-                    '</div>'+
-                '</div>');
-            }
-        }, function(response) {
-            let error = JSON.parse(response);
-            showSwal(error.message, 'error', 3000);
-        });
-        
-    }
-*/
     // == Transfer Role ==
     function takeTheRole(line){
         var form = new FormData();
@@ -137,8 +77,9 @@
             else{
                 showSwal(message, 'error', 7000);
             }
-        }, function(error) {
-            showSwal(error.message, 'error', 5000);
+        }, function(response) {
+            let error = JSON.parse(response);
+            showSwal(error.message, 'error', 3000);
         });
     }
 
@@ -152,8 +93,9 @@
                 "<pre>"+message+"</pre>"
             );
             $('#infoModal').modal("show");
-        }, function(error) {
-            showSwal(error.message, 'error', 5000);
+        }, function(response) {
+            let error = JSON.parse(response);
+            showSwal(error.message, 'error', 3000);
         });
     }
 
@@ -175,8 +117,9 @@
             showSwal(message, 'success', 5000); 
             
             
-        }, function(error) {
-            showSwal(error.message, 'error', 5000);
+        }, function(response) {
+            let error = JSON.parse(response);
+            showSwal(error.message, 'error', 3000)
         });
     }
 

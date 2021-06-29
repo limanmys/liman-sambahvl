@@ -5,22 +5,28 @@
         Istediğiniz grup türünü açılır pencereden seçip buton yardımı ile listeletebilirsiniz.
   </div>
 </div>
-<select name="groups" id="groupType">
-    <option value="none" >Tümü</option>
-    <option value="security">Security</option>
-    <option value="distribution">Distribution</option>
-</select>
-<button class="btn btn-success mb-2" id="groupBtn" onclick="listGroups()"  type="button">Listele</button>
+<div id="test">
+@include('inputs', [
+          "inputs" => [
+              "Listelenebilecek Gruplar:groupType" => [
+                    "Tümü" => "none",
+                    "Security" => "security",
+                    "Distribution" => "distribution"
+              ],
+          ]
+      ])
+</div>
+<small><button class="btn btn-success mb-2" id="groupBtn" onclick="listGroups()"  type="button">Listele</button></small>
 <br />
 <br />
 <div class="table-responsive" id="groupsTable"></div>
 
 <script>
     function listGroups(){
-        showSwal('Yükleniyor...','info',2000);
+        showSwal('Yükleniyor...','info');
         var form = new FormData();
-        let e = document.getElementById("groupType");
-        var groupType = e.value;
+        var groupType = $('#test').find('select[name=groupType]').val();
+        console.log(groupType);
         form.append("groupType",groupType);
         request(API('list_groups'), form, function(response) {
             $('#groupsTable').html(response).find('table').DataTable({
@@ -29,6 +35,8 @@
                 url : "/turkce.json"
             }
             });;
+            Swal.close();
+
         }, function(response) {
             let error = JSON.parse(response);
             showSwal(error.message, 'error', 3000);

@@ -203,9 +203,9 @@ class SambaController{
 
     function takeTheRole(){
         $contraction = request("contraction");
-        $output=runCommand(sudo()."samba-tool fsmo transfer --role=$contraction -UAdministrator");
+        $output=runCommand(sudo()."samba-tool fsmo transfer --role=".$contraction." -UAdministrator");
         if($output == ""){
-            $output=runCommand(sudo()."samba-tool fsmo transfer --role=$contraction -UAdministrator 2>&1");
+            $output=runCommand(sudo()."samba-tool fsmo transfer --role=".$contraction." -UAdministrator 2>&1");
         }
         return respond($output,200);
     }
@@ -217,7 +217,7 @@ class SambaController{
 
     function seizeTheRole(){
         $contraction = request("contraction");
-        $output=runCommand(sudo()."samba-tool fsmo seize --role=$contraction -UAdministrator");
+        $output=runCommand(sudo()."samba-tool fsmo seize --role=".$contraction." -UAdministrator");
         return respond($output,200);
     }
 

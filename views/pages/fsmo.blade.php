@@ -60,18 +60,20 @@
         var form = new FormData();
         let contraction = line.querySelector("#contraction").innerHTML;
         form.append("contraction",contraction);
+        showSwal('Rol alınıyor...','info');
+
         request(API('take_the_role'), form, function(response) {
             message = JSON.parse(response)["message"];
+            Swal.close();
             if(message.includes("successful")){
                 printTable();
-                showSwal(message,'success',7000);
+                showSwal("Rol başarıyla alındı",'success',7000);
             }
             else if(message.includes("already")){
                 //This DC already has the 'schema' FSMO role
-                showSwal(message,'info',7000);
+                showSwal("Bu DC zaten bu role sahip.",'info',7000);
             }
             else if(message.includes("WERR_HOST_UNREACHABLE")){
-                showSwal('WERR_HOST_UNREACHABLE \nTrying to seize... ','info',5000);
                 showWarningModal();
                 temp=contraction;
             }                
@@ -108,15 +110,15 @@
 
     // == Seize Role ==
     function seizeTheRole(contraction){
+        showSwal('Rol alınıyor...','info');
         var form = new FormData();
         form.append("contraction",temp);
         
         request(API('seize_the_role'), form, function(response) {
+            Swal.close();
             message = JSON.parse(response)["message"];
-            
             printTable();
-            showSwal(message, 'success', 5000); 
-            
+            showSwal("Rol başarıyla alındı.", 'success', 5000); 
             
         }, function(response) {
             let error = JSON.parse(response);
@@ -126,7 +128,6 @@
 
      //== Warning Modal ==
      function showWarningModal(contraction){
-        showSwal('Yükleniyor...','info',2000);
         //console.log(contraction);
         $('#warningModal').find('.modal-footer').html(
             '<button type="button" class="btn btn-success" onClick="warningModalYes()">Evet</button> '

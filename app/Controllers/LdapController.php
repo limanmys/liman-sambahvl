@@ -187,6 +187,10 @@ class LdapController
 
     function createSite(){
 
+        validate([
+			'newSiteName' => 'required|string',
+		]);
+
         $newSiteName = request("newSiteName");
         $command = "samba-tool sites create ".$newSiteName;
         $commandOutput = runCommand(sudo().$command);
@@ -279,7 +283,17 @@ class LdapController
     }
 
     function ldapLogin(){
+
+        validate([
+			'ip' => 'required|string',
+			'domainname' => 'required|string',
+			'username' => 'required|string',
+			'password' => 'required|string'
+
+		]);
+
         $ip = request("ip");
+        $username = request("username");
         $pass = request("password");
         $domainname= strtolower(request("domainname"));
         $user ="administrator@" . $domainname;

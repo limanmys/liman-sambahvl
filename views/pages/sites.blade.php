@@ -30,6 +30,13 @@
 </div>
 @endcomponent
 
+<div class="alert alert-primary d-flex align-items-center " role="alert" id="infoAlert">
+    <svg class="bi flex-shrink-0 me-2" width="24" height="24" role="img" aria-label="Info:"><use xlink:href="#info-fill"/></svg>
+    <i class="fas fa-icon mr-2"></i>
+    <div>
+        Buton yardımıyla yeni bir site oluşturabilir veya tabloda sağ tuş kullanarak bazı site işlemleri yapabilirsiniz.
+    </div>
+</div>
 
 @include('modal-button', [
         "class" => "btn btn-success mb-2",

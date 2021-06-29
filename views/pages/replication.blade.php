@@ -1,12 +1,9 @@
-
 <div id="replicationPrintArea"></div> 
 <div class="table-responsive replicationTable" id="replicationTable"></div> 
 
-
-
 <script>
     function replicationInfo(){
-        showSwal('{{__("Yükleniyor...")}}','info',2000);
+        showSwal('{{__("Yükleniyor...")}}','info');
         var form = new FormData();
 
         request(API('replication_organized'), form, function(response) {
@@ -16,6 +13,7 @@
                 url : "/turkce.json"
             }
             });;
+            Swal.close();
         }, function(response) {
             let error = JSON.parse(response);
             showSwal(error.message, 'error', 3000);

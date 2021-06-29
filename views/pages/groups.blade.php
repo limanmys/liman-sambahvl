@@ -17,7 +17,7 @@
 
 <script>
     function listGroups(){
-        showSwal('Yükleniyor...','info',2000);
+        showSwal('Yükleniyor...','info');
         var form = new FormData();
         let e = document.getElementById("groupType");
         var groupType = e.value;
@@ -29,6 +29,8 @@
                 url : "/turkce.json"
             }
             });;
+            Swal.close();
+
         }, function(response) {
             let error = JSON.parse(response);
             showSwal(error.message, 'error', 3000);

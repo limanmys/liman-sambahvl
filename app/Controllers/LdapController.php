@@ -295,7 +295,7 @@ class LdapController
         $ip = request("ip");
         $username = request("username");
         $pass = request("password");
-        $domainname= strtolower(request("domainname"));
+        $domainname= strtolower($this->getDomainNameAnonymously($ip));
         $user ="administrator@" . $domainname;
         $server = 'ldaps://'.$ip;
         $port="636";
@@ -326,5 +326,37 @@ class LdapController
         return respond($nameItem,200);
     }
 
+    function getDomainNameAnonymously($server){
+        $ldapconn = ldap_connect($server);
+        ldap_set_option($ldapconn, LDAP_OPT_PROTOCOL_VERSION, 3);
+
+        $filter = "objectClass=*";
+        if ($ldapconn) {
+            // binding anonymously
+            $ldapbind = ldap_bind($ldapconn);
+
+            if ($ldapbind) {
+                $result = ldap_read($ldapconn, '', '(objectclass=*)', array('namingContexts'));
+                $data = ldap_get_entries($ldapconn, $result);
+
+                $baseDN=$data[0]['namingcontexts'][0];
+                $base=explode(",",$baseDN);
+                $domainName = "";
+                for($i = 0; $i < count($base); $i++){
+                    if($base[$i] == end($base)){
+                        $domainName .= str_replace("DC=","",$base[$i]);
+                    }else{
+                        $domainName .= str_replace("DC=","",$base[$i]) . ".";
+                    }
+                }
+                ldap_close($ldapconn);
+
+            } else {
+                echo "LDAP bind anonymous failed...";
+            }
+
+        }
+        return $domainName;
+    }
     
 }

@@ -45,11 +45,6 @@
           <small id="migrateIpAdressHelp" class="form-text text-muted">Göç edeceğiniz sunucunun IP adresini giriniz (192.168.1.10).</small>
         </div>
         <div class="form-group">
-          <label for="migrateDomainName">Etki alanı adı</label>
-          <input class="form-control" id="migrateDomainName" aria-describedby="migrateDomainNameHelp" placeholder="Etki alanı adı">
-          <small id="migrateDomainNameHelp" class="form-text text-muted">Göç edeceğiniz etki alanının adını giriniz.</small>
-        </div>
-        <div class="form-group">
           <label for="migrateUsername">Kullanıcı adı</label>
           <input class="form-control" id="migrateUsername" aria-describedby="migrateUsernameHelp" placeholder="Kullanıcı adı">
           <small id="migrateUsernameHelp" class="form-text text-muted">Göç edeceğiniz sunucunun kullanıcı adını giriniz.</small>
@@ -150,7 +145,6 @@
         showSwal('Yükleniyor...','info',2000);
         $('#domainMigration').modal("show");
     }
-
     function startDomainMigration(){
         var form = new FormData();
         
@@ -176,11 +170,9 @@
         var form = new FormData();
         
         ip = document.getElementById("migrateIpAdress").value;
-        domainname = document.getElementById("migrateDomainName").value;
         username = document.getElementById("migrateUsername").value;
         password = document.getElementById("migratePassword").value;
         form.append("ip",ip);
-        form.append("domainname",domainname);
         form.append("username",username);
         form.append("password",password);
         

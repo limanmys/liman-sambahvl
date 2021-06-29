@@ -164,6 +164,11 @@
         });
     }
 
+    function showDomainMigration(){
+        showSwal('Yükleniyor...','info',2000);
+        $('#domainMigration').modal("show");
+    }
+    
     function startDomainMigration(){
         var form = new FormData();
         $('#domainMigration').modal("hide");

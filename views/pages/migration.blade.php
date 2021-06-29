@@ -30,6 +30,10 @@
       <li class="nav-item">
         <a id="chooseSiteTab" class="nav-link" href="#chooseSite" data-toggle="tab" style="pointer-events: none;opacity: 0.4;">Choose Site</a>
       </li>
+
+      <li class="nav-item">
+        <a id="createSiteTab" class="nav-link" href="#createSite" data-toggle="tab" style="pointer-events: none;opacity: 0.4;">Create Site</a>
+      </li>
     </ul>
 
     <div class="tab-content">
@@ -72,16 +76,28 @@
         @include('inputs', [
           "inputs" => [
               "Site Listesi:select_site" => [
-                  
-                  
               ],
-              
           ]
       ])
       <button class="btn btn-success" onclick="startSiteMigration()" style="float:right;">Başlat</button>
 
     </div>
     
+    <div id="createSite" class="tab-pane bd-example">
+      <div class="alert alert-primary d-flex align-items-center " role="alert">
+        <svg class="bi flex-shrink-0 me-2" width="24" height="24" role="img" aria-label="Info:"><use xlink:href="#info-fill"/></svg>
+        <i class="fas fa-icon mr-2"></i>
+        <div>
+          Site oluşturmak için aşağıdaki butonu kullanabilirsiniz.
+        </div>
+      </div>
+      <div class="form-group">
+        <label for="newSiteName">Site adı</label>
+        <input class="form-control" id="newSiteName" aria-describedby="newSiteNameHelp" placeholder="Yeni site adını giriniz.">
+        <small id="newSiteNameHelp" class="form-text text-muted">Oluşturacağınız yeni site adını giriniz.</small>
+      </div>
+      <button class="btn btn-success" onclick="createNewSite()" style="float:right;">Oluştur</button>
+    </div>
 </div>
     
 @endcomponent
@@ -146,6 +162,20 @@
         });
     }
 
+    function createNewSite(){
+        var form = new FormData();
+        let newSiteName = $('#createSite').find('input[name=newSiteName]').val();
+        form.append("newSiteName", newSiteName);
+        request(API('create_site'), form, function(response) {
+
+          showSwal('Site başarı ile oluşturuldu, site seçimi yapınız.','success',2000);
+          $('.nav-tabs a[href="#chooseSite"]').tab('show');
+          listSitesAfterLogin();
+        }, function(error) {
+            showSwal(error.message, 'error', 5000);
+        });
+    }
+
     function checkMigrate(){
         var form = new FormData();
         let domain_btn = document.getElementById("domain");
@@ -201,15 +231,7 @@
             message = JSON.parse(response)["message"];
             var sites = document.getElementById("[name=select_site]");
             if(message.length >= 1){
-
-              $('[name=select_site]').find('option').remove();
-              $.each(message, function(index, value){
-                    $('[name=select_site]').append($("<option>",{
-                          value: value,
-                          text: value
-                    }));
-              }); 
-
+              listSitesAfterLogin();
               setActiveSiteTab();
             }else{
               console.log("No sites");
@@ -220,6 +242,16 @@
         });
     }
 
+    function listSitesAfterLogin(){
+      $('[name=select_site]').find('option').remove();
+      $.each(message, function(index, value){
+        $('[name=select_site]').append($("<option>",{
+          value: value,
+          text: value
+        }));
+      }); 
+    }
+
     function setActiveSiteTab(){
       // burada
       //document.getElementById("ldapLoginTab").style.pointerEvents = "none";
@@ -227,6 +259,10 @@
       //$('.nav-tabs a[href="#chooseSite"]').tab('show');
       document.getElementById("chooseSiteTab").style.pointerEvents = "auto";
       document.getElementById("chooseSiteTab").style.opacity = null;
+
+      document.getElementById("createSiteTab").style.pointerEvents = "auto";
+      document.getElementById("createSiteTab").style.opacity = null;
+
       showSwal('Bağlantı başarı ile kuruldu, lütfen site seçimi yapınız.','success',2000);
       $('.nav-tabs a[href="#chooseSite"]').tab('show');
     }

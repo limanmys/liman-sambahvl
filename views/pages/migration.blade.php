@@ -32,7 +32,7 @@
       </li>
 
       <li class="nav-item">
-        <a id="createSiteTab" class="nav-link" href="#createSite" data-toggle="tab" style="pointer-events: none;opacity: 0.4;">Create Site</a>
+        <a id="createSiteTab" class="nav-link" href="#createSite" data-toggle="tab" style="pointer-events: none;opacity: 0.4;">Site Oluştur</a>
       </li>
     </ul>
 
@@ -69,7 +69,7 @@
           <svg class="bi flex-shrink-0 me-2" width="24" height="24" role="img" aria-label="Info:"><use xlink:href="#info-fill"/></svg>
           <i class="fas fa-icon mr-2"></i>
           <div>
-              Site seçiminizi aşağıdaki listeden yapabilirsiniz veya buton yardımıyla yeni bir site oluşturabilirsiniz.         
+              Site seçiminizi aşağıdaki listeden yapabilirsiniz veya Site Oluştur tabından yeni bir site oluşturabilirsiniz.         
           </div>
       </div>
       <br />
@@ -79,24 +79,6 @@
               ],
           ]
       ])
-      <div>
-          @component('modal-component',[
-            "id" => "createSiteModal",
-            "title" => "Please enter the new site name!",
-            "footer" => [
-                "text" => "OK.",
-                "class" => "btn-success",
-                "onclick" => "createSite()"
-            ]
-          ]) 
-            @include('inputs', [
-              "inputs" => [
-                  "New Site Name: " => "newSiteName:text:"
-              ]
-            ])
-          @endcomponent
-              
-      </div>
       <br />
       <br />
       <button class="btn btn-success" onclick="startSiteMigration()" style="float:right;">Başlat</button>
@@ -164,22 +146,28 @@
         });
     }
 
+    function showDomainMigration(){
+        showSwal('Yükleniyor...','info',2000);
+        $('#domainMigration').modal("show");
+    }
+
     function startDomainMigration(){
         var form = new FormData();
-        $('#domainMigration').modal("hide");
+        
         form.append("ip", $('#domainMigration').find('input[name=ipAddr]').val());
         form.append("username", $('#domainMigration').find('input[name=username]').val());
         form.append("password", $('#domainMigration').find('input[name=password]').val());
 
-        $('#migrationInfo').html("<b>Makine migrate ediliyor. Lütfen bekleyiniz.</b>");
-        
         request(API('migrate_domain'), form, function(response) {
 
-            showSwal('Migration işlemi başladı...', 'info', 3000);
-            observeMigration();
+          $('#migrationInfo').html("<b>Makine migrate ediliyor. Lütfen bekleyiniz.</b>");
+          $('#domainMigration').modal("hide");
+          showSwal('Migration işlemi başladı...', 'info', 3000);
+          observeMigration();
             
-        }, function(error) {
-            showSwal(error.message, 'error', 5000);
+        }, function(response) {
+            let error = JSON.parse(response);
+            showSwal(error.message,'error',5000);
         });
     }
 
@@ -205,9 +193,9 @@
             }else{
               console.log("No sites");
             }
-        }, function(error) {
-          error = JSON.parse(error);
-            console.log(error.message);
+        }, function(response) {
+            let error = JSON.parse(response);
+            showSwal(error.message,'error',5000);
         });
     }
 
@@ -245,33 +233,31 @@
       form.append("username",username);
       form.append("domainname",domainname);
       form.append("password",password);
-      $('#migrationInfo').html("<b>Makine migrate ediliyor. Lütfen bekleyiniz.</b>");
       request(API('migrate_site'), form, function(response) {
-
+        
+          $('#migrationInfo').html("<b>Makine migrate ediliyor. Lütfen bekleyiniz.</b>");
           showSwal('Migration işlemi başladı...', 'info', 3000);
           $('#siteMigrate').modal("hide");
           observeMigration();
 
       }, function(response){
-        let error = JSON.parse(response);
-        showSwal(error.message,'error',2000);
+          let error = JSON.parse(response);
+          showSwal(error.message,'error',5000);
       });
-
       ip,domainname,username,password = null;
 
     }
 
-    function createSite(){
-        $('#createSiteModal').modal("hide");
-        let newSiteName = $('#createSiteModal').find('input[name=newSiteName]').val();
+    function createNewSite(){
         var form = new FormData();
+        let newSiteName = $('#createSite').find('input[name=newSiteName]').val();
         form.append("newSiteName", newSiteName);
         request(API('create_site'), form, function(response) {
-            message = JSON.parse(response)["message"];
-            showSwal(message, 'success', 3000);
-        }, function(response) {
-            let error = JSON.parse(response);
-            showSwal(error.message, 'error', 3000);
+          showSwal('Site başarı ile oluşturuldu, site seçimi yapınız.','success',2000);
+          $('.nav-tabs a[href="#chooseSite"]').tab('show');
+          listSitesAfterLogin();
+        }, function(error) {
+            showSwal(error.message, 'error', 5000);
         });
     }
 

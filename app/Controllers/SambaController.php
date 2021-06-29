@@ -65,7 +65,12 @@ class SambaController{
         $log = runCommand(sudo() . 'cat /tmp/domainLog');
         $check = "tail -n 1 /tmp/domainLog";
         if(runCommand(sudo() . $check)  == "Created symlink /etc/systemd/system/multi-user.target.wants/samba4.service → /etc/systemd/system/samba4.service."){
-            return respond($log .= "\n\nKurulum başarıyla tamamlandı.", 202);
+            if($this->checkDomainPhp() == true){
+                return respond($log .= "\n\nKurulum başarıyla tamamlandı.", 202);
+            }
+            else{
+                return respond("Domain kurulumu tamamlanamadı !",201);
+            } 
         }
         return respond($log, 200);
     }
@@ -473,15 +478,14 @@ class SambaController{
         }
     }
 
-    function checkDomain2(){
-        $path="/etc/systemd/system/samba4.service";
-        if($this->isFileExists($path) == true){
-            return respond(true,200);
+    function checkDomainPhp(){
+        //if(trim(runCommand('net ads info | grep Realm: 1>/dev/null 2>/dev/null && echo "1" || echo "0"')) == "1"){
+        if(trim(runCommand('getent passwd Administrator| grep administrator 1>/dev/null 2>/dev/null && echo "1" || echo "0"')) == "1"){
+            return true;
         }
         else{
-            return respond(false,200);
+            return false;
         }
     }
-
 }
 ?>

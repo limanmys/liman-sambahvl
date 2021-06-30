@@ -7,12 +7,7 @@
         showSwal('Yükleniyor...','info');
         var form = new FormData();
         request(API('list_computers'), form, function(response) {
-            $('#computersTable').html(response).find('table').DataTable({
-            bFilter: true,
-            "language" : {
-                url : "/turkce.json"
-            }
-            });;
+            $('#computersTable').html(response).find('table').DataTable(dataTablePresets('normal'));
             Swal.close();
         }, function(response) {
             let error = JSON.parse(response);

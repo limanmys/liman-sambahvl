@@ -1,15 +1,24 @@
 <div class="row">
   <div class="col-3">
     <div class="nav flex-column nav-pills" id="v-pills-tab" role="tablist" aria-orientation="vertical">
-      <a class="nav-link active" onclick="getInfo()" id="v-pills-info-tab" data-toggle="pill" href="#v-pills-info" role="tab" aria-controls="v-pills-info" aria-selected="true">Detaylar</a>
-      <a class="nav-link" onclick="serviceStatus()" id="v-pills-servicestatus-tab" data-toggle="pill" href="#v-pills-servicestatus" role="tab" aria-controls="v-pills-servicestatus" aria-selected="false">Servis Durumu</a>
-      <a class="nav-link" onclick="verifyDomain()" id="v-pills-domainstatus-tab" data-toggle="pill" href="#v-pills-domainstatus" role="tab" aria-controls="v-pills-domainstatus" aria-selected="false">Etki Alanı</a>
-      <a class="nav-link" onclick="listPaths()" id="v-pills-paths-tab" data-toggle="pill" href="#v-pills-paths" role="tab" aria-controls="v-pills-paths" aria-selected="false">Paths</a>
-      <a class="nav-link" onclick="listHave()" id="v-pills-have-tab" data-toggle="pill" href="#v-pills-have" role="tab" aria-controls="v-pills-have" aria-selected="false">Have</a>
-      <a class="nav-link" onclick="listBuildOptions()" id="v-pills-buildoptions-tab" data-toggle="pill" href="#v-pills-buildoptions" role="tab" aria-controls="v-pills-buildoptions" aria-selected="false">Build Options</a>
-      <a class="nav-link" onclick="listWithOptions()" id="v-pills-withoptions-tab" data-toggle="pill" href="#v-pills-withoptions" role="tab" aria-controls="v-pills-withoptions" aria-selected="false">With Options</a>
-      <a class="nav-link" onclick="listModules()" id="v-pills-modules-tab" data-toggle="pill" href="#v-pills-modules" role="tab" aria-controls="v-pills-modules" aria-selected="false">Modules</a>
-      <a class="nav-link" onclick="getInstallLogs()" id="v-pills-logs-tab" data-toggle="pill" href="#v-pills-logs" role="tab" aria-controls="v-pills-logs" aria-selected="false">Loglar</a>
+      <a class="nav-link active" onclick="getInfo()" id="v-pills-info-tab" data-toggle="pill" href="#v-pills-info" role="tab" aria-controls="v-pills-info" aria-selected="true">
+      {{__('Detaylar')}}</a>
+      <a class="nav-link" onclick="serviceStatus()" id="v-pills-servicestatus-tab" data-toggle="pill" href="#v-pills-servicestatus" role="tab" aria-controls="v-pills-servicestatus" aria-selected="false">
+      {{__('Servis Durumu')}}</a>
+      <a class="nav-link" onclick="verifyDomain()" id="v-pills-domainstatus-tab" data-toggle="pill" href="#v-pills-domainstatus" role="tab" aria-controls="v-pills-domainstatus" aria-selected="false">
+      {{__('Etki Alanı')}}</a>
+      <a class="nav-link" onclick="listPaths()" id="v-pills-paths-tab" data-toggle="pill" href="#v-pills-paths" role="tab" aria-controls="v-pills-paths" aria-selected="false">
+      {{__('Pathler')}}</a>
+      <a class="nav-link" onclick="listHave()" id="v-pills-have-tab" data-toggle="pill" href="#v-pills-have" role="tab" aria-controls="v-pills-have" aria-selected="false">
+      {{__('Have')}}</a>
+      <a class="nav-link" onclick="listBuildOptions()" id="v-pills-buildoptions-tab" data-toggle="pill" href="#v-pills-buildoptions" role="tab" aria-controls="v-pills-buildoptions" aria-selected="false">
+      {{__('Build Seçenekleri')}}</a>
+      <a class="nav-link" onclick="listWithOptions()" id="v-pills-withoptions-tab" data-toggle="pill" href="#v-pills-withoptions" role="tab" aria-controls="v-pills-withoptions" aria-selected="false">
+      {{__('With Seçenekleri')}}</a>
+      <a class="nav-link" onclick="listModules()" id="v-pills-modules-tab" data-toggle="pill" href="#v-pills-modules" role="tab" aria-controls="v-pills-modules" aria-selected="false">
+      {{__('Moduller')}}</a>
+      <a class="nav-link" onclick="getInstallLogs()" id="v-pills-logs-tab" data-toggle="pill" href="#v-pills-logs" role="tab" aria-controls="v-pills-logs" aria-selected="false">
+      {{__('Loglar')}}</a>
 
     </div>
   </div>
@@ -71,7 +80,7 @@
             <div class="col-sm-6">
                 <div class="card">
                 <div class="p-2 text-center ">
-                    <h5 class="mb-3">Kurulum</h5>
+                    <h5 class="mb-3">{{__('Kurulum')}}</h5>
                 </div>
                 <div class="card-body">
                     <pre id="install-logs" style="height:325px;overflow:auto;"></pre>
@@ -81,7 +90,7 @@
             <div class="col-sm-6">
                 <div class="card">
                 <div class="p-2 text-center ">
-                    <h5 class="mb-3">Etki Alanı</h5>
+                    <h5 class="mb-3">{{__('Etki Alanı')}}</h5>
                 </div>
                 <div class="card-body">
                     <pre id="other-logs" style="height:325px;overflow:auto;"></pre>
@@ -133,14 +142,14 @@
         request(API('return_samba_service_status'), form, function(response) {
             message = JSON.parse(response)["message"];
             if(message == true){
-                isActive = '<div class="alert alert-success" role="alert">Samba Servisi Aktif</div>' ;
+                isActive = '<div class="alert alert-success" role="alert">{{__("Samba Servisi Aktif")}}</div>' ;
                 $('#v-pills-servicestatus').html(isActive);
 
                 var d1 = document.getElementById('v-pills-servicestatus');
                 d1.insertAdjacentHTML('beforeend', '<pre id="sambaLog">   </pre>');
                 sambaLog();
             } else{
-                isActive = '<div class="alert alert-danger" role="alert">Samba Servisi Aktif Değil !</div>' ;
+                isActive = '<div class="alert alert-danger" role="alert">{{__("Samba Servisi Aktif Değil !")}}</div>' ;
                 $('#v-pills-servicestatus').html(isActive);
 
             }
@@ -155,11 +164,11 @@
         request(API('verify_domain'), form, function(response) {
             message = JSON.parse(response)["message"];
             if(message == true){
-                isActive = '<div class="alert alert-success" role="alert">Etki Alanı Mevcut</div>' ;
+                isActive = '<div class="alert alert-success" role="alert">{{__("Etki Alanı Mevcut")}}</div>' ;
                 $('#v-pills-domainstatus').html(isActive);
                 returnDomainInformations();
             } else{
-                isActive = '<div class="alert alert-danger" role="alert">Etki Alanı Mevcut Değil !</div>' ;
+                isActive = '<div class="alert alert-danger" role="alert">{{__("Etki Alanı Mevcut Değil !")}}</div>' ;
                 $('#v-pills-domainstatus').html(isActive);
             }
         }, function(error) {
@@ -198,12 +207,7 @@
     function listPaths(){
         var form = new FormData();
         request(API('list_paths'), form, function(response) {
-            $('#pathsTable').html(response).find('table').DataTable({
-            bFilter: true,
-            "language" : {
-                url : "/turkce.json"
-            }
-            });;
+            $('#pathsTable').html(response).find('table').DataTable(dataTablePresets('normal'));
 
         }, function(response) {
             let error = JSON.parse(response);
@@ -214,12 +218,7 @@
     function listHave(){
         var form = new FormData();
         request(API('list_have'), form, function(response) {
-            $('#haveTable').html(response).find('table').DataTable({
-            bFilter: true,
-            "language" : {
-                url : "/turkce.json"
-            }
-            });;
+            $('#haveTable').html(response).find('table').DataTable(dataTablePresets('normal'));
         }, function(response) {
             let error = JSON.parse(response);
             showSwal(error.message, 'error', 3000);
@@ -229,12 +228,7 @@
     function listBuildOptions(){
         var form = new FormData();
         request(API('list_build_options'), form, function(response) {
-            $('#buildOptionsTable').html(response).find('table').DataTable({
-            bFilter: true,
-            "language" : {
-                url : "/turkce.json"
-            }
-            });;
+            $('#buildOptionsTable').html(response).find('table').DataTable(dataTablePresets('normal'));
         }, function(response) {
             let error = JSON.parse(response);
             showSwal(error.message, 'error', 3000);
@@ -244,12 +238,7 @@
     function listWithOptions(){
         var form = new FormData();
         request(API('list_with_options'), form, function(response) {
-            $('#withOptionsTable').html(response).find('table').DataTable({
-            bFilter: true,
-            "language" : {
-                url : "/turkce.json"
-            }
-            });;
+            $('#withOptionsTable').html(response).find('table').DataTable(dataTablePresets('normal'));
         }, function(response) {
             let error = JSON.parse(response);
             showSwal(error.message, 'error', 3000);
@@ -259,12 +248,7 @@
     function listModules(){
         var form = new FormData();
         request(API('list_modules'), form, function(response) {
-            $('#modulesTable').html(response).find('table').DataTable({
-            bFilter: true,
-            "language" : {
-                url : "/turkce.json"
-            }
-            });;
+            $('#modulesTable').html(response).find('table').DataTable(dataTablePresets('normal'));
         }, function(response) {
             let error = JSON.parse(response);
             showSwal(error.message, 'error', 3000);

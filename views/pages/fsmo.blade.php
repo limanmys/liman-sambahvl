@@ -3,10 +3,10 @@
   <svg class="bi flex-shrink-0 me-2" width="24" height="24" role="img" aria-label="Info:"><use xlink:href="#info-fill"/></svg>
   <i class="fas fa-icon mr-2"></i>
   <div>
-  Tablo üzerinde sağ tuş ile bir rolü üzerinize alabilir veya tüm rolleri almak için butonu kullanabilirsiniz.
+    {{__('Tablo üzerinde sağ tuş ile bir rolü üzerinize alabilir veya tüm rolleri almak için butonu kullanabilirsiniz.')}}
   </div>
 </div>
-<button class="btn btn-success mb-2" id="takeallroles_btn" onclick="showInfoModal()" type="button">Tüm rolleri al</button>
+<button class="btn btn-success mb-2" id="takeallroles_btn" onclick="showInfoModal()" type="button">{{__('Tüm rolleri al')}}</button>
 <div class="table-responsive" id="fsmoTable"></div>
 
 @component('modal-component',[
@@ -37,16 +37,11 @@
 <script>
     // == Printing Table ==
     function printTable(){
-        showSwal('Yükleniyor...','info');
+        showSwal('{{__("Yükleniyor...")}}','info');
 
         var form = new FormData();
         request(API('roles_table'), form, function(response) {
-            $('#fsmoTable').html(response).find('table').DataTable({
-            bFilter: true,
-            "language" : {
-                url : "/turkce.json"
-            }
-            });;
+            $('#fsmoTable').html(response).find('table').DataTable(dataTablePresets('normal'));
             Swal.close();
         }, function(response) {
             let error = JSON.parse(response);
@@ -60,23 +55,22 @@
         var form = new FormData();
         let contraction = line.querySelector("#contraction").innerHTML;
         form.append("contraction",contraction);
-        showSwal('Rol alınıyor...','info');
+        showSwal('{{__("Rol transfer ediliyor...")}}','info');
 
         request(API('take_the_role'), form, function(response) {
             message = JSON.parse(response)["message"];
             Swal.close();
             if(message.includes("successful")){
                 printTable();
-                showSwal("Rol başarıyla alındı",'success',7000);
+                showSwal('{{__("Rolün FSMO transferi başarılı")}}','success',7000);
             }
             else if(message.includes("already")){
-                //This DC already has the 'schema' FSMO role
-                showSwal("Bu DC zaten bu role sahip.",'info',7000);
+                showSwal('{{__("Bu DC zaten bu role sahip")}}','info',7000);
             }
             else if(message.includes("WERR_HOST_UNREACHABLE")){
                 showWarningModal();
                 temp=contraction;
-            }                
+            }              
             else{
                 showSwal(message, 'error', 7000);
             }
@@ -88,9 +82,10 @@
 
     // == Information Modal ==
     function showInfoModal(line){
-        showSwal('Yükleniyor...','info',3500);
+        showSwal('Yükleniyor...','info');
         var form = new FormData();
         request(API('take_all_roles'), form, function(response) {
+            Swal.close();
             message = JSON.parse(response)["message"];
             $('#infoModal').find('.modal-body').html(
                 "<pre>"+message+"</pre>"
@@ -110,7 +105,7 @@
 
     // == Seize Role ==
     function seizeTheRole(contraction){
-        showSwal('Rol alınıyor...','info');
+        showSwal('{{__("Rol seize ediliyor...")}}','info');
         var form = new FormData();
         form.append("contraction",temp);
         
@@ -118,7 +113,7 @@
             Swal.close();
             message = JSON.parse(response)["message"];
             printTable();
-            showSwal("Rol başarıyla alındı.", 'success', 5000); 
+            showSwal('{{__("Rolün FSMO transferi başarılı")}}','success',7000);
             
         }, function(response) {
             let error = JSON.parse(response);
@@ -130,10 +125,10 @@
      function showWarningModal(contraction){
         //console.log(contraction);
         $('#warningModal').find('.modal-footer').html(
-            '<button type="button" class="btn btn-success" onClick="warningModalYes()">Evet</button> '
-            + '<button type="button" class="btn btn-danger" onClick="warningModalNo()">Hayır</button>');
+            '<button type="button" class="btn btn-success" onClick="warningModalYes()">{{__("Evet")}}</button> '
+            + '<button type="button" class="btn btn-danger" onClick="warningModalNo()">{{__("Hayır")}}</button>');
         $('#warningModal').find('.modal-body').html(
-            " Rolünü almaya çalıştığınız sunucuya erişilemiyor ! \n Yine de devam etmek ister misiniz ?");
+            " {{__('Rolünü almaya çalıştığınız sunucuya erişilemiyor ! \n Yine de devam etmek ister misiniz ?')}}");
         $('#warningModal').modal("show");
     }
 
@@ -143,7 +138,6 @@
     }
 
     function warningModalNo(){
-        showSwal('Yükleniyor...','info',2000);
         $('#warningModal').modal("hide");
     }
 

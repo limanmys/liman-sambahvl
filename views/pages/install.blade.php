@@ -9,10 +9,10 @@
     <svg class="bi flex-shrink-0 me-2" width="24" height="24" role="img" aria-label="Info:"><use xlink:href="#info-fill"/></svg>
     <i class="fas fa-icon mr-2"></i>
     <div>
-        SambaHVL paketini kurmak için lütfen aşağıdaki butonu kullanabilirsiniz.
+    {{__('SambaHVL paketini kurmak için lütfen aşağıdaki butonu kullanabilirsiniz.')}} 
     </div>
 </div>
-<button class="btn btn-success mb-2" id="install" onclick="installSmbPackage()" style="float:left;">SambaHVL Paketini Kur</button>
+<button class="btn btn-success mb-2" id="install" onclick="installSmbPackage()" style="float:left;">{{__('SambaHVL Paketini Kur')}} </button>
 <button class="btn btn-danger mb-2" id="delete" style="float:left;margin-left:10px;visibility:hidden;"></button>
 
 <br>
@@ -56,7 +56,7 @@
     }
     function installSmbPackage(){
         var form = new FormData();
-        showSwal('{{__("Loading")}}...','info',2000);
+        showSwal('{{__("Yükleniyor...")}}','info',2000);
         request(API('install_smb_package'), new FormData(), function (response) {
             const output = JSON.parse(response).message;
             $("#install").attr("disabled","true");
@@ -80,7 +80,7 @@
                 '<svg class="bi flex-shrink-0 me-2" width="24" height="24" role="img" aria-label="Success:"><use xlink:href="#check-circle-fill"/></svg>' +
                 '<i class="fas fa-icon mr-2"></i>' +
                 '<div>'+
-                    'Sunucuda SambaHvl paketi tespit edildi !'+
+                    '{{__("Sunucuda SambaHvl paketi tespit edildi !")}}'+
                 '</div>'+
             '</div>');
         
@@ -89,9 +89,9 @@
     }
     function removeSambaPackage(){
         var form = new FormData();
-        showSwal("Samba paketi kaldırılıyor.", 'info', 3000);
+        showSwal('{{__("Samba paketi kaldırılıyor.")}}', 'info', 3000);
         request(API('delete_smb_package'), form, function(response) {
-            showSwal("Paket başarıyla kaldırıldı !", 'success', 3000);
+            showSwal('{{__("Paket başarıyla kaldırıldı !")}}', 'success', 3000);
             window.location.reload();
         }, function(error) {
             showSwal(error.message, 'error', 3000);
@@ -108,13 +108,13 @@
                 '<svg class="bi flex-shrink-0 me-2" width="24" height="24" role="img" aria-label="Danger:"><use xlink:href="#exclamation-triangle-fill" /></svg>' +
                 '<i class="fas fa-icon mr-2"></i>' +
                 '<div>'+
-                    'Hata : Sunucuda kurulu Samba Paketi tespit edildi !'+
+                    '{{__("Hata : Sunucuda kurulu Samba Paketi tespit edildi !")}}'+
                 '</div>'+
             '</div>');
             
         let deleteButton = document.getElementById("delete");
         deleteButton.onclick = function() {removeSambaPackage()};
-        deleteButton.innerText = "Samba Paketini Kaldır";
+        deleteButton.innerText = '{{__("Samba Paketini Kaldır")}}';
         deleteButton.style.visibility = "visible";
     }
     function onTaskSuccess(){

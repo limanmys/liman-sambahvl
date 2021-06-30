@@ -14,55 +14,55 @@
     <li class="nav-item">
         <a class="nav-link active" id="tab1_li" onclick="tab1()" href="#tab1" data-toggle="tab">
         <i class="fas fa-download mr-2"></i>
-        Kurulum</a>
+        {{__('Kurulum')}}</a>
     </li>
 
     <li class="nav-item">
         <a class="nav-link" onclick="getInfo()" id="info_li" href="#info"  data-toggle="tab">
         <i class="fas fa-info mr-2"></i>
-        Samba Bilgileri</a>
+        {{__('Samba Bilgileri')}}</a>
     </li>
 
     <li class="nav-item">
         <a class="nav-link " id="users_li" onclick="listUsers()" href="#users" data-toggle="tab">
         <i class="fas fa-user mr-2"></i>
-        Kullanıcılar</a>
+        {{__('Kullanıcılar')}}</a>
     </li>
 
     <li class="nav-item">
         <a class="nav-link " id="groups_li" href="#groups" data-toggle="tab">
         <i class="fas fa-users mr-2"></i>
-        Gruplar</a>
+        {{__('Gruplar')}}</a>
     </li>
 
     <li class="nav-item">
         <a class="nav-link " id="computers_li" onclick="listComputers()" href="#computers"  data-toggle="tab">
         <i class="fas fa-desktop mr-2"></i>
-        Bilgisayarlar</a>
+        {{__('Bilgisayarlar')}}</a>
     </li>
     
     <li class="nav-item">
         <a class="nav-link "  id="fsmo_li" onclick="printTable()" href="#fsmo" data-toggle="tab">
         <i class="fas fa-id-card mr-2"></i>
-        FSMO Rol Yönetimi</a>
+        {{__('FSMO Rol Yönetimi')}}</a>
     </li>
 
     <li class="nav-item">
         <a class="nav-link " id="replication_li" onclick="replicationInfo()" href="#replication" data-toggle="tab">
         <i class="fas fa-retweet mr-2"></i>
-        Replikasyon Bilgisi</a>
+        {{__('Replikasyon Bilgisi')}}</a>
     </li>
 
     <li class="nav-item">
         <a class="nav-link" id="sites_li" onclick="listSites()" href="#sites"  data-toggle="tab">
         <i class="fas fa-network-wired mr-2"></i>
-        Site Listesi</a>
+        {{__('Site Listesi')}}</a>
     </li>
 
     <li class="nav-item">
         <a class="nav-link" id="sites_li" onclick="getClocks()" href="#clock"  data-toggle="tab">
         <i class="fas fa-clock mr-2"></i>
-        Sistem Saati</a>
+        {{__('Sistem Saati')}}</a>
     </li>
 
     
@@ -173,10 +173,10 @@
     async function refreshAfterLog(){
       const { value: accept } = await Swal.fire({
         type: 'success',
-        title: 'Başarılı !',
-        text: 'İşlem başarıyla gerçekleştirildi. Kayıtları Samba Bilgileri>Loglar sekmesinden görüntüleyebilirsiniz.',
+        title: '{{__("Başarılı !")}}',
+        text: '{{__("İşlem başarıyla gerçekleştirildi. Kayıtları Samba Bilgileri>Loglar sekmesinden görüntüleyebilirsiniz.")}}',
         confirmButtonText:
-          'Devam et <i class="fa fa-arrow-right"></i>',
+          '{{__("Devam et")}} <i class="fa fa-arrow-right"></i>',
       })
 
       if (accept) {

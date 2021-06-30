@@ -5,11 +5,11 @@
 
     <ul class="nav nav-tabs" role="tablist" style="margin-bottom: 15px;">
       <li class="nav-item">
-        <a class="nav-link active" id="ldapLoginTab" href="#ldapLogin" data-toggle="tab">LDAP'a Bağlan</a>
+        <a class="nav-link active" id="ldapLoginTab" href="#ldapLogin" data-toggle="tab">{{__("LDAP'a Bağlan")}}</a>
       </li>
 
       <li class="nav-item">
-        <a id="chooseSiteTab" class="nav-link" href="#chooseSite" data-toggle="tab" style="pointer-events: none;opacity: 0.4;">Site Seçimi</a>
+        <a id="chooseSiteTab" class="nav-link" href="#chooseSite" data-toggle="tab" style="pointer-events: none;opacity: 0.4;">{{__('Site Seçimi')}}</a>
       </li>
 
     </ul>
@@ -18,22 +18,22 @@
     <div id="ldapLogin" class="tab-pane active">
       <form>
         <div class="form-group">
-          <label for="migrateIpAdress">IP Adresi</label>
-          <input class="form-control" id="migrateIpAdress" aria-describedby="migrateIpAdressHelp" placeholder="Ip adresi">
-          <small id="migrateIpAdressHelp" class="form-text text-muted">Göç edeceğiniz sunucunun IP adresini giriniz (192.168.1.10).</small>
+          <label for="migrateIpAdress">{{__('IP adresi')}}</label>
+          <input class="form-control" id="migrateIpAdress" aria-describedby="migrateIpAdressHelp" placeholder="{{__('IP adresi')}}">
+          <small id="migrateIpAdressHelp" class="form-text text-muted">{{__('Göç edeceğiniz sunucunun IP adresini giriniz (192.168.1.10)')}}.</small>
         </div>
         <div class="form-group">
-          <label for="migrateUsername">Kullanıcı adı</label>
-          <input class="form-control" id="migrateUsername" aria-describedby="migrateUsernameHelp" placeholder="Kullanıcı adı">
-          <small id="migrateUsernameHelp" class="form-text text-muted">Göç edeceğiniz sunucunun kullanıcı adını giriniz.</small>
+          <label for="migrateUsername">{{__('Kullanıcı adı')}}ı</label>
+          <input class="form-control" id="migrateUsername" aria-describedby="migrateUsernameHelp" placeholder="{{__('Kullanıcı adı')}}">
+          <small id="migrateUsernameHelp" class="form-text text-muted">{{__('Göç edeceğiniz sunucunun kullanıcı adını giriniz.')}}</small>
         </div>
         <div class="form-group">
-          <label for="migratePassword">Parola</label>
-          <input type="password" class="form-control" id="migratePassword" placeholder="Parola">
-          <small id="migrateIpAdressHelp" class="form-text text-muted">Göç edeceğiniz sunucunun kullanıcı parolasını giriniz.</small>
+          <label for="migratePassword">{{__('Parola')}}</label>
+          <input type="password" class="form-control" id="migratePassword" placeholder="{{__('Parola')}}">
+          <small id="migrateIpAdressHelp" class="form-text text-muted">{{__('Göç edeceğiniz sunucunun kullanıcı parolasını giriniz.')}}</small>
         </div>
       </form>
-    <button class="btn btn-primary" onclick="ldapLogin()" style="float:right;">Bağlantıyı Kontrol Et <i class="fas fa-plug"></i></button>
+    <button class="btn btn-primary" onclick="ldapLogin()" style="float:right;">{{__('Bağlantıyı Kontrol Et ')}}<i class="fas fa-plug"></i></button>
 
     </div>
 
@@ -42,7 +42,7 @@
           <svg class="bi flex-shrink-0 me-2" width="24" height="24" role="img" aria-label="Info:"><use xlink:href="#info-fill"/></svg>
           <i class="fas fa-icon mr-2"></i>
           <div>
-              Site seçiminizi aşağıdaki listeden yapabilirsiniz.         
+            {{__('Site seçiminizi aşağıdaki listeden yapabilirsiniz.')}} 
           </div>
       </div>
       <br />
@@ -53,7 +53,7 @@
       ])
       <br />
       <br />
-      <button class="btn btn-success" onclick="startSiteMigration()" style="float:right;">Başlat</button>
+      <button class="btn btn-success" onclick="startSiteMigration()" style="float:right;">{{__('Başlat')}} </button>
 
     </div>
     
@@ -62,18 +62,18 @@
 @endcomponent
 
 <div class="p-3 text-center ">
-    <h1 class="mb-3">Migration İşlemi</h1>
+    <h1 class="mb-3">{{__('Migration İşlemi')}}</h1>
 </div>
 <div class="alert alert-primary d-flex align-items-center " role="alert" id="infoAlert">
     <svg class="bi flex-shrink-0 me-2" width="24" height="24" role="img" aria-label="Info:"><use xlink:href="#info-fill"/></svg>
     <i class="fas fa-icon mr-2"></i>
     <div>
-          Migration işlemi için aşağıdaki butonu kullanabilirsiniz.
+      {{__('Migration için aşağıdaki butonu kullanabilirsiniz.')}}
     </div>
 </div>
 <div class="text-area" id="checkInfo"></div>
 <br />
-<button class="btn btn-success mb-2" id="site" onclick="showSiteMigration()" type="button">Migrate Et</button>
+<button class="btn btn-success mb-2" id="site" onclick="showSiteMigration()" type="button">{{__('Migrate Et')}}</button>
 <div id="migrationInfo"></div>
 <pre id="migrationLogs" style="overflow:auto;height:200px"> </pre>
 
@@ -142,7 +142,7 @@
       document.getElementById("chooseSiteTab").style.pointerEvents = "auto";
       document.getElementById("chooseSiteTab").style.opacity = null;
 
-      showSwal('Bağlantı başarı ile kuruldu, lütfen site seçimi yapınız.','success',2000);
+      showSwal('{{__("Bağlantı başarı ile kuruldu, lütfen site seçimi yapınız.")}}','success',2000);
       $('.nav-tabs a[href="#chooseSite"]').tab('show');
     }
 
@@ -161,8 +161,8 @@
 
       request(API('migrate_site'), form, function(response) {
         
-          $('#migrationInfo').html("<b>Makine migrate ediliyor. Lütfen bekleyiniz.</b>");
-          showSwal('Migration işlemi başladı...', 'info', 3000);
+          $('#migrationInfo').html("<b> {{__('Makine migrate ediliyor. Lütfen bekleyiniz.')}}</b>");
+          showSwal('{{__("Migration işlemi başladı...")}}', 'info', 3000);
           $('#siteMigrate').modal("hide");
           observeMigration();
 

@@ -7,12 +7,7 @@
         var form = new FormData();
 
         request(API('replication_organized'), form, function(response) {
-            $('.replicationTable').html(response).find('table').DataTable({
-            bFilter: true,
-            "language" : {
-                url : "/turkce.json"
-            }
-            });;
+            $('.replicationTable').html(response).find('table').DataTable(dataTablePresets('normal'));
             Swal.close();
         }, function(response) {
             let error = JSON.parse(response);

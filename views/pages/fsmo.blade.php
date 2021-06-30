@@ -82,7 +82,7 @@
 
     // == Information Modal ==
     function showInfoModal(line){
-        showSwal('Yükleniyor...','info');
+        showSwal('{{__("Yükleniyor...")}}','info');
         var form = new FormData();
         request(API('take_all_roles'), form, function(response) {
             Swal.close();

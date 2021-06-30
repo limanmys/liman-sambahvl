@@ -34,7 +34,7 @@
     <svg class="bi flex-shrink-0 me-2" width="24" height="24" role="img" aria-label="Info:"><use xlink:href="#info-fill"/></svg>
     <i class="fas fa-icon mr-2"></i>
     <div>
-        Buton yardımıyla yeni bir site oluşturabilir veya tabloda sağ tuş kullanarak bazı site işlemleri yapabilirsiniz.
+        {{__('Buton yardımıyla yeni bir site oluşturabilir veya tabloda sağ tuş kullanarak bazı site işlemleri yapabilirsiniz.')}}
     </div>
 </div>
 
@@ -48,15 +48,10 @@
 <script>
 
     function listSites(){
-        showSwal('Yükleniyor...','info');
+        showSwal('{{__("Yükleniyor...")}}','info');
         var form = new FormData();
         request(API('list_sites'), form, function(response) {
-            $('#table3').html(response).find('table').DataTable({
-            bFilter: true,
-            "language" : {
-                url : "/turkce.json"
-            }
-            });;
+            $('#table3').html(response).find('table').DataTable(dataTablePresets('normal'));
             Swal.close();
         }, function(response) {
             let error = JSON.parse(response);
@@ -100,7 +95,7 @@
         form.append("siteName", siteName);
         request(API('servers_of_site'), form, function(response) {
             $('#serversOfSite-table').find('.table-body').html(response).find("table").DataTable(dataTablePresets('normal'));
-            $('#viewServersOfSiteModal').find('.modal-header').html('<h4><strong>'+siteName+'</strong> | {{__("Servers of Site")}} </h4>');
+            $('#viewServersOfSiteModal').find('.modal-header').html('<h4><strong>'+siteName+'</strong> | {{__("Site Sunucuları")}} </h4>');
             $('#viewServersOfSiteModal').modal("show");
         }, function(response) {
             let error = JSON.parse(response);
@@ -114,7 +109,7 @@
         form.append("newSiteName", newSiteName);
         request(API('add_server_to_site'), form, function(response) {
             $('#availableServers-table').find('.table-body').html(response).find("table").DataTable(dataTablePresets('normal'));
-            $('#viewAvailableServersOfSiteModal').find('.modal-header').html('<h4><strong>'+newSiteName+'</strong> | {{__("Available Servers to Add Site")}} </h4>');
+            $('#viewAvailableServersOfSiteModal').find('.modal-header').html('<h4><strong>'+newSiteName+'</strong> | {{__("Site Eklenebilecek Mevcut Sunucular")}} </h4>');
             $('#viewAvailableServersOfSiteModal').modal("show");
         }, function(response) {
             let error = JSON.parse(response);

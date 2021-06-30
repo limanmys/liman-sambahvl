@@ -203,7 +203,7 @@ class SambaController{
         }
         return view('table', [
             "value" => $data,
-            "title" => ["Rol","Sunucu","*hidden*"],
+            "title" => ["Roller","Sunucular","*hidden*"],
             "display" => ["role","name","contraction:contraction"],
             "menu" => [
                 "Bu rolü al" => [
@@ -256,17 +256,17 @@ class SambaController{
 
         return view('table', [
             "value" => $data,
-            "title" => ["Incoming Host Name", "Info", "Outgoing Host Name", "*hidden*"],
+            "title" => ["Gelen Ana Bilgisayar Adı", "Bilgi", "Giden Ana Bilgisayar Adı", "*hidden*"],
             "display" => ["hostNameTo", "info", "hostNameFrom", "lastUpdateTime:lastUpdateTime"],
             "onclick" => "test",
             "menu" => [
 
-                "Update Replication" => [
+                "Replikasyonu Güncelle" => [
                     "target" => "updateReplication",
                     "icon" => "fa-plus-circle"
                 ],
 
-                "Last Update Time" => [
+                "Son Güncelleme Zamanı" => [
                     "target" => "showUpdateTime",
                     "icon" => "fa-recycle"
                 ],

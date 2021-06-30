@@ -4,7 +4,7 @@
 <script>
 
     function listComputers(){
-        showSwal('Yükleniyor...','info');
+        showSwal('{{__("Yükleniyor...")}}','info');
         var form = new FormData();
         request(API('list_computers'), form, function(response) {
             $('#computersTable').html(response).find('table').DataTable(dataTablePresets('normal'));

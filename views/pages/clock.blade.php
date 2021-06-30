@@ -2,22 +2,22 @@
     <div class="col-sm-6">
         <div class="card">
         <div class="card-body">
-            <h5 class="card-title">System Clock</h5>
+            <h5 class="card-title">{{__("Sistem Saati")}}</h5>
             <br><br>
             <input class="form-control" type="text" id="systemClock" readonly>
             <br>
-            <button onclick="getSystemClock()" class="btn btn-primary">Get System Clock</button>
+            <button onclick="getSystemClock()" class="btn btn-primary">{{__("Sistem Saatini Bul")}}</button>
         </div>
         </div>
     </div>
     <div class="col-sm-6">
         <div class="card">
         <div class="card-body">
-            <h5 class="card-title">Hardware Clock</h5>
+            <h5 class="card-title">{{__("Donanım Saati")}}</h5>
             <br><br>
             <input class="form-control" type="text" id="hwClock" readonly>
             <br>
-            <button onclick="getHardwareClock()" class="btn btn-primary">Get Hardware Clock</button>
+            <button onclick="getHardwareClock()" class="btn btn-primary">{{__("Donanım Saatini Bul")}}</button>
         </div>
         </div>
     </div>

@@ -471,7 +471,7 @@ class SambaController{
             return respond($output,200);
         }
         else{
-            return respond("Bu eklenti ile bu makineye daha önce \nsambahvl kurulmamış.",200);
+            return respond("",200);
         }
 
     }
@@ -487,7 +487,7 @@ class SambaController{
             $output = runCommand(sudo() . "cat /tmp/domainLog");
             return respond($output,200);
         }
-        return respond("Bu eklenti ile bu makinede etki alanı oluşturma \nveya göç işlemi yapılmamış.",200);
+        return respond("",200);
         
 
     }

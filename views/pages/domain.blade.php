@@ -1,15 +1,15 @@
 <div class="p-3 text-center ">
-    <h1 class="mb-3">Etki Alanı Oluşturma</h1>
+    <h1 class="mb-3">{{__('Etki Alanı Oluşturma')}}</h1>
 </div>
 <div class="alert alert-primary d-flex align-items-center " role="alert" id="infoAlert">
     <svg class="bi flex-shrink-0 me-2" width="24" height="24" role="img" aria-label="Info:"><use xlink:href="#info-fill"/></svg>
     <i class="fas fa-icon mr-2"></i>
     <div>
-    Etki alanı kurmak için aşağıdaki butonu kullanabilirsiniz.
+    {{__('Etki alanı oluşturmak için butonu kullanabilirsiniz.')}}
     </div>
 </div>
 <br />
-<button class="btn btn-success mb-2" id="createDomainButton" onclick="createDomain()" type="button">Etki Alanı Oluştur</button>
+<button class="btn btn-success mb-2" id="createDomainButton" onclick="createDomain()" type="button">{{__('Etki Alanı Oluştur')}}</button>
 <div id="domainStatus"></div> 
 <pre id="createDomainLogs" style="overflow:auto;height:200px"> </pre>
 
@@ -38,7 +38,7 @@
 
     function createDomain(){
         var form = new FormData();
-        $('#domainStatus').html("<b>Etki alanı oluşturuluyor. Lütfen bekleyiniz.</b>");
+        $('#domainStatus').html("<b>{{__('Etki alanı oluşturuluyor. Lütfen bekleyiniz.')}}</b>");
         request(API('create_samba_domain'), form, function(response) {
             //returnDomainInformations();
             observe();
@@ -67,7 +67,7 @@
             $('#createDomainLogs').append(error.message);
             refreshAfterLog();
            } else{
-            $('#createDomainLogs').append("Kurulum sırasında hata oluştu.");
+            $('#createDomainLogs').append("{{__('Kurulum sırasında hata oluştu.')}}");
            }
         });
     }
@@ -76,7 +76,7 @@
         var form = new FormData();
         request(API('return_domain_informations'), form, function(response) {
             message = JSON.parse(response)["message"];
-            $('#domainStatus').html("<b>Etki alanı bilgileri :</b>");
+            $('#domainStatus').html("<b>{{__('Etki alanı bilgileri :')}}</b>");
             $('#domainLogs').html("\n" + message);
         }, function(error) {
             showSwal(error.message, 'error', 3000);

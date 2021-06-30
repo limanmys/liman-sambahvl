@@ -164,27 +164,6 @@ class LdapController
         ]);
     }
 
-    function listSites2(){
-
-        $ldap = $this->connect();
-
-        $filter = "objectClass=site";
-        $result = ldap_search($ldap, "CN=Configuration,".$this->basedn, $filter);
-        $entries = ldap_get_entries($ldap,$result);
-
-        $count = ldap_count_entries($ldap, $result);
-        $data = [];
-        for($i=0 ; $i<$count ; $i++){
-            $nameItem = $entries[$i]["name"][0];
-            $data[] = [
-                "name" => $nameItem,
-            ];
-        }
-        $this->close($ldap);
-
-        return respond($data,200);
-    }
-
     function createSite(){
 
         validate([

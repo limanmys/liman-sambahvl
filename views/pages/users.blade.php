@@ -5,15 +5,10 @@
 <script>
 
     function listUsers(){
-        showSwal('Yükleniyor...','info');
+        showSwal('{{__("Yükleniyor...")}}','info');
         var form = new FormData();
         request(API('list_users'), form, function(response) {
-            $('#usersTable').html(response).find('table').DataTable({
-            bFilter: true,
-            "language" : {
-                url : "/turkce.json"
-            }
-            });;
+            $('#usersTable').html(response).find('table').DataTable(dataTablePresets('normal'));
             Swal.close();
         }, function(response) {
             let error = JSON.parse(response);

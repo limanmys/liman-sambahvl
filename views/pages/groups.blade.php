@@ -23,7 +23,7 @@
 
 <script>
     function listGroups(){
-        showSwal('Yükleniyor...','info');
+        showSwal('{{__("Yükleniyor...")}}','info');
         var form = new FormData();
         var groupType = $('#test').find('select[name=groupType]').val();
         form.append("groupType",groupType);

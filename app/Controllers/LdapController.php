@@ -64,7 +64,7 @@ class LdapController
 
         return view('table', [
             "value" => $data,
-            "title" => ["Kullanıcı"],
+            "title" => ["Kullanıcılar"],
             "display" => ["name"]
         ]);
 
@@ -94,7 +94,7 @@ class LdapController
     
         return view('table', [
             "value" => $data,
-            "title" => ["Grup"],
+            "title" => ["Gruplar"],
             "display" => ["name"]
         ]);
     
@@ -118,7 +118,7 @@ class LdapController
     
         return view('table', [
             "value" => $data,
-            "title" => ["Bilgisayar"],
+            "title" => ["Bilgisayarlar"],
             "display" => ["name"]
         ]);
     
@@ -148,15 +148,15 @@ class LdapController
             "title" => ["Sites"],
             "display" => ["name"],
             "menu" => [
-                "Delete Site" => [
+                "Site Sil" => [
                     "target" => "deleteSite",
                     "icon" => "fas fa-trash-alt",
                 ],  
-                "Servers" => [
+                "Sunucular" => [
                     "target" => "showServersOfSite",
                     "icon" => "fas fa-server",
                 ],  
-                "Add Server" => [
+                "Sunucu Ekle" => [
                     "target" => "addServerToSite",
                     "icon" => "fas fa-plus",
                 ],  
@@ -228,7 +228,7 @@ class LdapController
 
         return view('table', [
             "value" => $data,
-            "title" => ["Servers"],
+            "title" => ["Sunucular"],
             "display" => ["name"],
         ]);
     }
@@ -257,7 +257,7 @@ class LdapController
 
         return view('table', [
             "value" => $data,
-            "title" => ["Available Servers", "*hidden*", "*hidden*"],
+            "title" => ["Mevcut Sunucular", "*hidden*", "*hidden*"],
             "display" => ["name", "dnOfServer:dnOfServer", "newSiteName:newSiteName"],
             "onclick" => "addThisServer"
         ]);

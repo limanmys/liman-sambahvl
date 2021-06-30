@@ -2,7 +2,7 @@
   <svg class="bi flex-shrink-0 me-2" width="24" height="24" role="img" aria-label="Info:"><use xlink:href="#info-fill"/></svg>
   <i class="fas fa-icon mr-2"></i>
   <div>
-        Istediğiniz grup türünü açılır pencereden seçip buton yardımı ile listeletebilirsiniz.
+    {{__('Istediğiniz grup türünü açılır pencereden seçip buton yardımı ile listeletebilirsiniz.')}}
   </div>
 </div>
 <div id="test">
@@ -16,7 +16,7 @@
           ]
       ])
 </div>
-<small><button class="btn btn-success mb-2" id="groupBtn" onclick="listGroups()"  type="button">Listele</button></small>
+<small><button class="btn btn-success mb-2" id="groupBtn" onclick="listGroups()"  type="button">{{__('Listele')}}</button></small>
 <br />
 <br />
 <div class="table-responsive" id="groupsTable"></div>
@@ -28,12 +28,7 @@
         var groupType = $('#test').find('select[name=groupType]').val();
         form.append("groupType",groupType);
         request(API('list_groups'), form, function(response) {
-            $('#groupsTable').html(response).find('table').DataTable({
-            bFilter: true,
-            "language" : {
-                url : "/turkce.json"
-            }
-            });;
+            $('#groupsTable').html(response).find('table').DataTable(dataTablePresets('normal'));
             Swal.close();
 
         }, function(response) {

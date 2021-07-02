@@ -61,11 +61,12 @@
     }
 
     function createSite(){
+
+        $('#createSiteModal').modal("hide");
         let newSiteName = $('#createSiteModal').find('input[name=newSiteName]').val();
         var form = new FormData();
         form.append("newSiteName", newSiteName);
         request(API('create_site'), form, function(response) {
-            $('#createSiteModal').modal("hide");
             message = JSON.parse(response)["message"];
             showSwal(message, 'success', 3000);
             listSites();

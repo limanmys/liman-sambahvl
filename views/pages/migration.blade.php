@@ -39,7 +39,7 @@
 
     <div id="chooseSite" class="tab-pane bd-example">
       <div class="alert alert-primary d-flex align-items-center " role="alert">
-          <svg class="bi flex-shrink-0 me-2" width="24" height="24" role="img" aria-label="Info:"><use xlink:href="#info-fill"/></svg>
+        <svg class="bi flex-shrink-0 me-2" width="24" height="24" role="img" aria-label="Info:"><use xlink:href="#info-fill"/></svg>
           <i class="fas fa-icon mr-2"></i>
           <div>
             {{__('Site seçiminizi aşağıdaki listeden yapabilirsiniz.')}} 
@@ -54,7 +54,6 @@
       <br />
       <br />
       <button class="btn btn-success" onclick="startSiteMigration()" style="float:right;">{{__('Başlat')}} </button>
-
     </div>
     
 </div>
@@ -79,6 +78,7 @@
 
 <script>
 
+
     function observeMigration(){
         var form = new FormData();
         request(API('migrate_log'), form, function(response) {
@@ -99,6 +99,10 @@
            } else{
             $('#migrationLogs').append("\n\nKurulum sırasında hata oluştu.");
            }
+           let x = document.getElementById("createDomainButton");
+            let y = document.getElementById("site");
+            x.disabled = false;
+            y.disabled = false;
         });
     }
 
@@ -151,24 +155,31 @@
     }
         
     function startSiteMigration(){
-
+  
+      let x = document.getElementById("createDomainButton");
+      let y = document.getElementById("site");
+      x.disabled = true;
+      y.disabled = true;
       var form = new FormData();
       let selectedSite = $('#siteMigrate').find('select[name=select_site]').val();
       form.append("site", selectedSite);
       form.append("ip",ip);
       form.append("username",username);
       form.append("password",password);
-
+      showSwal("Yükleniyor...",'info',3000);
+      $('#siteMigrate').modal("hide");
+      
       request(API('migrate_site'), form, function(response) {
         
           $('#migrationInfo').html("<b> {{__('Makine migrate ediliyor. Lütfen bekleyiniz.')}}</b>");
           showSwal('{{__("Migration işlemi başladı...")}}', 'info', 3000);
-          $('#siteMigrate').modal("hide");
           observeMigration();
 
       }, function(response){
           let error = JSON.parse(response);
           showSwal(error.message,'error',5000);
+          x.disabled = false;
+          y.disabled = false;
       });
       ip,username,password = null;
 

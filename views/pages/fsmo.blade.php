@@ -91,6 +91,7 @@
                 "<pre>"+message+"</pre>"
             );
             $('#infoModal').modal("show");
+            printTable();
         }, function(response) {
             let error = JSON.parse(response);
             showSwal(error.message, 'error', 3000);

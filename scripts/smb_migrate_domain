@@ -1,0 +1,157 @@
+#!/bin/bash
+########
+# version: xxx
+# smb-migrate-domain -s "10.0.0.5" -p "ADMIN_PASSWORD"
+########
+
+USAGE() { echo " ";
+        echo "smb-create-domain [options]";
+        echo "options:";
+        echo "-h, --help                show brief help";
+        echo "-d, --domain \"ORNEK.COM\"       specify the name of new domain";
+        echo "-r, --reverse \"192.168.1.5\"      specify the ip address of domain to create reverse zone";}
+
+# Get parameters
+if [ -z "$1" ] ; then
+    echo "Lütfen gerekli parametreleri giriniz. Yardım için (smb-create-domain -h)"
+    exit 1
+fi
+while getopts :hs:p:a:t: options; do
+    case ${options} in
+    h) USAGE; exit 1;;
+    s) IP_ADDRESS=${OPTARG};;
+    p) ADMIN_PASSWORD=${OPTARG};;
+    a) DOMAINADMIN=${OPTARG};;
+    t) SITE=${OPTARG};;
+    *) echo "Yardım için (smb-create-domain -h)"; exit;;
+    esac
+done
+
+if [ -z "$IP_ADDRESS" ] ; then
+    echo "Lütfen migrate etmek istediğiniz domainin ip adresini girin. Yardım için (smb-create-domain -h) "
+    exit 1
+elif  [ -z "$ADMIN_PASSWORD" ] ; then
+    read -s -p "Administrator parolası: " ADMIN_PASSWORD
+fi
+
+DOMAINADMIN="Administrator"
+DOMAINNAME=$(samba-tool domain info $IP_ADDRESS 2> /tmp/smbhvl.log | grep Domain | cut -d: -f2 | tail -c +2)
+WORKGROUP=$(samba-tool domain info $IP_ADDRESS 2> /tmp/smbhvl.log | grep Netbios | cut -d: -f2 | tail -c +2)
+HOSTNAME=$(hostname | cut -d "." -f 1)
+
+echo "$DOMAINNAME"
+if [ -z "$DOMAINNAME" ] ; then
+    echo "$IP_ADDRESS adresinde domain bilgisi bulunamadı. "
+    exit 1
+fi
+
+## Sycnronize time with pdc
+# Setup ntp server
+if cat /etc/os-release | grep ID_LIKE | grep -q "rhel"; then
+echo "smb-migrate-domain: chrony ayarlaniyor"
+    /usr/local/bin/smb-set-chrony $IP_ADDRESS
+elif cat /etc/os-release | grep ID_LIKE | grep -q "debian"; then
+echo "smb-migrate-domain: ntp ayarlaniyor"
+    systemctl stop ntp
+    ntpdate $IP_ADDRESS
+fi
+
+hwclock --systohc
+
+## Unlock dns
+chattr -i /etc/resolv.conf
+
+## Read dns to ram
+
+## write pdc ip address to resolv
+echo "smb-migrate-domain: resolv.conf geçici olarak değiştiriliyor"
+echo "nameserver $IP_ADDRESS" > /etc/resolv.conf
+
+## Edit hosts file
+echo "smb-migrate-domain: hosts loopback adresine domain ve fqdn ekleniyor"
+# if grep -q "127.0.1.1" /etc/hosts  ; then
+#     sed -i "s/127.0.1.1\s*$HOSTNAME/127.0.1.1  $HOSTNAME.$DOMAINNAME   $HOSTNAME /g" /etc/hosts
+# else
+#     echo "127.0.1.1  $HOSTNAME.$DOMAINNAME   $HOSTNAME" >> /etc/hosts
+# fi
+sed -i "/127.0.1.1.*/d" /etc/hosts
+echo "127.0.1.1  $HOSTNAME.$DOMAINNAME   $HOSTNAME" >> /etc/hosts
+
+## Setup default kerberos
+echo "smb-migrate-domain: Kerberos ayarları yapılandırılıyor"
+/usr/local/bin/smb-set-krb5  "$(echo "$DOMAINNAME" | tr a-z A-Z)"
+
+## Setup additional kerberos setup
+PDC_FQDN="$(samba-tool domain info $IP_ADDRESS | grep "DC name" | cut -d ":" -f 2 | xargs)"
+sed -i "/$DOMAINNAME\s*=/,/}/d" /etc/krb5.conf
+if grep -q ".*$(echo $DOMAINNAME | tr A-Z a-z)[[:space:]]*=.*"  /etc/krb5.conf  ; then
+    sed -i "/$(echo $DOMAINNAME | tr A-Z a-z)\s*=/d" /etc/krb5.conf
+fi
+
+str="$(echo $DOMAINNAME | tr a-z A-Z) = {\n     kdc = $PDC_FQDN\n     admin_server = $PDC_FQDN\n    default_domain = $(echo $DOMAINNAME | tr A-Z a-z)\n}"
+sed -i "/\[realms\]/a $str" /etc/krb5.conf
+sed -i "/\[domain_realm\]/a $(echo $DOMAINNAME | tr A-Z a-z) = $(echo $DOMAINNAME | tr a-z A-Z)" /etc/krb5.conf
+sed -i "/\[domain_realm\]/a .$(echo $DOMAINNAME | tr A-Z a-z) = $(echo $DOMAINNAME | tr a-z A-Z)" /etc/krb5.conf
+
+
+## Migrate domain
+echo "smb-migrate-domain: migration yapılıyor"
+
+if [ -z "$SITE" ];then
+    samba-tool domain join $DOMAINNAME DC -U"$WORKGROUP\\$DOMAINADMIN" --dns-backend=SAMBA_INTERNAL --password $ADMIN_PASSWORD
+else
+    samba-tool domain join $DOMAINNAME DC -U"$WORKGROUP\\$DOMAINADMIN" --dns-backend=SAMBA_INTERNAL --password $ADMIN_PASSWORD --site $SITE
+fi
+
+if [ ! $? -eq 0 ]; then
+    exit 1
+fi
+
+## Set DNS as forwarder
+dns=$(/usr/local/bin/smb-dhcp-client 2> /dev/null | grep "Domain Name Server(s)" | cut -d : -f 2)
+if [ -z "$dns" ];then
+    echo "dns forwarder 127.0.0.1 olarak ayarlarlandı"
+else
+    echo "smb-migrate-domain: dns forwarder  $dns olarak ayarlarlandı"
+    sed -i "/dns\s*forwarder/d" /etc/samba/smb.conf
+    add="dns forwarder = $dns"
+    sed -i '2 a\ '"$(echo $add)"'' /etc/samba/smb.conf
+fi
+
+if ! grep -q "dns update command" /etc/nsswitch.conf; then
+    sed -i '2 a\ dns update command = /usr/sbin/samba_dnsupdate --use-samba-tool' /etc/samba/smb.conf
+fi
+
+sed -i "s/#PermitRootLogin prohibit-password$/PermitRootLogin yes/g" /etc/ssh/sshd_config
+
+## Disable firewall
+if cat /etc/os-release | grep ID_LIKE | grep -q "rhel"; then
+    firewall-cmd --add-service={dns,kerberos,kpasswd,ldap,ldaps,samba} --permanent
+    firewall-cmd --add-port={135/tcp,137-138/udp,139/tcp,123/tcp,3268-3269/tcp,49152-65535/tcp} --permanent
+    firewall-cmd --add-port={135/udp,137-138/tcp,139/udp,123/udp,445/tcp,445/udp,389/tcp,389/udp,636/tcp,636/udp} --permanent
+    firewall-cmd --add-port={464/tcp,464/udp,53/tcp,53/udp,88/tcp,88/udp,3269/tcp,3268/tcp} --permanent
+    firewall-cmd --reload
+fi
+
+## Join self domain
+/usr/local/bin/smb-join-self-domain
+
+## Create self signed certificate
+if cat /etc/os-release | grep ID_LIKE | grep -q "debian"; then
+    /usr/local/bin/smb-create-self-signed-certificate $DOMAINNAME $HOSTNAME
+fi
+
+
+## Setup dns as itself
+echo "smb-migrate-domain: dns olarak localhost veriliyor"
+echo "nameserver 127.0.0.1" > /etc/resolv.conf
+chattr +i /etc/resolv.conf
+
+sed -i "/$(echo $DOMAINNAME | tr a-z A-Z)\s*=\s*{/a     kdc = $HOSTNAME.$DOMAINNAME" /etc/krb5.conf
+
+## Restart services
+echo "smb-migrate-domain: servisler yeniden başlatılıyor"
+systemctl restart sshd.service
+systemctl daemon-reload
+systemctl enable samba4.service
+systemctl start samba4.service

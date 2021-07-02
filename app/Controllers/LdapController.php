@@ -4,8 +4,11 @@ namespace App\Controllers;
 class LdapController
 {
     private $basedn = "";
+    private $demote = 0;
+    private $theIP = "";
+
 	function connect(){
-        $ip = $this->getIP();
+        $ip = ($this->demote == 0) ? $this->getIP() : $this->theIP;
         $domainname= strtolower(extensionDb('domainName'));
         $user = "administrator@".$domainname;
         $pass = extensionDb('domainPassword');
@@ -23,6 +26,7 @@ class LdapController
             }
         }
         $this->basedn = $tmp;
+        $this->demote = 0;
 
         $ldap = ldap_connect($server);
         ldap_set_option($ldap, LDAP_OPT_PROTOCOL_VERSION, 3);
@@ -337,4 +341,169 @@ class LdapController
         return $domainName;
     }
     
+    function listDemotable(){
+
+        $hostNameOfThis = runCommand(sudo()."hostname");
+        $ldap = $this->connect();
+        $filter = "objectClass=computer";
+        $binddn = $this->basedn;
+
+        $result = ldap_search($ldap, "OU=Domain Controllers,".$binddn, $filter);
+        $entries = ldap_get_entries($ldap,$result);
+        $count = ldap_count_entries($ldap, $result);
+
+        $data = [];
+        for($i = 0; $i < $count; $i++){
+            
+            $thisComputer = $entries[$i]["name"][0];
+            if(strcasecmp($thisComputer, $hostNameOfThis) != 0){
+
+                $data[] = [
+                    "serverName" => $thisComputer,
+                ];
+            }
+        }   
+
+        return view('table', [
+            "value" => $data,
+            "title" => ["Demotable DC Name"],
+            "display" => ["serverName"],
+            "menu" => [
+                "Demote" => [
+                    "target" => "demoteThisOne",
+                    "icon" => "fas fa-unlink"
+                ]
+            ]
+        ]); 
+    }
+
+    function recursiveLdapDelete($ldap, $dn){
+
+        $result = ldap_list($ldap, $dn, "ObjectClass=*", array(""));
+        $entries = ldap_get_entries($ldap, $result);
+        $count = ldap_count_entries($ldap, $result);
+        for($i=0; $i<$count; $i++){
+
+            $this->recursiveLdapDelete($ldap, $entries[$i]['dn']);
+        }
+        ldap_delete($ldap, $dn);
+        return;
+    }
+
+    function demoteYourself(){
+
+        $serverName = runCommand(sudo()."hostname");
+        $fsmoResult = runCommand(sudo()."samba-tool fsmo show");
+        if(stripos($fsmoResult, $serverName) != false){
+            return respond("Bu Domain Controller üzerinde hala FSMO rolü bulunmaktadır. Lütfen FSMO Rol Yönetimi sekmesinden üzerindeki rolleri alıp tekrar demote ediniz!", 201);
+        }
+
+        $netAdsOutput = runCommand(sudo()."net ads info");
+        $netAdsOutput = explode("\n", $netAdsOutput);
+        $secondLine = $netAdsOutput[1];
+        $fullDomainName = substr(explode(":", $secondLine)[1],1);
+        $primaryDcName = strtoupper(explode(".", $fullDomainName)[0]);
+        
+        runCommand(sudo()."samba-tool domain demote -Uadministrator --server=".$primaryDcName." --password ".extensionDb('domainPassword'). " > /tmp/demote-yourself-log.txt 2>&1");
+        $outputOfDemote = runCommand(sudo()."cat /tmp/demote-yourself-log.txt");
+        if(stripos($outputOfDemote, "Demote Successful") != false){
+
+            $firstLine = $netAdsOutput[0];
+            $this->theIP = substr(explode(":", $firstLine)[1],1);
+            $this->demote = 1;
+
+            $ldap = $this->connect();
+            $filter = "objectClass=server";
+            $result = ldap_search($ldap, "CN=Configuration,".$this->basedn, $filter);
+            $entries = ldap_get_entries($ldap,$result);
+            $count = ldap_count_entries($ldap, $result);
+            $dn;
+            for($i=0 ; $i<$count ; $i++){
+                
+                $nameItem = $entries[$i]["name"][0];
+                if(strcasecmp($nameItem, $serverName) == 0){
+                    $dn = $entries[$i]["distinguishedname"][0];
+                }
+            }
+            $this->recursiveLdapDelete($ldap, $dn);
+            $dn = "CN=".$serverName.",CN=Computers,".$this->basedn;
+            $this->recursiveLdapDelete($ldap, $dn);
+            ldap_close($ldap);
+
+            $smbdOutput = runCommand(sudo()."smbd -b | grep PRIVATE");
+            $privateDir = explode(":", $smbdOutput)[1];
+            $privateDir = trim($privateDir);
+            runCommand(sudo()."rm -rf ".$privateDir);
+            runCommand(sudo()."mkdir ".$privateDir);
+
+            $dhcpOutput = runCommand(sudo()."smb-dhcp-client");
+            $dhcpOutput = explode("\n",$dhcpOutput);
+            $lastLine = $dhcpOutput[count($dhcpOutput)-1];
+            $dnsAddresses = substr(explode(":", $lastLine)[1],1);
+            $dnsAddresses = explode(" ", $dnsAddresses);
+            runCommand(sudo()."chattr -i /etc/resolv.conf");
+            for($i = 0; $i < count($dnsAddresses); $i++){
+
+                $willBeWritten = "nameserver ".$dnsAddresses[$i];
+                runCommand("echo ".$willBeWritten." >> /tmp/new_dns_addresses.txt");
+            }
+            runCommand(sudo()."cp /tmp/new_dns_addresses.txt /etc/resolv.conf");
+
+            runCommand(sudo()."rm /etc/samba/smb.conf");
+            runCommand(sudo()."systemctl stop samba4.service");
+            return respond("Başarılı", 200);
+        }
+        
+        return respond($outputOfDemote, 201);
+    }
+
+    function onlyConfigureDocuments(){
+        
+        $serverName = runCommand(sudo()."hostname");
+        $netAdsOutput = runCommand(sudo()."net ads info");
+        $firstLine = $netAdsOutput[0];
+        $this->theIP = substr(explode(":", $firstLine)[1],1);
+        $this->demote = 1;
+
+        $ldap = $this->connect();
+        $filter = "objectClass=server";
+        $result = ldap_search($ldap, "CN=Configuration,".$this->basedn, $filter);
+        $entries = ldap_get_entries($ldap,$result);
+        $count = ldap_count_entries($ldap, $result);
+        $dn;
+        for($i=0 ; $i<$count ; $i++){
+            
+            $nameItem = $entries[$i]["name"][0];
+            if(strcasecmp($nameItem, $serverName) == 0){
+                $dn = $entries[$i]["distinguishedname"][0];
+            }
+        }
+        $this->recursiveLdapDelete($ldap, $dn);
+        $dn = "CN=".$serverName.",CN=Computers,".$this->basedn;
+        $this->recursiveLdapDelete($ldap, $dn);
+        ldap_close($ldap);
+
+        $smbdOutput = runCommand(sudo()."smbd -b | grep PRIVATE");
+        $privateDir = explode(":", $smbdOutput)[1];
+        $privateDir = trim($privateDir);
+        runCommand(sudo()."rm -rf ".$privateDir);
+        runCommand(sudo()."mkdir ".$privateDir);
+
+        $dhcpOutput = runCommand(sudo()."smb-dhcp-client");
+        $dhcpOutput = explode("\n",$dhcpOutput);
+        $lastLine = $dhcpOutput[count($dhcpOutput)-1];
+        $dnsAddresses = substr(explode(":", $lastLine)[1],1);
+        $dnsAddresses = explode(" ", $dnsAddresses);
+        runCommand(sudo()."chattr -i /etc/resolv.conf");
+        for($i = 0; $i < count($dnsAddresses); $i++){
+
+            $willBeWritten = "nameserver ".$dnsAddresses[$i];
+            runCommand("echo ".$willBeWritten." >> /tmp/new_dns_addresses.txt");
+        }
+        runCommand(sudo()."cp /tmp/new_dns_addresses.txt /etc/resolv.conf");
+
+        runCommand(sudo()."rm /etc/samba/smb.conf");
+        runCommand(sudo()."systemctl stop samba4.service");
+        return respond("Başarılı", 200);
+    }
 }

@@ -302,6 +302,7 @@ class SambaController{
         $password = request("password");
         $migrateCommand = "bash -c 'DEBIAN_FRONTEND=noninteractive smb-migrate-domain -s " . $ip . " -a " . $username . " -p " . $password . " > /tmp/migrateLog 2>&1 & disown'";
         runCommand(sudo() . $migrateCommand);
+        $this->timeupdate();
     }
 
     function migrateSite(){
@@ -319,10 +320,14 @@ class SambaController{
         $password = request("password");
         $site = request("site");
 
-        $command = "bash -c 'DEBIAN_FRONTEND=noninteractive smb-migrate-domain -s " . $ip . " -a " . $username . " -p " . $password . " -t ". $site . " > /tmp/migrateLog 2>&1 & disown'";
-        
-        runCommand(sudo().$command);
-        return respond("Success", 200);
+        $parameters = "-s \"" . $ip . "\" -a \"" . $username . "\" -p \"" . $password . "\" -t \"". $site . "\" > /tmp/migrateLog 2>&1 & disown";
+        $migrateCommand = "bash -c 'DEBIAN_FRONTEND=noninteractive smb-migrate-domain -s \"" . $ip . "\" -a \"" . $username . "\" -p \"" . $password . "\" -t \"". $site . "\" > /tmp/migrateLog 2>&1 & disown'";
+
+        putFile(getPath("scripts/smb_migrate_domain"), "/tmp/smb_migrate_domain");
+        runCommand(sudo()."chmod +x /tmp/smb_migrate_domain");
+        runCommand(sudo()."cp /tmp/smb_migrate_domain /usr/local/bin/smb-migrate-domain");
+        runCommand(sudo() . $migrateCommand);
+        $this->timeupdate();
     }
 
     //INFO
@@ -517,6 +522,29 @@ class SambaController{
         else{
             return false;
         }
+    }
+
+    function timeUpdate(){
+
+        $output = runCommand(sudo()."ntpdate -u tr.pool.ntp.org");
+        $output = explode("ntp", $output)[0];
+        return respond($output, 200);
+    }
+
+    function demoteThisOne(){
+
+        $serverName = request("serverName");
+        $fsmoResult = runCommand(sudo()."samba-tool fsmo show");
+        
+        if(stripos($fsmoResult, $serverName) != false){
+            return respond("Bu Domain Controller üzerinde hala FSMO rolü bulunmaktadır. Lütfen FSMO Rol Yönetimi sekmesinden üzerindeki rolleri alıp tekrar demote ediniz!", 201);
+        }
+
+        $log = runCommand(sudo()."samba-tool domain demote --remove-other-dead-server=".$serverName);
+        if(str_contains($log, "ERROR")){
+            return respond("Hata!", 201);
+        }
+        return respond("Basarili!", 200);
     }
 }
 ?>

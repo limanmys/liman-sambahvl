@@ -1,20 +1,34 @@
 <div id="replicationPrintArea"></div> 
+<button class="btn btn-success mb-2" id="replicateAllButton" onclick="replicateAll()" type="button">{{__('Tümünü replike et')}}</button>
 <div class="table-responsive replicationTable" id="replicationTable"></div> 
 
 <script>
     function replicationInfo(){
         showSwal('{{__("Yükleniyor...")}}','info');
         var form = new FormData();
-
+        let x = document.getElementById("replicateAllButton");
+        x.disabled = true;
         request(API('replication_organized'), form, function(response) {
             $('.replicationTable').html(response).find('table').DataTable(dataTablePresets('normal'));
             Swal.close();
+            x.disabled = false;
         }, function(response) {
             let error = JSON.parse(response);
             Swal.close();
             showSwal(error.message, 'error', 3000);
         });
+    }
 
+    function replicateAll(){
+
+        var table = document.getElementById("replicationTable").getElementsByClassName("tableRow");
+        var length = table.length;
+        showSwal("İşlem devam ediyor...", 'info');
+        for(var i = 0; i < length; i++){
+            updateReplication(table[i]);
+        }
+        Swal.close();
+        showSwal("Başarılı!", 'success', 3000);
     }
 
     function updateReplication(line) {

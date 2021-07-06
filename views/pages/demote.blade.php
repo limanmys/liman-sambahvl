@@ -46,7 +46,7 @@
         request(API('demote_yourself'), form, function(response) {
             message = JSON.parse(response)["message"];
             showSwal(message, 'success', 3000);
-            checkDomain();
+            demoted();
         }, function(response) {
             let error = JSON.parse(response);
             if(error.message.includes("ERROR") != false){
@@ -76,7 +76,7 @@
         request(API('only_configure_documents'), form, function(response) {
             message = JSON.parse(response)["message"];
             showSwal(message, 'success', 3000);
-            checkDomain();
+            demoted();
         }, function(response) {
             let error = JSON.parse(response);
             showSwal(error.message, 'error', 5000);

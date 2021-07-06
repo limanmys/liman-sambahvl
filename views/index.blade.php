@@ -178,8 +178,14 @@
         }, function(response) {
             let error = JSON.parse(response);
             showSwal(error.message, 'error', 3000);
-        });
-        
+        });    
+    }
+
+    function demoted(){
+
+        checkDomain();
+        document.getElementById("tab1_li").style.display = "block";
+        $('.nav-tabs a[href="#tab1"]').tab('show');
     }
 
     async function refreshAfterLog(){

@@ -24,11 +24,14 @@
         request(API('verify_domain'), form, function(response) {
             message = JSON.parse(response)["message"];
             let x = document.getElementById("createDomainButton");
+            let y = document.getElementById("site");
             if(message == true){
                 x.disabled = true;
+                y.disabled = true;
                 returnDomainInformations();
             } else{
                 x.disabled = false;
+                y.disabled = false;
             }
         }, function(error) {
             showSwal(error.message, 'error', 3000);
@@ -38,6 +41,10 @@
 
     function createDomain(){
         var form = new FormData();
+        let x = document.getElementById("createDomainButton");
+        let y = document.getElementById("site");
+        x.disabled = true;
+        y.disabled = true;
         $('#domainStatus').html("<b>{{__('Etki alanı oluşturuluyor. Lütfen bekleyiniz.')}}</b>");
         request(API('create_samba_domain'), form, function(response) {
             //returnDomainInformations();
@@ -45,6 +52,8 @@
         }, function(error) {
             showSwal(error.message, 'error', 3000);
             console.log(error);
+            x.disabled = false;
+            y.disabled = false;
         });
     }
 
@@ -69,10 +78,18 @@
            } else{
             $('#createDomainLogs').append("{{__('Kurulum sırasında hata oluştu.')}}");
            }
+           let x = document.getElementById("createDomainButton");
+            let y = document.getElementById("site");
+            x.disabled = false;
+            y.disabled = false;
         });
     }
     
     function returnDomainInformations(){
+        let x = document.getElementById("createDomainButton");
+        let y = document.getElementById("site");
+        x.disabled = true;
+        y.disabled = true;
         var form = new FormData();
         request(API('return_domain_informations'), form, function(response) {
             message = JSON.parse(response)["message"];

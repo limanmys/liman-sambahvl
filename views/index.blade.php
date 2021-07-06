@@ -60,6 +60,12 @@
     </li>
 
     <li class="nav-item">
+        <a class="nav-link " id = "demote_li" onclick="listDemotable()" href="#demote" data-toggle="tab">
+        <i class="fas fa-unlink mr-2"></i>
+        Demote Domain Controller</a>
+    </li>
+
+    <li class="nav-item">
         <a class="nav-link" id="sites_li" onclick="getClocks()" href="#clock"  data-toggle="tab">
         <i class="fas fa-clock mr-2"></i>
         {{__('Sistem Saati')}}</a>
@@ -106,6 +112,10 @@
         @include('pages.sites')
     </div>
 
+    <div id="demote" class="tab-pane">
+        @include('pages.demote')
+    </div>
+
     <div id="clock" class="tab-pane">
         @include('pages.clock')
     </div>
@@ -136,6 +146,7 @@
                 document.getElementById("users_li").style.display = "none";
                 document.getElementById("groups_li").style.display = "none";
                 document.getElementById("computers_li").style.display = "none";
+                document.getElementById("demote_li").style.display = "none";
             }
             else{
                 checkDomain();
@@ -157,6 +168,7 @@
                 document.getElementById("users_li").style.display = "none";
                 document.getElementById("groups_li").style.display = "none";
                 document.getElementById("computers_li").style.display = "none";
+                document.getElementById("demote_li").style.display = "none";
             }
             else{
                 document.getElementById("tab1_li").style.display = "none";
@@ -166,8 +178,14 @@
         }, function(response) {
             let error = JSON.parse(response);
             showSwal(error.message, 'error', 3000);
-        });
-        
+        });    
+    }
+
+    function demoted(){
+
+        checkDomain();
+        document.getElementById("tab1_li").style.display = "block";
+        $('.nav-tabs a[href="#tab1"]').tab('show');
     }
 
     async function refreshAfterLog(){

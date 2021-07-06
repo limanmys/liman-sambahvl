@@ -67,4 +67,12 @@ return [
 
     "ldap_login" => "LdapController@ldapLogin",
 
+    "demote_yourself" => "LdapController@demoteYourself",
+    "only_configure_documents" => "LdapController@onlyConfigureDocuments",
+    "list_demotable" => "LdapController@listDemotable",
+    "demote_this_one" => "SambaController@demoteThisOne",
+    "time_update" => "SambaController@timeUpdate",
+    "test_new" => "SambaController@testNew",
+    "return_the_ip" => "LdapController@returnTheIP",
+
 ];

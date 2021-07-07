@@ -1,4 +1,4 @@
-<button class="btn btn-success mb-2" id="ntp" onclick="timeUpdate()" type="button">Tarih ve Saat Güncelle</button>
+<button class="btn btn-info mb-2" id="ntp" onclick="timeUpdate()" type="button">{{__("Tarih ve Saati Güncelle")}}</button>
 <div class="row">
     <div class="col-sm-6">
         <div class="card">
@@ -33,7 +33,7 @@ function timeUpdate(){
         request(API('time_update'), form, function(response) {
             message = JSON.parse(response)["message"];
             getClocks();
-            showSwal(message, 'success', 3000);
+            showSwal('{{__("Tarih ve saat başarıyla güncellendi")}}', 'success', 3000);
         }, function(response) {
             let error = JSON.parse(response);
             showSwal(error.message, 'error', 3000);

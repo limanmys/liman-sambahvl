@@ -97,7 +97,13 @@
     "Parola": "Password",
     "IP adresi": "IP address",
     "Kullanıcı adı": "Username",
+    "Güncelleme": "Update",
+    "Sambahvl güncel değil !": "Sambahvl is out of date",
+    "Sambahvl güncel":  "Sambahvl is already up to date",
+    "Sambahvl yüklü değil !": "Sambahvl is not installed !",
+    "Tarih ve Saati Güncelle": "Update Date and Time",
 
+    "Yüklü bir samba bulunamadı !": "No installed samba found !",
     "Görev İşleniyor": "Task Processing",
     "SambaHVL paketini kurmak için lütfen aşağıdaki butonu kullanabilirsiniz.": "Please use the button below to install the SambaHVL package.",
     "SambaHVL Paketini Kur": "Install SambaHVL Package",
@@ -111,6 +117,10 @@
     "Devam et": "Continue",
     "İşlem başarıyla gerçekleştirildi. Kayıtları Samba Bilgileri>Loglar sekmesinden görüntüleyebilirsiniz.": "The operation was performed successfully. You can view the logs from the Samba Info-Logs tab.",
     "Başarılı !": "Success !",
+    "Kurulum tamamlanamadı, depoya erişilemiyor !": "Installation could not be completed, repository cannot be accessed!",
+    "Güncelleniyor...": "Updating...",
+    "Tarih ve saat başarıyla güncellendi": "Date and time updated successfully",
+    
     "Yükleniyor...": "Loading..."
     
     

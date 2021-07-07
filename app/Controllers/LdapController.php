@@ -52,7 +52,7 @@ class LdapController
     function listUsers(){
         $ldap = $this->connect();
 
-        $filter = "objectClass=user";
+        $filter = "(&(objectClass=user)(objectCategory=person))";
         $result = ldap_search($ldap, $this->basedn, $filter);
         $entries = ldap_get_entries($ldap,$result);
 

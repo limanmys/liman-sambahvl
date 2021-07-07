@@ -118,11 +118,24 @@
         deleteButton.style.visibility = "visible";
     }
     function onTaskSuccess(){
-        showSwal('{{__("Kurulum başarıyla tamamlandı.")}}', 'success', 2000);
-        setTimeout(function(){
-          $('#packageInstallerModal').modal("hide"); 
-          window.location.reload();
-        }, 2000);
+        var form = new FormData();
+
+        request(API('check_installation'), form, function(response) {
+            showSwal('{{__("Kurulum başarıyla tamamlandı.")}}', 'success', 2000);
+            setTimeout(function(){
+                    $('#packageInstallerModal').modal("hide"); 
+                    window.location.reload();
+                    }, 2000);
+
+        }, function(error) {
+            showSwal('{{__("Kurulum tamamlanamadı, depoya erişilemiyor !")}}', 'error', 2000);
+            setTimeout(function(){
+                    $('#packageInstallerModal').modal("hide"); 
+                    window.location.reload();
+                    }, 4000);
+        });
+
+        
     }
     function onTaskFail(){
         showSwal('{{__("Kurulum sırasında bir hata ile karşılaşıldı.")}}!', 'error', 2000);

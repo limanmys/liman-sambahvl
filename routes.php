@@ -10,6 +10,7 @@ return [
     "checkTask" => "TaskController@checkTask",
 
     "verify_installation" => "SambaController@verifyInstallation",
+    "check_installation" => "SambaController@checkInstallation",
     "install_smb_package" => "SambaController@installSmbPackage",
     "delete_smb_package" => "SambaController@deleteSambaPackage",
     "observe_installation" => "SambaController@observeInstallation",
@@ -75,4 +76,7 @@ return [
     "test_new" => "SambaController@testNew",
     "return_the_ip" => "LdapController@returnTheIP",
 
+    "check_for_updates" => "SambaController@checkForUpdates",
+    "update_samba_package" => "SambaController@updateSambaPackage",
+    "observe_update" => "SambaController@observeUpdate",
 ];

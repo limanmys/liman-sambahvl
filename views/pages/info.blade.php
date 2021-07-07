@@ -3,6 +3,8 @@
     <div class="nav flex-column nav-pills" id="v-pills-tab" role="tablist" aria-orientation="vertical">
       <a class="nav-link active" onclick="getInfo()" id="v-pills-info-tab" data-toggle="pill" href="#v-pills-info" role="tab" aria-controls="v-pills-info" aria-selected="true">
       {{__('Detaylar')}}</a>
+      <a class="nav-link" onclick="checkForUpdates()" id="v-pills-updates-tab" data-toggle="pill" href="#v-pills-updates" role="tab" aria-controls="v-pills-updates" aria-selected="false">
+      {{__('Güncelleme')}}</a>
       <a class="nav-link" onclick="serviceStatus()" id="v-pills-servicestatus-tab" data-toggle="pill" href="#v-pills-servicestatus" role="tab" aria-controls="v-pills-servicestatus" aria-selected="false">
       {{__('Servis Durumu')}}</a>
       <a class="nav-link" onclick="verifyDomain()" id="v-pills-domainstatus-tab" data-toggle="pill" href="#v-pills-domainstatus" role="tab" aria-controls="v-pills-domainstatus" aria-selected="false">
@@ -44,6 +46,9 @@
 
       </div>
 
+      <div class="tab-pane fade" id="v-pills-updates" role="tabpanel" aria-labelledby="v-pills-updates-tab">    
+      </div>
+      
       <div class="tab-pane fade" id="v-pills-servicestatus" role="tabpanel" aria-labelledby="v-pills-servicestatus-tab">
         <pre id="sambaLog"></pre>
       </div>
@@ -112,7 +117,13 @@
         request(API('get_samba_details'), form, function(response) {
             
             message = JSON.parse(response)["message"];
-            $('#details').html(message);
+            if(message == ""){
+                $('#details').html('{{__("Yüklü bir samba bulunamadı !")}}');
+            }
+            else{
+                $('#details').html(message);
+
+            }
             
         }, function(response) {
             let error = JSON.parse(response);
@@ -128,7 +139,12 @@
         request(API('get_samba_version'), form, function(response) {
             
             message = JSON.parse(response)["message"];
-            $('#version').html(message);
+            if(message == ""){
+                $('#version').html('{{__("Yüklü bir samba bulunamadı !")}}');
+            }
+            else{
+                $('#version').html(message);
+            }
             
         }, function(response) {
             let error = JSON.parse(response);
@@ -283,6 +299,78 @@
             let error = JSON.parse(response);
             showSwal(error.message, 'error', 3000);
         });
+    }
+
+    function checkForUpdates(){
+        var form = new FormData();
+
+        request(API('check_for_updates'), form, function(response) {
+            message = JSON.parse(response)["message"];
+            console.log(message);
+            if(message == "upgradable"){
+                info = '<div class="alert alert-info" role="alert">{{__("Sambahvl güncel değil !")}}</div>' 
+                +'<button class="btn btn-info mb-2" id="updateBtn" style="float:left;margin-left:10px;visibility:hidden;"></button>' 
+                + '</br></br><pre id="updateLogs"></pre>';
+                $('#v-pills-updates').html(info);
+
+                let updateButton = document.getElementById("updateBtn");
+                updateButton.onclick = function() {updateSambaPackage()};
+                updateButton.innerText = '{{__("Sambahvl Paketini Güncelle")}}';
+                updateButton.style.visibility = "visible";
+            }
+            else if(message == "not upgradable"){
+                info = '<div class="alert alert-success" role="alert">{{__("Sambahvl güncel")}}</div>' ;
+                $('#v-pills-updates').html(info);
+            }
+            else{
+                info = '<div class="alert alert-danger" role="alert">{{__("Sambahvl yüklü değil !")}}</div>' ;
+                $('#v-pills-updates').html(info); 
+            }
+            
+        }, function(response) {
+            let error = JSON.parse(response);
+            showSwal(error.message, 'error', 3000);
+        });
+        
+    }
+
+    function updateSambaPackage(){
+
+        var form = new FormData();
+
+        request(API('update_samba_package'), form, function(response) {
+            let updateButton = document.getElementById("updateBtn");
+            updateButton.disabled = true;
+            observeUpdate();
+
+        }, function(response) {
+            let error = JSON.parse(response);
+            showSwal(error.message, 'error', 3000);
+
+        });
+    }
+
+    function observeUpdate(){
+        var form = new FormData();
+
+        request(API('observe_update'), form, function(response) {
+
+            message = JSON.parse(response)["message"];
+            $('#updateLogs').text(message);
+
+            window.setInterval(function() {
+            }, 1000);
+            setTimeout(() => {
+                observeUpdate();
+            }, 3000);
+            
+            
+        }, function(response) {
+            let error = JSON.parse(response);
+            $('#updateLogs').append(error.message);
+        });
+        
+
     }
 
 </script>

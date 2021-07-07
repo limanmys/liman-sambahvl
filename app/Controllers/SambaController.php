@@ -18,6 +18,18 @@ class SambaController{
         }
     }
 
+    function checkInstallation(){
+        $log = runCommand(sudo() . 'cat /tmp/smbHvlLog.txt');
+        if(str_contains($log,"gpg: no valid OpenPGP data found.")){
+            return respond(false,201);
+        }
+        else{
+            return respond(true,200);
+
+        }
+    }
+    //gpg: no valid OpenPGP data found.
+
     function deleteSambaPackage(){
         $deletePackage = "apt -y autoremove samba*";
         runCommand(sudo() . $deletePackage);
@@ -354,7 +366,7 @@ class SambaController{
 
         }
         else{
-            $output = "Samba is not installed.";
+            $output = "";
         }
         return respond($output,200);
 
@@ -369,7 +381,7 @@ class SambaController{
             return respond($version,200);
         }
         else{
-            return respond("Samba is not installed.",200);
+            return respond("",200);
 
         }
 
@@ -545,6 +557,55 @@ class SambaController{
             return respond("Hata!", 201);
         }
         return respond("Basarili!", 200);
+    }
+
+    function checkForUpdates(){
+
+        $output = runCommand(sudo()."apt list --upgradable | grep -q sambahvl && echo true || echo false");
+        $type = $this->getSambaType();
+        if($type != "not installed"){
+            if(str_contains($output,"true")){
+                return respond("upgradable",200);
+            }
+            else{
+                return respond("not upgradable",200);
+            }
+        }
+        else{
+            return respond("not installed",200);
+        }
+        
+    }
+
+    function checkForUpdatesPhp(){
+
+        $output = runCommand(sudo()."apt list --upgradable | grep -q sambahvl && echo true || echo false");
+
+        if(str_contains($output,"true")){
+            return true;
+        }
+        else{
+            return false;
+        }
+      
+    }
+
+    function updateSambaPackage(){
+        runCommand(sudo()."bash -c 'DEBIAN_FRONTEND=noninteractive apt-get install sambahvl > /tmp/updateLog 2>&1 & disown'");
+    }
+
+    function observeUpdate(){
+        $log = runCommand(sudo() . 'cat /tmp/updateLog');
+        
+        $flag = $this->checkForUpdatesPhp();
+
+        if($flag == false){
+            return respond($log .= "\n\nGüncelleme başarıyla tamamlandı.", 202);
+        }
+        else{
+            return respond($log, 200);
+
+        }
     }
 }
 ?>

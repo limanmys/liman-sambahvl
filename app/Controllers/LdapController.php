@@ -49,6 +49,13 @@ class LdapController
         return $ip;
     }
     function createUser(){
+
+        validate([
+			'username' => 'required|string',
+			'password' => 'required|string'
+
+		]);
+
         $username = request("username");
         $password = request("password");
         $output = runCommand(sudo()."samba-tool user create ".$username." ".$password." 2>&1");
@@ -62,7 +69,7 @@ class LdapController
             return respond("Kullanıcı başarıyla oluşturuldu.",200);
         }
         else if (str_contains($output,"not meet the complexity criteria!")){
-            return respond($password,201);
+            return respond("Şifre yeterince kompleks değil !",201);
         }
         else{
             return respond($output,201);

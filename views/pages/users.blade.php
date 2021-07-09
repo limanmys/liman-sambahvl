@@ -25,7 +25,7 @@
             <div class="form-group">
                 <label for="usernameCreate">{{__('Kullanıcı adı')}}</label>
                 <input class="form-control" id="usernameCreate" aria-describedby="usernameHelp" placeholder="{{__('Kullanıcı adı')}}">
-                <small id="usernameHelp" class="form-text text-muted">{{__('Oluşturacağınız kullanıcının adını giriniz.')}}.</small>
+                <small id="usernameHelp" class="form-text text-muted">{{__('Oluşturacağınız kullanıcının adını giriniz.')}}</small>
             </div>
             <div class="form-group">
                 <label for="passwordCreate">{{__('Parola')}}</label>
@@ -40,16 +40,19 @@
         <script>
             function createUser(){
 
-                $('#createUserModal').modal("hide");
-                let username = $('#createUserModal').find('input[name=usernameCreate]').val();
-                let password = $('#createUserModal').find('input[name=passwordCreate]').val();
-
+                
+                username = document.getElementById("usernameCreate").value;
+                password = document.getElementById("passwordCreate").value;
                 var form = new FormData();
                 form.append("username", username);
                 form.append("password", password);
 
                 request(API('create_user'), form, function(response) {
                     message = JSON.parse(response)["message"];
+                    listUsers();
+
+                    $('#createUserModal').modal("hide");
+
                     showSwal(message, 'success', 3000);
 
                 }, function(response) {

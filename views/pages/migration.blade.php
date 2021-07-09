@@ -23,7 +23,7 @@
           <small id="migrateIpAdressHelp" class="form-text text-muted">{{__('Göç edeceğiniz sunucunun IP adresini giriniz (192.168.1.10)')}}.</small>
         </div>
         <div class="form-group">
-          <label for="migrateUsername">{{__('Kullanıcı adı')}}ı</label>
+          <label for="migrateUsername">{{__('Kullanıcı adı')}}</label>
           <input class="form-control" id="migrateUsername" aria-describedby="migrateUsernameHelp" placeholder="{{__('Kullanıcı adı')}}">
           <small id="migrateUsernameHelp" class="form-text text-muted">{{__('Göç edeceğiniz sunucunun kullanıcı adını giriniz.')}}</small>
         </div>

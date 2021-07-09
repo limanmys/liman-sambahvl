@@ -1,11 +1,26 @@
 # LimanMYS SambaHvl Eklentisi
 
 
-Basit anlamda sunucuya SambaHVL paketini kurup, sonrasında etki alanı oluşturabilen ve Samba servis durumunun görüntülenebildiği Liman Eklentisi.
-
 Eklenti yeteneklerinin el ile yapılmasını anlatan dev.to makalesi : [Yeni bir SAMBA Etki Alanı oluşturma](https://dev.to/aciklab/yeni-bir-samba-etki-alani-olusturma-42pd)
 
 SambaHVL temel itibari ile kullanıcının tamamen boş ya da Samba kurulumu yarım bırakılmış bir sunucu üzerinde yeni bir etki alanı oluşturmasını, göç edilmesini (migrate) ve sonrasında da bu sunucunun Samba metriklerinin görüntülenmesi amacıyla tasarlanmıştır. Buna ek olarak halihazırda Samba kurulu DC'ler de SambaHVL sayesinde pasif hale getirilebilir.
+
+Genel özellikleri arasında, 
+
+    * SambaHVL kurulumu, 
+    * Etki alanı oluşturma, 
+    * Göç etme, 
+    * Samba bilgilerini görüntüleme, 
+    * Kullanıcıları görüntüleme ve yeni kullanıcı ekleme, 
+    * Grupları görüntüleme ve yeni grup ekleme,
+    * Bilgisayarları görüntüleme,
+    * FSMO rol yönetimi,
+    * Replikasyon bilgilerinin görüntülenmesi,
+    * Site bilgilerinin görüntülenmesi, yeni site oluşturulması,
+    * Etki alanı denetleyicisini düşürme,
+    * Sistem saatini eşitleme ve görüntüleme 
+
+gösterilebilir.
 
 
 ## Eklenti Görselleri

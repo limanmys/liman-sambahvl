@@ -58,12 +58,12 @@
         <i class="fas fa-network-wired mr-2"></i>
         {{__('Site Listesi')}}</a>
     </li>
-
+    <!--
     <li class="nav-item">
         <a class="nav-link " id = "demote_li" onclick="listDemotable()" href="#demote" data-toggle="tab">
         <i class="fas fa-unlink mr-2"></i>
         {{__('Etki Alanı Denetleyicisini Düşür')}}</a>
-    </li>
+    </li>-->
 
     <li class="nav-item">
         <a class="nav-link" id="sites_li" onclick="getClocks()" href="#clock"  data-toggle="tab">
@@ -112,10 +112,11 @@
         @include('pages.sites')
     </div>
 
+    <!--
     <div id="demote" class="tab-pane">
         @include('pages.demote')
     </div>
-
+    -->
     <div id="clock" class="tab-pane">
         @include('pages.clock')
     </div>

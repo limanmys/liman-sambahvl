@@ -36,7 +36,7 @@
             updateReplication(table[i]);
         }
         Swal.close();
-        showSwal("Başarılı!", 'success', 3000);
+        showSwal('{{__("Başarılı")}}', 'success', 3000);
     }
 
     function updateReplication(line) {
@@ -52,7 +52,7 @@
 
         request(API('create_bound'), form, function(response) {
             message = JSON.parse(response)["message"];
-            showSwal(message, 'success', 3000);
+            showSwal('{{__("Başarılı")}}', 'success', 3000);
         }, function(response) {
             let error = JSON.parse(response);
             showSwal(error.message, 'error', 3000);
@@ -68,7 +68,7 @@
 
         request(API('show_update_time'), form, function(response) {
             message = JSON.parse(response)["message"];
-            showSwal(message, 'info', 3000);
+            showSwal('{{__("Başarılı")}}', 'success', 3000);
         }, function(response) {
             let error = JSON.parse(response);
             showSwal(error.message, 'error', 3000);

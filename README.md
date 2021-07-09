@@ -77,3 +77,9 @@ DC üzerinde bulunan siteların görüntülendiği bu sekmede, ayrıca site olu�
 İstenilen etki alanı denetleyicisini düşürür. 
 
 ![smb11](https://github.com/zekiahmetbayar/liman-sambahvl/blob/main/images/smb11.PNG)
+
+### Sistem Saati
+
+Sistem saati bu sekmeden görüntülenebilir.
+
+![smb12](https://github.com/zekiahmetbayar/liman-sambahvl/blob/main/images/smb12.PNG)

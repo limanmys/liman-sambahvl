@@ -38,9 +38,10 @@ return [
     "migrate_log" => "SambaController@migrateLog",
 
     "list_users" => "LdapController@listUsers",
+    "create_user" => "LdapController@createUser",
     "list_groups" => "LdapController@listGroups",
     "list_computers" => "LdapController@listComputers",
-
+    
     "create_site" => "LdapController@createSite",
     "delete_site" => "LdapController@deleteSite",
     "list_sites" => "LdapController@listSites",

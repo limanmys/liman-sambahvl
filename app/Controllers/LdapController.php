@@ -48,7 +48,26 @@ class LdapController
         $ip = runCommand(sudo().$command);
         return $ip;
     }
-
+    function createUser(){
+        $username = request("username");
+        $password = request("password");
+        $output = runCommand(sudo()."samba-tool user create ".$username." ".$password." 2>&1");
+        if(str_contains($output,"already exists")){
+            return respond("Kullanıcı zaten mevcut !",201);
+        }
+        else if(str_contains($output,"password is too short")){
+            return respond("Şifre çok kısa !",201);
+        }
+        else if (str_contains($output,"created successfully")){
+            return respond("Kullanıcı başarıyla oluşturuldu.",200);
+        }
+        else if (str_contains($output,"not meet the complexity criteria!")){
+            return respond($password,201);
+        }
+        else{
+            return respond($output,201);
+        }
+    }
     function listUsers(){
         $ldap = $this->connect();
 

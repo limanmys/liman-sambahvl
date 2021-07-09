@@ -36,7 +36,9 @@
 
     "Kullanıcılar": "Users",
     "Kullanıcı": "User",
-
+    "Lütfen oluşturmak istediğiniz kullanıcının bilgilerini giriniz":"Please enter the informations of the user you want to create",
+    "Oluşturacağınız kullanıcının adını giriniz.":"Please enter the name of the user you will create.",
+    "Oluşturacağınız kullanıcının parolasını giriniz.":"Please enter the password of the user you will create.",
     "Gruplar": "Groups",
     "Grup": "Group",
     "Istediğiniz grup türünü açılır pencereden seçip buton yardımı ile listeletebilirsiniz.": "You can select the group type you want from the dropdown box and list with the help of the button.",
@@ -120,7 +122,11 @@
     "Kurulum tamamlanamadı, depoya erişilemiyor !": "Installation could not be completed, repository cannot be accessed!",
     "Güncelleniyor...": "Updating...",
     "Tarih ve saat başarıyla güncellendi": "Date and time updated successfully",
-    
+    "Tablodan sağ tık ile istediğiniz Domain Controller'ı veya butonu kullanarak eklentiyi kullandığınız Domain Controller'ı Demote edebilirsiniz.":"You can demote the Domain Controller you want by right-clicking on the table or the Domain Controller you are using by using the button.",
+    "Bu DC'yi Demote Et":"Demote This DC",
+    "Tümünü replike et":"Replicate all",
+    "Buton yardımıyla yeni bir kullanıcı oluşturabilir veya tablodan mevcut kullanıcıları görebilirsiniz.":"You can create a new user with the help of the button or you can see the existing users from the table.",
+    "Kullanıcı Oluştur":"Create User",
     "Yükleniyor...": "Loading..."
     
     

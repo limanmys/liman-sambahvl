@@ -1,7 +1,14 @@
 @if (certificateExists(server()->ip_address, 636))
     @if (ldapCheck(strtolower(extensionDb('domainName')), "administrator", extensionDb('domainPassword'), server()->ip_address, 636))
-        <p>Tablodan sağ tık ile istediğiniz Domain Controller'ı veya butonu kullanarak eklentiyi kullandığınız Domain Controller'ı Demote edebilirsiniz.</p>
-        <button class="btn btn-danger mb-2" id="domain" onclick="demoteYourself()" type="button">Bu DC'yi Demote Et</button>
+        
+        <div class="alert alert-primary d-flex align-items-center " id="infoDivGroups" role="alert">
+            <svg class="bi flex-shrink-0 me-2" width="24" height="24" role="img" aria-label="Info:"><use xlink:href="#info-fill"/></svg>
+            <i class="fas fa-icon mr-2"></i>
+            <div>
+                {{__("Tablodan sağ tık ile istediğiniz Domain Controller'ı veya butonu kullanarak eklentiyi kullandığınız Domain Controller'ı Demote edebilirsiniz.")}}
+            </div>
+        </div>
+        <button class="btn btn-danger mb-2" id="domain" onclick="demoteYourself()" type="button">{{__("Bu DC'yi Demote Et")}}</button>
 
         <div class="table-responsive" id="demotableTable"></div>
 
@@ -93,15 +100,10 @@
 
             function listDemotable(){
 
-                showSwal('{{__("Liste Yükleniyor...")}}','info',2000);
+                showSwal('{{__("Yükleniyor...")}}','info',2000);
                 var form = new FormData();
                 request(API('list_demotable'), form, function(response) {
-                    $('#demotableTable').html(response).find('table').DataTable({
-                    bFilter: true,
-                    "language" : {
-                        url : "/turkce.json"
-                    }
-                    });;
+                    $('#demotableTable').html(response).find('table').DataTable(dataTablePresets('normal'));
                 }, function(response) {
                     let error = JSON.parse(response);
                     showSwal(error.message, 'error', 3000);

@@ -44,7 +44,8 @@
     "Istediğiniz grup türünü açılır pencereden seçip buton yardımı ile listeletebilirsiniz.": "You can select the group type you want from the dropdown box and list with the help of the button.",
     "Listelenebilecek Gruplar": "Listable Groups",
     "Listele": "List",
-
+    "Etki Alanı Denetleyicisini Düşür":"Demote Domain Controller",
+    "Düşürülebilir Etki Alanı Denetleyicisi Adı":"Demotable DC Name",
     "Buton yardımıyla yeni bir site oluşturabilir veya tabloda sağ tuş kullanarak bazı site işlemleri yapabilirsiniz.": "You can create a new site with the help of the button or you can perform some site operations by using the right click on the table.",
     "Site Listesi": "Site List",
     "Lütfen oluşturmak istediğiniz site ismini yazınız": "Please enter the site name you want to create",
@@ -123,10 +124,18 @@
     "Güncelleniyor...": "Updating...",
     "Tarih ve saat başarıyla güncellendi": "Date and time updated successfully",
     "Tablodan sağ tık ile istediğiniz Domain Controller'ı veya butonu kullanarak eklentiyi kullandığınız Domain Controller'ı Demote edebilirsiniz.":"You can demote the Domain Controller you want by right-clicking on the table or the Domain Controller you are using by using the button.",
-    "Bu DC'yi Demote Et":"Demote This DC",
+    "Bu Etki Alanı Denetleyicisini Düşür":"Demote This DC",
+    "Sitelar":"Sites",
     "Tümünü replike et":"Replicate all",
     "Buton yardımıyla yeni bir kullanıcı oluşturabilir veya tablodan mevcut kullanıcıları görebilirsiniz.":"You can create a new user with the help of the button or you can see the existing users from the table.",
     "Kullanıcı Oluştur":"Create User",
+    "İstediğiniz grup türünü açılır pencereden seçip buton yardımı ile listeletebilir veya buton yardımıyla yeni bir grup oluşturabilirsiniz.":"You can select the group type you want from the dropdown box and list with the help of the button or you can create a new group with the help of the other button.",
+    "Grup Oluştur":"Create Group",
+    "Oluşturacağınız grup adını giriniz.":"Please enter the group name you will create.",
+    "Grup adı":"Group name",
+    "Lütfen oluşturmak istediğiniz grup bilgilerini giriniz":"Please enter the group information you want to create.",
+    
+   " Hata : Sertifikanız hatalı veya güncel değil !":"Error : Your certificate is incorrect or outdated !",
     "Yükleniyor...": "Loading..."
     
     

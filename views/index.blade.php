@@ -62,7 +62,7 @@
     <li class="nav-item">
         <a class="nav-link " id = "demote_li" onclick="listDemotable()" href="#demote" data-toggle="tab">
         <i class="fas fa-unlink mr-2"></i>
-        Demote Domain Controller</a>
+        {{__('Etki Alanı Denetleyicisini Düşür')}}</a>
     </li>
 
     <li class="nav-item">

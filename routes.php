@@ -40,6 +40,7 @@ return [
     "list_users" => "LdapController@listUsers",
     "create_user" => "LdapController@createUser",
     "list_groups" => "LdapController@listGroups",
+    "create_group" => "LdapController@createGroup",
     "list_computers" => "LdapController@listComputers",
     
     "create_site" => "LdapController@createSite",

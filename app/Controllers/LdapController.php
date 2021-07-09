@@ -75,6 +75,7 @@ class LdapController
             return respond($output,201);
         }
     }
+
     function listUsers(){
         $ldap = $this->connect();
 
@@ -99,6 +100,28 @@ class LdapController
         ]);
 
     }
+
+    function createGroup(){
+
+        validate([
+			'groupname' => 'required|string',
+
+		]);
+
+        $groupname = request("groupname");
+        $output = runCommand(sudo()."samba-tool group add ".$groupname." 2>&1");
+        if(str_contains($output,"already exists")){
+            return respond("Grup zaten mevcut !",201);
+        }
+        else if(str_contains($output,"Added")){
+            return respond("Grup başarıyla oluşturuldu.",200);
+        }
+        else{
+            return respond($output,201);
+
+        }
+    }
+    
     function listGroups(){
         $ldap = $this->connect();
         $groupType = request("groupType");
@@ -175,7 +198,7 @@ class LdapController
 
         return view('table', [
             "value" => $data,
-            "title" => ["Sites"],
+            "title" => ["Sitelar"],
             "display" => ["name"],
             "menu" => [
                 "Site Sil" => [
@@ -392,7 +415,7 @@ class LdapController
 
         return view('table', [
             "value" => $data,
-            "title" => ["Demotable DC Name"],
+            "title" => ["Düşürülebilir Etki Alanı Denetleyicisi Adı"],
             "display" => ["serverName"],
             "menu" => [
                 "Demote" => [

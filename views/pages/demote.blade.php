@@ -1,44 +1,7 @@
 @if (certificateExists(server()->ip_address, 636))
-<<<<<<< HEAD
-    @if (ldapCheck(strtolower(extensionDb('domainName')), "administrator", extensionDb('domainPassword'), server()->ip_address, 636))
-        
-        <div class="alert alert-primary d-flex align-items-center " id="infoDivGroups" role="alert">
-            <svg class="bi flex-shrink-0 me-2" width="24" height="24" role="img" aria-label="Info:"><use xlink:href="#info-fill"/></svg>
-            <i class="fas fa-icon mr-2"></i>
-            <div>
-                {{__("Tablodan sağ tık ile istediğiniz Domain Controller'ı veya butonu kullanarak eklentiyi kullandığınız Domain Controller'ı Demote edebilirsiniz.")}}
-            </div>
-        </div>
-        <button class="btn btn-danger mb-2" id="domain" onclick="demoteYourself()" type="button">{{__("Bu DC'yi Demote Et")}}</button>
-
-        <div class="table-responsive" id="demotableTable"></div>
-
-        @component('modal-component',[
-                "id" => "configureAskModal",
-                "title" => "ERROR",
-                "footer" => [
-                    "text" => "Evet",
-                    "class" => "btn-success",
-                    "onclick" => "configureAskModalYes()"
-                ]
-            ])
-            
-        @endcomponent
-
-        @component('modal-component',[
-                "id" => "demoteConfirmationModal",
-                "title" => "Dikkat!",
-                "footer" => [
-                    "text" => "Evet",
-                    "class" => "btn-success",
-                    "onclick" => "demoteConfirmationModalYes()"
-                ]
-            ])
-=======
 
     @if (isCertificateValid(server()->ip_address, 636))
         @if (ldapCheck(strtolower(extensionDb('domainName')), "administrator", extensionDb('domainPassword'), server()->ip_address, 636))
->>>>>>> 3d9c426b6b867b39daad84e9bd14cae04f3b95c9
             
             <div class="alert alert-primary d-flex align-items-center " id="infoDivGroups" role="alert">
                 <svg class="bi flex-shrink-0 me-2" width="24" height="24" role="img" aria-label="Info:"><use xlink:href="#info-fill"/></svg>

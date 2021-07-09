@@ -49,6 +49,13 @@ class LdapController
         return $ip;
     }
     function createUser(){
+
+        validate([
+			'username' => 'required|string',
+			'password' => 'required|string'
+
+		]);
+
         $username = request("username");
         $password = request("password");
         $output = runCommand(sudo()."samba-tool user create ".$username." ".$password." 2>&1");
@@ -62,7 +69,7 @@ class LdapController
             return respond("Kullanıcı başarıyla oluşturuldu.",200);
         }
         else if (str_contains($output,"not meet the complexity criteria!")){
-            return respond($password,201);
+            return respond("Şifre yeterince kompleks değil !",201);
         }
         else{
             return respond($output,201);
@@ -92,6 +99,28 @@ class LdapController
         ]);
 
     }
+
+    function createGroup(){
+
+        validate([
+			'groupname' => 'required|string',
+
+		]);
+
+        $groupname = request("groupname");
+        $output = runCommand(sudo()."samba-tool group add ".$groupname." 2>&1");
+        if(str_contains($output,"already exists")){
+            return respond("Grup zaten mevcut !",201);
+        }
+        else if(str_contains($output,"Added")){
+            return respond("Grup başarıyla oluşturuldu.",200);
+        }
+        else{
+            return respond($output,201);
+
+        }
+    }
+    
     function listGroups(){
         $ldap = $this->connect();
         $groupType = request("groupType");
@@ -168,7 +197,7 @@ class LdapController
 
         return view('table', [
             "value" => $data,
-            "title" => ["Sites"],
+            "title" => ["Sitelar"],
             "display" => ["name"],
             "menu" => [
                 "Site Sil" => [
@@ -385,7 +414,7 @@ class LdapController
 
         return view('table', [
             "value" => $data,
-            "title" => ["Demotable DC Name"],
+            "title" => ["Düşürülebilir Etki Alanı Denetleyicisi Adı"],
             "display" => ["serverName"],
             "menu" => [
                 "Demote" => [

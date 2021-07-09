@@ -1,6 +1,8 @@
 <?php
 
 use Liman\Toolkit\Shell\Command;
+use App\Utils\Command\LimanRunnerEngine;
+
 if (!function_exists('checkPort')) {
 	function checkPort($ip, $port)
 	{
@@ -36,16 +38,19 @@ if (!function_exists('certificateExists')) {
 if (!function_exists('isCertificateValid')) {
     function isCertificateValid($ip, $port)
     {
+        Command::bindEngine(LimanRunnerEngine::class);
         if (certificateExists($ip, $port)) {
-            $srv_cert = shell_exec('openssl s_client -connect ' . 
-                    escapeshellarg($ip) . ':' . 
-                    escapeshellarg($port) . 
-                    " 2>/dev/null </dev/null |  sed -ne '/-BEGIN CERTIFICATE-/,/-END CERTIFICATE-/p'" );
+            $srv_cert = Command::run("openssl s_client -connect {:ip}:{:port} 2>/dev/null </dev/null |  sed -ne '/-BEGIN CERTIFICATE-/,/-END CERTIFICATE-/p'", 
+                [
+                    "ip" => $ip,
+                    "port" => $port
+                ]);
 
-            $installed_cert = shell_exec("cat " . 
-                    escapeshellarg("/usr/local/share/ca-certificates/") .
-                    escapeshellarg("liman-" . strtolower($ip) . "_" . $port . ".crt")
-            );
+            $installed_cert = Command::run("cat {:path}{:name}", 
+                [
+                    "path" => "/usr/local/share/ca-certificates/",
+                    "name" => "liman-" . strtolower($ip) . "_" . $port . ".crt"
+                ]);
 
             return $srv_cert == $installed_cert;
         }

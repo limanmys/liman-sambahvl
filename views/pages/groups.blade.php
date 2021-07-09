@@ -7,7 +7,7 @@
             <svg class="bi flex-shrink-0 me-2" width="24" height="24" role="img" aria-label="Info:"><use xlink:href="#info-fill"/></svg>
             <i class="fas fa-icon mr-2"></i>
             <div>
-                {{__('Istediğiniz grup türünü açılır pencereden seçip buton yardımı ile listeletebilirsiniz.')}}
+                {{__('İstediğiniz grup türünü açılır pencereden seçip buton yardımı ile listeletebilir veya buton yardımıyla yeni bir grup oluşturabilirsiniz.')}}
             </div>
             </div>
             <div id="test">
@@ -22,11 +22,51 @@
                 ])
             </div>
             <small><button class="btn btn-success mb-2" id="groupBtn" onclick="listGroups()"  type="button">{{__('Listele')}}</button></small>
+            
+            @include('modal-button', [
+                "class" => "btn btn-success mb-2",
+                "target_id" => "createGroupModal",
+                "text" => "Grup Oluştur"
+                ])
+            @component('modal-component',[
+                "id" => "createGroupModal",
+                "title" => "Lütfen oluşturmak istediğiniz grup bilgilerini giriniz",
+                
+            ]) 
+            <form>
+                <div class="form-group">
+                    <label for="groupnameCreate">{{__('Grup adı')}}</label>
+                    <input class="form-control" id="groupnameCreate" aria-describedby="groupnameHelp" placeholder="{{__('Grup adı')}}">
+                    <small id="groupnameHelp" class="form-text text-muted">{{__('Oluşturacağınız grup adını giriniz.')}}</small>
+                </div>
+            </form>
+            <button class="btn btn-success" onclick="createGroup()" style="float:right;">{{__('Oluştur')}}</button>
+            @endcomponent
             <br />
             <br />
             <div class="table-responsive" id="groupsTable"></div>
 
             <script>
+
+                function createGroup(){
+
+                    groupname = document.getElementById("groupnameCreate").value;
+                    var form = new FormData();
+                    form.append("groupname", groupname);
+
+                    request(API('create_group'), form, function(response) {
+                        message = JSON.parse(response)["message"];
+                        listGroups();
+                        $('#createGroupModal').modal("hide");
+
+                        showSwal(message, 'success', 3000);
+
+                    }, function(response) {
+                        let error = JSON.parse(response);
+                        showSwal(error.message, 'error', 3000);
+                    });
+                }
+
                 function listGroups(){
                     showSwal('{{__("Yükleniyor...")}}','info');
                     var form = new FormData();
@@ -44,27 +84,27 @@
                 }
             </script>
         @else
-        @php
-            echo strtolower(extensionDb('domainName'));
-            echo extensionDb('domainPassword');
-            echo server()->ip_address;
-        @endphp   
-            <div id="noLDAPDiv2" style="visibility:none;"></div>
-            <script>
+            <div id="noLDAPDiv2" style="visibility:none;">
+            <div class="alert alert-danger d-flex align-items-center"  role="alert">
+                    <svg class="bi flex-shrink-0 me-2" width="24" height="24" role="img" aria-label="Danger:"><use xlink:href="#exclamation-triangle-fill" /></svg>
+                    <i class="fas fa-icon mr-2"></i>
+                    <div>
+                        {{__("Hata : LDAP\'a Bağlanılamadı !")}}
+                    </div>
+                    </div>
+            </div>
                 
-                $('#noLDAPDiv2').html(
-                    '<div class="alert alert-danger d-flex align-items-center"  role="alert">' +
-                    '<svg class="bi flex-shrink-0 me-2" width="24" height="24" role="img" aria-label="Danger:"><use xlink:href="#exclamation-triangle-fill" /></svg>' +
-                    '<i class="fas fa-icon mr-2"></i>' +
-                    '<div>'+
-                        '{{__("Hata : LDAP\'a Bağlanılamadı !")}}'+
-                    '</div>'+
-                    '</div>'
-                    );
-                
-                
-            </script>
         @endif
+    @else
+            <div id="invalidCertificate2" style="visibility:none;">
+                <div class="alert alert-danger d-flex align-items-center"  role="alert">
+                <svg class="bi flex-shrink-0 me-2" width="24" height="24" role="img" aria-label="Danger:"><use xlink:href="#exclamation-triangle-fill" /></svg>
+                    <i class="fas fa-icon mr-2"></i>
+                    <div>
+                        {{__("Hata : Sertifikanız hatalı veya güncel değil !")}}
+                    </div>
+                    </div>
+            </div>
     @endif
 
 @else

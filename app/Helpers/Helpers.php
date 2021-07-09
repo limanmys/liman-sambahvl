@@ -1,5 +1,6 @@
 <?php
 
+use Liman\Toolkit\Shell\Command;
 if (!function_exists('checkPort')) {
 	function checkPort($ip, $port)
 	{
@@ -29,6 +30,26 @@ if (!function_exists('certificateExists')) {
                 return current(preg_grep("/".preg_quote($filename)."/i", glob("$path/*")));
         }
         return $flag;
+    }
+}
+
+if (!function_exists('isCertificateValid')) {
+    function isCertificateValid($ip, $port)
+    {
+        if (certificateExists($ip, $port)) {
+            $srv_cert = shell_exec('openssl s_client -connect ' . 
+                    escapeshellarg($ip) . ':' . 
+                    escapeshellarg($port) . 
+                    " 2>/dev/null </dev/null |  sed -ne '/-BEGIN CERTIFICATE-/,/-END CERTIFICATE-/p'" );
+
+            $installed_cert = shell_exec("cat " . 
+                    escapeshellarg("/usr/local/share/ca-certificates/") .
+                    escapeshellarg("liman-" . strtolower($ip) . "_" . $port . ".crt")
+            );
+
+            return $srv_cert == $installed_cert;
+        }
+        return false;
     }
 }
 

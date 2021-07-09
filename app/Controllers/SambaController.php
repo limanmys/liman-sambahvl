@@ -291,7 +291,7 @@ class SambaController{
         $outgoingHostName = request('outHost');
         $info = request('info');
         runCommand(sudo() . 'samba-tool drs replicate ' . $incomingHostName . $outgoingHostName . $info);
-        return respond("Islem basarili", 200);
+        return respond("Başarılı", 200);
     }
 
     function showUpdateTime(){

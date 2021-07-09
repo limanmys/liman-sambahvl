@@ -134,8 +134,12 @@
     "Oluşturacağınız grup adını giriniz.":"Please enter the group name you will create.",
     "Grup adı":"Group name",
     "Lütfen oluşturmak istediğiniz grup bilgilerini giriniz":"Please enter the group information you want to create.",
-    
-   " Hata : Sertifikanız hatalı veya güncel değil !":"Error : Your certificate is incorrect or outdated !",
+    "Başarılı":"Successful",
+    "Hata : Sertifikanız hatalı veya güncel değil !":"Error : Your certificate is incorrect or outdated !",
+    "Aşağıdaki tabloda replikasyonları görüntüleyebilir, tablo üzerinde sağ tuş ile bir replikasyonu güncelleyebilir veya son güncelleme zamanını öğrenebilirsiniz. Ayrıca buton ile tümünü satırları da replike edebilirsiniz.":"You can view the replications in the table below, update a replication by right-clicking on the table, or get the last update time. You can also replicate all rows with the button.", 
+    "Aşağıdaki tablodan sunucudaki bilgisayarları görebilirsiniz.":"You can see the computers on the server from the table below.",
+    "Site adı":"Site name",
+    "Oluşturacağınız site adını giriniz.":"Enter the site name you will create.",
     "Yükleniyor...": "Loading..."
     
     

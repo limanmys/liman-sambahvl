@@ -84,38 +84,27 @@
                 }
             </script>
         @else
-            <div id="noLDAPDiv2" style="visibility:none;"></div>
-            <script>
+            <div id="noLDAPDiv2" style="visibility:none;">
+            <div class="alert alert-danger d-flex align-items-center"  role="alert">
+                    <svg class="bi flex-shrink-0 me-2" width="24" height="24" role="img" aria-label="Danger:"><use xlink:href="#exclamation-triangle-fill" /></svg>
+                    <i class="fas fa-icon mr-2"></i>
+                    <div>
+                        {{__("Hata : LDAP\'a Bağlanılamadı !")}}
+                    </div>
+                    </div>
+            </div>
                 
-                $('#noLDAPDiv2').html(
-                    '<div class="alert alert-danger d-flex align-items-center"  role="alert">' +
-                    '<svg class="bi flex-shrink-0 me-2" width="24" height="24" role="img" aria-label="Danger:"><use xlink:href="#exclamation-triangle-fill" /></svg>' +
-                    '<i class="fas fa-icon mr-2"></i>' +
-                    '<div>'+
-                        '{{__("Hata : LDAP\'a Bağlanılamadı !")}}'+
-                    '</div>'+
-                    '</div>'
-                    );
-                
-                
-            </script>
         @endif
     @else
-            <div id="invalidCertificate2" style="visibility:none;"></div>
-            <script>
-                
-                $('#invalidCertificate2').html(
-                    '<div class="alert alert-danger d-flex align-items-center"  role="alert">' +
-                    '<svg class="bi flex-shrink-0 me-2" width="24" height="24" role="img" aria-label="Danger:"><use xlink:href="#exclamation-triangle-fill" /></svg>' +
-                    '<i class="fas fa-icon mr-2"></i>' +
-                    '<div>'+
-                        '{{__("Hata : Sertifikanız hatalı veya güncel değil !")}}'+
-                    '</div>'+
-                    '</div>'
-                    );
-                
-                
-            </script>
+            <div id="invalidCertificate2" style="visibility:none;">
+                <div class="alert alert-danger d-flex align-items-center"  role="alert">
+                <svg class="bi flex-shrink-0 me-2" width="24" height="24" role="img" aria-label="Danger:"><use xlink:href="#exclamation-triangle-fill" /></svg>
+                    <i class="fas fa-icon mr-2"></i>
+                    <div>
+                        {{__("Hata : Sertifikanız hatalı veya güncel değil !")}}
+                    </div>
+                    </div>
+            </div>
     @endif
 
 @else

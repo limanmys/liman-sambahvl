@@ -5,17 +5,16 @@
             @component('modal-component',[
                     "id" => "createSiteModal",
                     "title" => "Lütfen oluşturmak istediğiniz site ismini yazınız",
-                    "footer" => [
-                        "text" => "Oluştur",
-                        "class" => "btn-success",
-                        "onclick" => "createSite()"
-                    ]
+                   
                 ]) 
-                @include('inputs', [
-                    "inputs" => [
-                        "Yeni site adı: " => "newSiteName:text:"
-                    ]
-                ])
+            <form>
+                <div class="form-group">
+                    <label for="sitename">{{__('Site adı')}}</label>
+                    <input class="form-control" id="sitename" aria-describedby="sitenameHelp" placeholder="{{__('Site adı')}}">
+                    <small id="sitenameHelp" class="form-text text-muted">{{__('Oluşturacağınız site adını giriniz.')}}</small>
+                </div>
+            </form>
+                <button class="btn btn-success" onclick="createSite()" style="float:right;">{{__('Oluştur')}}</button>
             @endcomponent
 
             @component('modal-component',[
@@ -52,11 +51,9 @@
             <script>
 
                 function listSites(){
-                    showSwal('{{__("Yükleniyor...")}}','info');
                     var form = new FormData();
                     request(API('list_sites'), form, function(response) {
                         $('#table3').html(response).find('table').DataTable(dataTablePresets('normal'));
-                        Swal.close();
                     }, function(response) {
                         let error = JSON.parse(response);
                         Swal.close();
@@ -65,15 +62,14 @@
                 }
 
                 function createSite(){
-
+                    newSiteName = document.getElementById("sitename").value;
                     $('#createSiteModal').modal("hide");
-                    let newSiteName = $('#createSiteModal').find('input[name=newSiteName]').val();
                     var form = new FormData();
                     form.append("newSiteName", newSiteName);
                     request(API('create_site'), form, function(response) {
                         message = JSON.parse(response)["message"];
-                        showSwal(message, 'success', 3000);
                         listSites();
+                        showSwal(message, 'success', 3000);
                     }, function(response) {
                         let error = JSON.parse(response);
                         showSwal(error.message, 'error', 3000);

@@ -1,3 +1,11 @@
+<div class="alert alert-primary d-flex align-items-center " id="infoDivGroups" role="alert">
+    <svg class="bi flex-shrink-0 me-2" width="24" height="24" role="img" aria-label="Info:"><use xlink:href="#info-fill"/></svg>
+    <i class="fas fa-icon mr-2"></i>
+    <div>
+        {{__('Aşağıdaki tabloda replikasyonları görüntüleyebilir, tablo üzerinde sağ tuş ile bir replikasyonu güncelleyebilir veya son güncelleme zamanını öğrenebilirsiniz. Ayrıca buton ile tümünü satırları da replike edebilirsiniz.')}}
+    </div>
+</div>
+
 <div id="replicationPrintArea"></div> 
 <button class="btn btn-success mb-2" id="replicateAllButton" onclick="replicateAll()" type="button">{{__('Tümünü replike et')}}</button>
 <div class="table-responsive replicationTable" id="replicationTable"></div> 

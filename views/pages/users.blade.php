@@ -74,6 +74,20 @@
                         showSwal(error.message, 'error', 3000);
                     });
                 }
+                function deleteUser(line){
+                
+                var form = new FormData();
+                let name = line.querySelector("#name").innerHTML;
+                form.append("name",name);
+                request(API('delete_user'), form, function(response) {
+                    message = JSON.parse(response)["message"];
+                    listUsers();
+                    
+                    showSwal(message,'success', 3000);
+                }, function(error) {
+                        showSwal(error.message, 'error', 5000);
+                   });
+            }
 
             </script>
         @else

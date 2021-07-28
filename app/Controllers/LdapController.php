@@ -95,18 +95,32 @@ class LdapController
         return view('table', [
             "value" => $data,
             "title" => ["Kullanıcılar"],
-            "display" => ["name"]
+            "display" => ["name"],
+            "menu" => [
+
+                "Sil" => [
+                    "target" => "deleteUser",  
+                    "icon" => "fa-trash-alt",             
+                ],
+                ]
+    
         ]);
 
+    }
+
+    function deleteUser(){
+        $user = request("name");
+        $output=runCommand(sudo()."smbpasswd -x ". $user);
+        return respond($output,200);
     }
 
     function createGroup(){
 
         validate([
-			'groupname' => 'required|string',
-
-		]);
-
+            'groupname' => 'required|string',
+    
+        ]);
+    
         $groupname = request("groupname");
         $output = runCommand(sudo()."samba-tool group add ".$groupname." 2>&1");
         if(str_contains($output,"already exists")){
@@ -117,7 +131,7 @@ class LdapController
         }
         else{
             return respond($output,201);
-
+    
         }
     }
     
@@ -147,9 +161,21 @@ class LdapController
         return view('table', [
             "value" => $data,
             "title" => ["Gruplar"],
-            "display" => ["name"]
+            "display" => ["name"],
+            "menu" => [
+
+                "Sil" => [
+                    "target" => "deleteGroup", 
+                    "icon" => "fa-trash-alt",              
+                ],
+                ]
         ]);
     
+    }
+    function deleteGroup(){
+        $group = request("name");
+        $output=runCommand(sudo()."samba-tool group delete " . $group);
+        return respond($output,200);
     }
     function listComputers(){
         $ldap = $this->connect();

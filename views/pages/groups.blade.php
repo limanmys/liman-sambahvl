@@ -82,6 +82,19 @@
                         showSwal(error.message, 'error', 3000);
                     });
                 }
+                function deleteGroup(line){
+                
+                var form = new FormData();
+                let name = line.querySelector("#name").innerHTML;
+                form.append("name",name);
+                request(API('delete_group'), form, function(response) {
+                    message = JSON.parse(response)["message"];
+                    listGroups();
+                    showSwal(message,'success', 3000);
+                }, function(error) {
+                        showSwal(error.message, 'error', 5000);
+                   });
+            }
             </script>
         @else
             <div id="noLDAPDiv2" style="visibility:none;">

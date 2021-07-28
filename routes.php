@@ -39,6 +39,8 @@ return [
 
     "list_users" => "LdapController@listUsers",
     "create_user" => "LdapController@createUser",
+    "delete_user" => "LdapController@deleteUser",
+    "delete_group" => "LdapController@deleteGroup",
     "list_groups" => "LdapController@listGroups",
     "create_group" => "LdapController@createGroup",
     "list_computers" => "LdapController@listComputers",

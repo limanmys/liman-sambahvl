@@ -76,7 +76,7 @@ class LdapController
         }
     }
     function listUsers(){
-        $ldap = $this->connect();
+        $ldap = $this->connect(); //Returns a positive LDAP link identifier 
 
         $filter = "(&(objectClass=user)(objectCategory=person))";
         $result = ldap_search($ldap, $this->basedn, $filter);
@@ -86,16 +86,19 @@ class LdapController
         $data = [];
         for($i=0 ; $i<$count ; $i++){
             $nameItem = $entries[$i]["name"][0];
+            $samAcName = $entries[$i]["samaccountname"][0];
             $data[] = [
-                "name" => $nameItem
+                "name" => $nameItem,
+                "samaccountname" => $samAcName
             ];
         }
         $this->close($ldap);
 
         return view('table', [
             "value" => $data,
-            "title" => ["Kullanıcılar"],
-            "display" => ["name"],
+            "title" => ["Kullanıcılar", "*hidden*"],
+            "display" => ["name","samaccountname:samaccountname"],
+            "onclick" => "showAttributes",
             "menu" => [
 
                 "Sil" => [
@@ -106,6 +109,41 @@ class LdapController
     
         ]);
 
+    }
+
+    function getAttributes(){
+
+        $ldap = $this->connect();
+        $samacname = request("samaccountname");
+        $filter = "CN=".$samacname;
+        $search = ldap_search($ldap, $this->basedn, $filter);
+        $info = ldap_get_entries($ldap, $search);
+        $attributes = [];
+        $attrSize = $info[0]["count"];
+    
+        for ($i = 0; $i < $attrSize; $i++)
+        {
+            $key = $info[0][$i];
+            $count = $info[0][$key]["count"];  
+            if($count > 1)
+            {
+                array_splice($info[0][$key],0,1);
+                $info[0][$key][0] = implode(",",$info[0][$key]); 
+            }
+            $value = $info[0][$key][0];
+            array_push($attributes, 
+            [	
+                "key" => $key,
+                "value" => $value,
+            ]);
+        }
+        $this->close($ldap);
+
+        return view('table', [
+            "value" => $attributes,
+            "title" => ["Attribute", "Değer"],
+            "display" => ["key", "value"]
+        ]);
     }
 
     function deleteUser(){

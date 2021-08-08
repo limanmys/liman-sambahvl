@@ -22,6 +22,7 @@
                 "title" => "Lütfen oluşturmak istediğiniz kullanıcının bilgilerini giriniz",
                 
             ]) 
+       
             <form>
                 <div class="form-group">
                     <label for="usernameCreate">{{__('Kullanıcı adı')}}</label>
@@ -36,6 +37,20 @@
             </form>
             <button class="btn btn-success" onclick="createUser()" style="float:right;">{{__('Oluştur')}}</button>
             @endcomponent
+            @component("modal-component", [
+                "id" => "attributesModal",
+                "title" => "Kullanıcı Bilgileri",
+                "footer" => 
+                   [
+                    "class" => "btn-success",
+                    "onclick" => "closeAttrModal()",
+                    "text" => "Kapat"
+                    ]
+                ])    
+                <div class="clickedname"></div>
+
+            @endcomponent
+
             <div class="table-responsive" id="usersTable"></div>
 
             <script>
@@ -87,6 +102,30 @@
                 }, function(error) {
                         showSwal(error.message, 'error', 5000);
                    });
+            }
+
+            function showAttributes(node){
+
+                showSwal("{{__('Yükleniyor...')}}", 'info');
+                // console.log(node);
+
+                let data = new FormData();
+                data.append("samaccountname", $(node).find("#samaccountname").html());   
+
+                request(API('get_attributes'), data, function(response) {
+                    console.log(response);
+                    $('.clickedname').html(response);
+                    $('#attributesModal').modal('show');
+                    Swal.close();
+                }, function(response) {
+                    let error = JSON.parse(response);
+                    Swal.close();
+                    showSwal(error.message, 'error', 3000);
+                });
+                }
+
+            function closeAttrModal(){
+                $('#attributesModal').modal('hide');
             }
 
             </script>

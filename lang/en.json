@@ -58,6 +58,10 @@
     "Site Eklenebilecek Mevcut Sunucular": "Available Servers to Add Site",
     "Mevcut Sunucular": "Available Servers",
     "Site Sunucuları": "Servers of Site",
+    "Değer":"Value",
+    "Nitelik":"Attribute",
+    "Kullanıcı Bilgileri":"User Attributes",
+
 
     "FSMO Rol Yönetimi": "FSMO Role Management",
     "Tablo üzerinde sağ tuş ile bir rolü üzerinize alabilir veya tüm rolleri almak için butonu kullanabilirsiniz.": "You can take on a role with the right button on the table or you can use the button to take all the roles.",

@@ -141,7 +141,7 @@ class LdapController
 
         return view('table', [
             "value" => $attributes,
-            "title" => ["Attribute", "Değer"],
+            "title" => ["Nitelik", "Değer"],
             "display" => ["key", "value"]
         ]);
     }

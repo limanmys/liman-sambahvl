@@ -145,5 +145,8 @@
     "Aşağıdaki tablodan sunucudaki bilgisayarları görebilirsiniz.":"You can see the computers on the server from the table below.",
     "Site adı":"Site name",
     "Oluşturacağınız site adını giriniz.":"Enter the site name you will create.",
-    "Yükleniyor...": "Loading..."
+    "Yükleniyor...": "Loading...",
+
+    "Güncelle": "Update",
+    "Konfigürasyon Dosyası": "Configuration File"
 }

@@ -85,7 +85,7 @@ return [
     "update_samba_package" => "SambaController@updateSambaPackage",
     "observe_update" => "SambaController@observeUpdate",
 
-    "show_config" => "NewController@showConfig",
-    "get_dnsForwarder"=> "NewController@getDNSForwarder",
-    "change_DNSForwarder" => "NewController@changeDNSForwarder",
+    "show_config" => "SambaController@showConfig",
+    "get_dnsForwarder"=> "SambaController@getDNSForwarder",
+    "change_DNSForwarder" => "SambaController@changeDNSForwarder",
 ];

@@ -21,6 +21,8 @@
       {{__('Moduller')}}</a>
       <a class="nav-link" onclick="getInstallLogs()" id="v-pills-logs-tab" data-toggle="pill" href="#v-pills-logs" role="tab" aria-controls="v-pills-logs" aria-selected="false">
       {{__('Loglar')}}</a>
+      <a class="nav-link" onclick="showConfig()" id="v-pills-configuration-tab" data-toggle="pill" href="#v-pills-configuration" role="tab" aria-controls="v-pills-configuration" aria-selected="false">
+      {{__('Konfigürasyon')}}</a>
 
     </div>
   </div>
@@ -104,6 +106,17 @@
             </div>
             </div>
       </div>
+
+      <div class="tab-pane fade" id="v-pills-configuration" role="tabpanel" aria-labelledby="v-pills-configuration-tab">
+        <div class="card-body">
+                <h5 class="card-title">{{__("DNS Forward")}}</h5>
+                <br><br>
+                <input class="form-control" type="text" id="dnsForward">
+                <br>
+                <button onclick="changednsForward()" class="btn btn-primary">{{__("Güncelle")}}</button>
+        </div>
+        <pre id="conf"></pre>
+    </div>
 
     </div>
   </div>
@@ -371,6 +384,45 @@
         });
         
 
+    }
+
+    function showConfig(){  
+
+        dnsForward();
+        var form = new FormData();
+
+        request(API('show_config'), form, function(response) {
+            $('#conf').html(response);
+            console.log(response);
+        }, function(response) {
+            let error = JSON.parse(response);
+            showSwal(error.message, 'error', 3000);
+        });
+    }
+
+    function dnsForward(){ 
+
+        var form = new FormData();
+
+        request(API('get_dnsForwarder'), form, function(response) {
+            $('#dnsForward').val(response);
+        }, function(error) {
+            showSwal(error.message, 'error', 3000);
+            console.log(error);
+        });
+    }
+    function changednsForward(){
+
+        var data = new FormData();
+        data.append("dnsForwardData", $("#dnsForward").val());
+
+        request(API('change_DNSForwarder'), data, function(response) {
+            showConfig();
+            //$('#dnsForward').val(response);
+        }, function(error) {
+            showSwal(error.message, 'error', 3000);
+            console.log(error);
+        });
     }
 
 </script>

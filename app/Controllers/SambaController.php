@@ -607,5 +607,60 @@ class SambaController{
 
         }
     }
+    function showConfig(){  //return config file content
+
+        $cmd = "smbd -b | grep CONFIGFILE";
+        $output = runCommand(sudo().$cmd);
+        $output = explode(" ", $output);
+        $locOfFile = $output[1];
+
+        $cmd = "cat ". $locOfFile;
+        $output = runCommand(sudo().$cmd);
+
+        return $output;
+    }
+
+    function getDNSForwarder(){
+
+        $cmd = "smbd -b | grep CONFIGFILE";
+        $locOfFile= runCommand(sudo().$cmd);
+        $locOfFile = explode(" ", $locOfFile);
+        $locOfFile =  $locOfFile[1];
+      
+        $cmd = "grep dns forwarder " . $locOfFile;
+        $output = runCommand(sudo().$cmd);
+        $output = explode(" ", $output, 5);
+        $dnsForwarderData = $output[4];
+        return $dnsForwarderData;
+    }
+
+    function changeDNSForwarder(){
+        
+        $cmd = "smbd -b | grep CONFIGFILE";
+        $locOfFile= runCommand(sudo().$cmd);
+        $locOfFile = explode(" ", $locOfFile);
+        $locOfFile =  $locOfFile[1];
+      
+      
+        $cmd1 = "grep 'dns forwarder' " . $locOfFile;
+        $output = runCommand(sudo().$cmd1);
+        $output = explode("= ", $output);
+        $dnsForwarderData = $output[1];
+    
+       //sed -i 's/oldData/newData/gI' <filepath>
+        Command::runSudo("sed -i 's/'@{:oldDNS}'/'@{:newDNS}'/gI' @{:loc}",
+        [
+            "oldDNS" =>  $dnsForwarderData,
+            "newDNS" => request("dnsForwardData"),
+            "loc" => $locOfFile
+        ]);
+        
+        $reload = "systemctl restart samba4.service";
+      //  runCommand(sudo().$reload);
+
+        return respond(request("dnsForwardData")); 
+    }
+
+
 }
 ?>

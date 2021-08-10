@@ -71,11 +71,11 @@
         {{__('Sistem Saati')}}</a>
     </li>
     <li class="nav-item">
-        <a class="nav-link" id="sites_li" onclick="showConfig()" href="#config"  data-toggle="tab">
-        <i class="fas fa-network-wired mr-2"></i>
-        {{__('Configuration File')}}</a>
+        <a class="nav-link" id="sites_li" onclick="getOrganizations()" href="#organizations"  data-toggle="tab">
+        <i class="fas fa-clock mr-2"></i>
+        {{__('Organizasyonlar')}}</a>
     </li>
-    
+  
 
 </ul>
 
@@ -124,9 +124,10 @@
     <div id="clock" class="tab-pane">
         @include('pages.clock')
     </div>
-    <div id="config" class="tab-pane">
-        @include('pages.configuration')
+    <div id="organizations" class="tab-pane">
+        @include('pages.organizations')
     </div>
+ 
 
     
 

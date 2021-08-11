@@ -73,8 +73,9 @@
     <li class="nav-item">
         <a class="nav-link" id="sites_li" onclick="getOrganizations()" href="#organizations"  data-toggle="tab">
         <i class="fas fa-clock mr-2"></i>
-        {{__('Organizasyonlar')}}</a>
+        {{__('Organizasyon')}}</a>
     </li>
+
   
 
 </ul>
@@ -127,9 +128,7 @@
     <div id="organizations" class="tab-pane">
         @include('pages.organizations')
     </div>
- 
 
-    
 
 </div>
 

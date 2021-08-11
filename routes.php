@@ -45,6 +45,7 @@ return [
     "create_group" => "LdapController@createGroup",
     "list_computers" => "LdapController@listComputers",
     "get_attributes" => "LdapController@getAttributes",
+    "list_organizations" => "LdapController@listOrganizations",
     
     "create_site" => "LdapController@createSite",
     "delete_site" => "LdapController@deleteSite",
@@ -87,5 +88,5 @@ return [
 
     "show_config" => "SambaController@showConfig",
     "get_dnsForwarder"=> "SambaController@getDNSForwarder",
-    "change_DNSForwarder" => "SambaController@changeDNSForwarder",
+    "change_DNSForwarder" => "SambaController@changeDNSForwarder"
 ];

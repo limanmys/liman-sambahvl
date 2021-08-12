@@ -70,11 +70,13 @@
         <i class="fas fa-clock mr-2"></i>
         {{__('Sistem Saati')}}</a>
     </li>
+    <!--
     <li class="nav-item">
         <a class="nav-link" id="sites_li" onclick="getOrganizations()" href="#organizations"  data-toggle="tab">
         <i class="fas fa-clock mr-2"></i>
         {{__('Organizasyon')}}</a>
     </li>
+    -->
 
   
 

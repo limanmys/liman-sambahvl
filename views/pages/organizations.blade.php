@@ -9,13 +9,6 @@
     <div class="col-sm-6">
         <div class="card">
         <div class="card-body">
-            <div class="table-responsive" id="organizationsTable"></div>
-        </div>
-        </div>
-    </div>
-    <div class="col-sm-6">
-        <div class="card">
-        <div class="card-body">
             <div id="organizationsTree"></div>
         </div>
         </div>
@@ -24,20 +17,80 @@
 
 
 <script>
+   let icon_types = {
+        "folder" : {
+            "icon" : "fas fa-folder"
+        },
+        "file" : {
+            "icon" : "fas fa-file"
+        },
+    };
 
 function getOrganizations(){
+    showSwal("Yükleniyor...", 'info');
+    let formData = new FormData();
+    let base = "DC=staj,DC=lab";
+    formData.append("base", base);
+    
+    request(API('get_organizations'), formData, function(response){
+        message = JSON.parse(response)["message"];
+        //console.log(message);
+        var i;
+        let data = message;
 
-    showSwal('{{__("Yükleniyor...")}}','info');
-    var form = new FormData();
-    request(API('list_organizations'), form, function(response) {
-        $('#organizationsTable').html(response).find('table').DataTable(dataTablePresets('normal'));
+        console.log(data);
+
+        $('#organizationsTree').jstree({
+            "plugins": [
+                "contextmenu","search","types", "wholerow", "sort", "grid"
+            ],
+            'core': {
+                'data': data,
+                "check_callback": true
+            },
+            "types" : icon_types
+            
+        }).on('select_node.jstree', function (e, data) {
+                let type = data.node.type;
+                let id = data.node.id; 
+                //console.log(data.node.id);
+                if(type == 'folder'){
+                    getChildNodes(id);
+                }
+            });
         Swal.close();
-    }, function(response) {
-        let error = JSON.parse(response);
-        Swal.close();
-        showSwal(error.message, 'error', 3000);
+    }, function(response){
+        response = JSON.parse(response);
+        showSwal(response.message, 'error');
     });
 }
+
+
+    function getChildNodes(id){
+        showSwal('{{__("Yükleniyor...")}}','info');
+        if(id == null){
+            id = $("#organizationsTree").jstree("get_selected")[0];
+        }
+        let formData = new FormData();
+        formData.append("nodebase",id);
+        request(API('get_child_nodes'), formData, function(response) {
+            
+            data = JSON.parse(response)["message"]
+            let fileTree = $("#organizationsTree").jstree(true); //get instance without creating one
+            let selected = fileTree.get_selected()[0]; 
+            data.forEach(element => {
+                if(!fileTree.get_node(element["id"])){
+                    fileTree.create_node(selected,element,"inside",function(){});
+                }
+            });
+           // fileTree.sort(selected,true);
+            fileTree.open_node(selected,false);
+            Swal.close(); 
+        }, function(error) {
+            error = JSON.parse(error)["message"]
+            showSwal(error,'error');
+        });
+    }
 
 </script>
 

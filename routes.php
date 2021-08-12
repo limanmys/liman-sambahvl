@@ -1,5 +1,7 @@
 <?php
 
+use App\Controllers\LdapController;
+
 return [
     "index" => "HomeController@index",
     "install_task" => "HostnameController@get",
@@ -88,5 +90,7 @@ return [
 
     "show_config" => "SambaController@showConfig",
     "get_dnsForwarder"=> "SambaController@getDNSForwarder",
-    "change_DNSForwarder" => "SambaController@changeDNSForwarder"
+    "change_DNSForwarder" => "SambaController@changeDNSForwarder",
+    "get_organizations" => "LdapController@getOrganizations",
+    "get_child_nodes" =>"LdapController@getChildNodes"
 ];

@@ -56,7 +56,7 @@ $("#organizationsTree2").jstree({
         //console.log($("#fileTree").jstree("get_selected")[0]);    // dizin2ye bas -> /srv/dizin1/dizin2 
         if (type === "folder"){
             listOrganizations(path);
-           console.log(path); // srv/dizin1/dizin2 
+            
         }
     });
 
@@ -70,6 +70,7 @@ function listOrganizations(path = null){
 
     let formData = new FormData();
     formData.append("path",path);
+
     request(API('list_organizations'), formData, function(response){
         console.log(response);
         let data = JSON.parse(response)["message"];  //console.log(message);

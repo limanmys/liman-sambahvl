@@ -92,5 +92,6 @@ return [
     "get_dnsForwarder"=> "SambaController@getDNSForwarder",
     "change_DNSForwarder" => "SambaController@changeDNSForwarder",
     "get_organizations" => "LdapController@getOrganizations",
-    "get_child_nodes" =>"LdapController@getChildNodes"
+    "get_child_nodes" =>"LdapController@getChildNodes",
+    "list_organizations" => "LdapController@ListOrganizations"
 ];

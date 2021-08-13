@@ -75,6 +75,11 @@
         <i class="fas fa-clock mr-2"></i>
         {{__('Organizasyon')}}</a>
     </li>
+    <li class="nav-item">
+        <a class="nav-link"  href="#organizations2"  data-toggle="tab">
+        <i class="fas fa-clock mr-2"></i>
+        {{__('Organizasyonlar')}}</a>
+    </li>
 
   
 
@@ -127,6 +132,9 @@
     </div>
     <div id="organizations" class="tab-pane">
         @include('pages.organizations')
+    </div>
+    <div id="organizations2" class="tab-pane">
+        @include('pages.organizations2')
     </div>
 
 

@@ -244,6 +244,52 @@ class LdapController
     
     }
     //ORGANIZATIONS
+    function ListOrganizations(){
+
+
+        $ldap = $this->connect();
+        $filePath = request('path');    // staj.lab
+        if($filePath == strtolower(extensionDb('domainName'))){
+            $baseDN = $this->basedn;
+        }
+        
+        else{  
+            $baseDN = $filePath;     //ou=tr,dc=staj,dc=lab
+        }
+
+        $filter = "ou=*";
+        $justthese = ["ou"];
+        $list = ldap_list($ldap, $baseDN, $filter, $justthese);
+        $info = ldap_get_entries($ldap, $list);
+        
+        
+        $data = [];
+   
+        for($i=0; $i<$info["count"]; $i++){
+           $dn= $info[$i]["dn"];         //OU=ankara,OU=TR,DC=staj,DC=lab
+           $pos = stripos($dn,',');
+           $parentdn = substr($dn,$pos+1); //OU=TR,DC=staj,DC=lab
+           $item_parent[$dn] =  $parentdn;      
+        }
+
+       foreach($item_parent as $key=>$value){
+            $pid = $value;
+            $id = $key; 
+
+            $str = explode(",",$key);        //OU=ankara,OU=TR,DC=staj,DC=lab
+            $str = explode("=",$str[0]);    // OU=ankara
+            $name = $str[1];                // ankara
+    
+            array_push($data, [
+                "id" => $id,
+                "parent" => $pid,
+                "text" => $name,
+                "type" => "folder"
+            ]);
+        }
+        return respond($data,200);
+       
+    }
 
     function getOrganizations(){
 
@@ -300,7 +346,7 @@ class LdapController
                     "id" => $id,
                     "parent" => "#",
                     "text" => $name,
-                    "type" => "folder"
+                    "type" => "base"
                 ]);
 
             else

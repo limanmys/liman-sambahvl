@@ -9,7 +9,7 @@
     <div class="col-sm-6">
         <div class="card">
         <div class="card-body">
-            <div id="organizationsTree"></div>
+            <div id="organizationsTree2"></div>
         </div>
         </div>
     </div>
@@ -17,56 +17,70 @@
 
 
 <script>
-   let icon_types = {
-        "folder" : {
-            "icon" : "fas fa-folder"
+
+
+setTimeout(() => {
+    listOrganizations("{{extensionDb('domainName')}}");
+}, 500);
+
+let path = "{{extensionDb('domainName')}}"    
+console.log(path);
+$("#organizationsTree2").jstree({
+        core :{
+            data : {
+                "id" : path,
+                "text" : path,
+                "state" : {"opened": false, "selected": true},  //ilkini açtı kökün altındaki 1.dizinler gösteriliyor
+                "type" : "base"
+            },
+            "check_callback": true
         },
-        "file" : {
-            "icon" : "fas fa-file"
+        plugins : ["contextmenu", "types", "wholerow", "sort", "grid"],
+        contextmenu: {
+            items: function (item) {
+                return {
+                    move: {
+                        label: 'Taşı',
+                        icon : "fas fa-angle-double-right",
+                        action: function () {
+                            //
+                        }
+                    },
+                }
+            },
         },
-        "base": {
-            "icon" : "fas fa-server"
+        types : icon_types,
+    }).on('select_node.jstree',function(event,data){
+        path = data["node"]["id"];
+        type = data["node"]["type"];
+        //console.log($("#fileTree").jstree("get_selected")[0]);    // dizin2ye bas -> /srv/dizin1/dizin2 
+        if (type === "folder"){
+            listOrganizations(path);
+           console.log(path); // srv/dizin1/dizin2 
         }
-    };
+    });
 
-function getOrganizations(){
+
+function listOrganizations(path = null){
     showSwal("Yükleniyor...", 'info');
-    let formData = new FormData();
-    let base = "DC=staj,DC=lab";
-    formData.append("base", base);
-/*
-    let path = "{{extensionDb('domainName')}}";
-    console.log(path);*/
-    
-    request(API('get_organizations'), formData, function(response){
+  
+    if(path == null){
+        path = $("#organizationsTree2").jstree("get_selected")[0];
+    }
 
-        message = JSON.parse(response)["message"];  //console.log(message);
-        let data = message;
-        $('#organizationsTree').jstree({
-            "plugins": [
-                "contextmenu","search","types", "wholerow", "sort", "grid"
-            ],
-            'core': {
-                'data': data,
-                "check_callback": true
-            },
-            contextmenu: {
-                items: function (item) {
-                    return {
-                        "Move":  {
-                            label: 'Taşı',
-                            icon: "fas fa-angle-double-right",
-                            action: function () {
-                               // moveItem(item.id);
-                                console.log(item.id);
-                            }
-                        },
-                    }
-                },
-            },
-            "types" : icon_types
+    let formData = new FormData();
+    formData.append("path",path);
+    request(API('list_organizations'), formData, function(response){
+        console.log(response);
+        let data = JSON.parse(response)["message"];  //console.log(message);
+        let fileTree = $("#organizationsTree2").jstree(true); //get instance without creating one
+        let selected = fileTree.get_selected()[0]; 
+        data.forEach(element => {
+                if(!fileTree.get_node(element["id"])){
+                    fileTree.create_node(selected,element,"inside",function(){});
+                }
         });
-           // $("#organizationsTree").jstree("open_all");
+        fileTree.sort(selected,true);
         Swal.close();
     }, function(response){
         response = JSON.parse(response);

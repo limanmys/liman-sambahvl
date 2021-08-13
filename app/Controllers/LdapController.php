@@ -248,42 +248,52 @@ class LdapController
     function getOrganizations(){
 
         $ldap = $this->connect();
-        $baseDN = request("base"); //dc=staj,dc=lab
-        $filter = "ou=*";
-        $justthese = ["ou","objectClass"];
-        $list = ldap_list($ldap, $baseDN ,$filter, $justthese);
-        $info[$baseDN] = ldap_get_entries($ldap, $list);
+        $filter = "objectClass=organizationalUnit";
+        $justthese = ["ou"];
+        $list = ldap_search($ldap,$this->basedn ,$filter, $justthese);
+        $info = ldap_get_entries($ldap, $list);
 
-        $data = [];
-        $item_type = [];
-        $id = 0;
+        $data =[];
+        $item_parent = [];
+        $item_id = [];
 
-        foreach($info as $key=>$value){
-            $this->item_parent[$key]="#";
-            $this->item_id[$key]=$id;
-            $this->item_dn[$id]= $key;
-            $parent=$key;
-            //$item_type[$key]="folder";
-            $id++;
-          
+        //set basedn
+        $basedn = explode(",",$this->basedn);// "dc=staj","dc=lab"
+        $pos = stripos($basedn[0],"=");
+        $basename = substr($basedn[0],$pos+1) . "." . substr($basedn[1],$pos+1);    // staj.lab
+        $item_id[$basename]=0;
+        $item_parent[$basename]="#";
 
-            for($i=0; $i<$value["count"]; $i++){
-                $name = $value[$i]["ou"][0];
-                $this->item_parent[$name] = $parent;
-                $this->item_id[$name] = $id;
-                $this->item_dn[$id]= $value[$i]["dn"];
-              //  $lastclass = $value[$i]["objectClass"]["count"]-1;
-              //  $item_type[$name] = $value[$i]["objectClass"][$lastclass];
-                $id++;
+        $id = 1;
+        for($i=0; $i < $info["count"]; $i++){
+
+            $name = $info[$i]["ou"][0]; // ankara
+
+            $dn = $info[$i]["dn"];          //OU=ankara,OU=TR,DC=staj,DC=lab
+            $pos = stripos($dn,',');
+            $parentdn = substr($dn,$pos+1); //OU=TR,DC=staj,DC=lab
+
+            if($parentdn == $this->basedn){     
+                $item_parent[$name] = $basename;
             }
+            else
+            {
+                $str = explode(",",$parentdn);  // ["OU=TR","DC=staj","DC=lab"]
+                $str = explode("=",$str[0]);   // ["OU","TR"]
+                $parent = $str[1];
+                $item_parent[$name] = $parent;
+            }
+            $item_id[$name] = $id;
+            $id++; 
         }
 
-        $index = 0;
-        foreach($this->item_parent as $key=>$value){
-            $pname = $value;
-            $pid = $this->item_id[$pname];
-            $id = $this->item_id[$key];
-            $name = $key;
+        $index=0;
+        foreach($item_parent as $key=>$value){
+
+            $pname = $value;   
+            $pid = $item_id[$pname]; 
+            $id = $item_id[$key]; 
+            $name = $key; 
 
             if($index == 0)
                 array_push($data, [
@@ -301,15 +311,13 @@ class LdapController
                     "type" => "folder"
                 ]);
                 //$data[$index] = $id." ".$pid." ".$name." "."folder";
-                
-                $index++;
+           $index++;
             }
-            
-            return respond($data,200);
-        }
+        return respond($data,200);
+    }
 
-
-
+        
+/*
         function getChildNodes(){
         
             $ldap = $this->connect();
@@ -321,7 +329,7 @@ class LdapController
             $list = ldap_list($ldap, $baseDN ,$filter, $justthese);
             $info = ldap_get_entries($ldap, $list);
 
-            $id = 0;/*
+            $id = 0;
             foreach($info as $key=>$value){
                 $item_parent[$key]="#";
                 $item_id[$key]=$id;
@@ -340,75 +348,11 @@ class LdapController
                   //  $item_type[$name] = $value[$i]["objectClass"][$lastclass];
                     $id++;
                 }
-            }*/
-
-    
-
-        }
-
-
-        /*
-        for($i = 0; $i < count($ou_names); $i++){
-            
-            $filter = "cn=*";
-            $baseDN = "OU=" . $ou_names[$i] . "," . $this->basedn ;
-            $list_ou = ldap_list($ldap, $baseDN ,$filter, ["name","objectClass"]);
-            $objects_ou[$this->basedn][$ou_names[$i]] = ldap_get_entries($ldap, $list_ou);
-
-        }*/
-
-        //base => 
-        //base => "DC=staj,DC=lab":
-    //    $item_id = [];
-     //   $item_parent = [];
-/*
-        $id=0;
-        foreach($objects_ou as $key=>$value){
-
-            $item_parent[$key] = "#";
-            $item_id[$key] = $id;
-            $pname1 = $key;
-            $id = $id + 1;
-
-            foreach($value as $obj=>$val){
-
-                $item_id[$obj] = $id;
-                $item_parent[$obj] =  $pname1;
-                $pname2 = $obj;
-                $id = $id + 1;
-
-                for($i=0; $i<$val["count"]; $i++){
-
-                    $name = $val[$i]["name"][0];
-                    $item_id[$name] = $id;
-                    $item_parent[$name] = $pname2;
-                    $id = $id + 1;
-                }
             }
+
+
         }
-
-        $this->close($ldap);
-   
-/*
-        for($i = 0; $i < $info["count"]; $i++){
-
-            $nameItem = $info[$i]["ou"][0];
-            $data[] = [
-                "name" => $nameItem
-            ];
-        }
-
-
-        $this->close($ldap);
-
-        return  view('table', [
-                    "value" => $data,
-                    "title" => ["Organizasyon"],
-                    "display" => ["name"],
-                ]);
 */
-
-
     //Site
     function listSites(){
 
@@ -698,7 +642,6 @@ class LdapController
             $result = ldap_search($ldap, "CN=Configuration,".$this->basedn, $filter);
             $entries = ldap_get_entries($ldap,$result);
             $count = ldap_count_entries($ldap, $result);
-            $dn;
             for($i=0 ; $i<$count ; $i++){
                 
                 $nameItem = $entries[$i]["name"][0];

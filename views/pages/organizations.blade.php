@@ -33,13 +33,9 @@ function getOrganizations(){
     formData.append("base", base);
     
     request(API('get_organizations'), formData, function(response){
-        message = JSON.parse(response)["message"];
-        //console.log(message);
-        var i;
+
+        message = JSON.parse(response)["message"];  //console.log(message);
         let data = message;
-
-        console.log(data);
-
         $('#organizationsTree').jstree({
             "plugins": [
                 "contextmenu","search","types", "wholerow", "sort", "grid"
@@ -49,15 +45,8 @@ function getOrganizations(){
                 "check_callback": true
             },
             "types" : icon_types
-            
-        }).on('select_node.jstree', function (e, data) {
-                let type = data.node.type;
-                let id = data.node.id; 
-                //console.log(data.node.id);
-                if(type == 'folder'){
-                    getChildNodes(id);
-                }
-            });
+        });
+           // $("#organizationsTree").jstree("open_all");
         Swal.close();
     }, function(response){
         response = JSON.parse(response);
@@ -65,6 +54,8 @@ function getOrganizations(){
     });
 }
 
+
+/*
 
     function getChildNodes(id){
         showSwal('{{__("Yükleniyor...")}}','info');
@@ -91,6 +82,7 @@ function getOrganizations(){
             showSwal(error,'error');
         });
     }
+ */
 
 </script>
 

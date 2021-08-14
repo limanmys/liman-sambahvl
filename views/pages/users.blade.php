@@ -50,10 +50,202 @@
                 <div class="clickedname"></div>
 
             @endcomponent
+            @component("modal-component", [
+                "id" => "userTreeModal",
+                "title" => "",
+                "footer" => 
+                   [
+                    "class" => "btn-primary",
+                    "onclick" => "Move()",
+                    "text" => "Taşı",
+                    ]
+                ])    
+                <div id="user-area" >
+                    <div class="card-body">
+                        <h5 class="card-title" id="selected-user-dn"></h5>
+                        <!--
+                            <br><br>
+                            <input class="form-control" type="text" id="selected-userdn">  
+                            <br>
+                            <button onclick="changeUserdn()" class="btn btn-primary btn-sm">{{__("Güncelle")}}</button>
+                        -->    
+                    </div>
+                    <div class="card-body">
+                        <pre id="userTree"></pre>
+                        <br>
+                    </div>
+                </div>
+            @endcomponent
 
             <div class="table-responsive" id="usersTable"></div>
 
             <script>
+                
+
+              /*  setTimeout(() => {
+                    showUserdnTree(getUserbasedn());
+                }, 500);
+
+                let path = getUserdn();  
+                */
+                let icons = {
+                    "folder" : {
+                        "icon" : "fas fa-folder"
+                    },
+                    "file" : {
+                        "icon" : "fas fa-file"
+                    },
+                    "base": {
+                        "icon" : "fas fa-server"
+                    }
+                };
+
+
+                setTimeout(() => {
+                    showUserdnTree("{{extensionDb('domainName')}}");
+                }, 500);
+
+                let userbasedn = "{{extensionDb('domainName')}}"
+                console.log(userbasedn);
+                $("#userTree").jstree({
+                        core :{
+                            data : {
+                                "id" : userbasedn,
+                                "text" : userbasedn,
+                                "state" : {"opened": false, "selected": true},  //ilkini açtı kökün altındaki 1.dizinler gösteriliyor
+                                "type" : "base"
+                            },
+                            "check_callback": true
+                        },
+                        plugins : ["contextmenu", "types", "wholerow", "sort", "grid"],
+                        types : icons
+                    }).on('select_node.jstree',function(event,data){
+                        path = data["node"]["id"];
+                        type = data["node"]["type"];
+                        //console.log($("#fileTree").jstree("get_selected")[0]);    // dizin2ye bas -> /srv/dizin1/dizin2 
+                        if (type === "folder"){
+                            showUserdnTree(path);
+                        }
+                    });
+
+
+                function showUserdnTree(path = null){
+                    showSwal("Yükleniyor...", 'info');
+                
+                    if(path == null){
+                        path = $("#userTree").jstree("get_selected")[0];
+                    }
+
+                    let formData = new FormData();
+                    formData.append("path",path);
+
+                    request(API('show_userdn_tree'), formData, function(response){
+                        //console.log(response);
+                        let data = JSON.parse(response)["message"];  //console.log(message);
+                        let fileTree = $("#userTree").jstree(true); //get instance without creating one
+                        let selected = fileTree.get_selected()[0]; 
+                        data.forEach(element => {
+                                if(!fileTree.get_node(element["id"])){
+                                    fileTree.create_node(selected,element,"inside",function(){});
+                                }
+                        });
+                        fileTree.sort(selected,true);
+                        fileTree.open_node(selected,false);
+                        Swal.close();
+                    }, function(response){
+                        response = JSON.parse(response);
+                        showSwal(response.message, 'error');
+                    });
+                }
+                function Move(){
+
+                    let fileTree = $("#userTree").jstree(true);
+                    let selected = fileTree.get_selected()[0]; 
+                    //console.log(selected); //seçilenin dni
+                    let currentdn = $('#selected-user-dn').text();
+                    dnarray = currentdn.split(","); 
+                    name = dnarray[0];
+
+                    userdn = name + "," + selected;
+
+                    var data = new FormData();
+                    data.append("userdn",userdn);
+
+                    request(API('change_userdn'), data, function(response) {
+                        userdn = JSON.parse(response)["message"];
+                        $('#selected-user-dn').text(userdn);
+                        showUserdnTree();
+                        //return userdn;
+                       
+                    }, function(response) {
+                        let error = JSON.parse(response);
+                        showSwal(error.message, 'error', 3000);
+                    });
+
+                }
+                function getUserBaseDN(){
+                    var form = new FormData();
+                    let samacname = line.querySelector("#samaccountname").innerHTML;
+                    form.append("samacname",samacname);
+
+                    request(API('get_userbasedn'), form, function(response) {
+                        userdn = JSON.parse(response)["message"];
+                        return userdn;
+                       
+                    }, function(response) {
+                        let error = JSON.parse(response);
+                        showSwal(error.message, 'error', 3000);
+                    });
+                }
+
+                function moveUser(line){
+
+                    var form = new FormData();
+                    let samacname = line.querySelector("#samaccountname").innerHTML;
+                    form.append("samacname",samacname);
+
+                    request(API('get_userdn'), form, function(response) {
+                        userdn = JSON.parse(response)["message"];
+                        //showUserTree(userdn);
+
+                        $('#selected-user-dn').text(userdn);
+                        $('#userTreeModal').modal('show');
+                        //$('#selected-userdn').val(userdn);
+                       
+                    }, function(response) {
+                        let error = JSON.parse(response);
+                        showSwal(error.message, 'error', 3000);
+                    });
+                    // controllera samaccountnamei gönderip user dni çekicez buraya göndericez
+                    // treeyi göstershowUserTree(userdn);
+                    // inputa dni yaz 
+                    // modalı göster 
+                }
+
+                function closeUserTreeModal(){
+                $('#userTreeModal').modal('hide');
+                }
+
+
+                function changeUserdn(){
+                    showSwal('{{__("Yükleniyor...")}}','info');
+                    var data= new FormData();
+                    data.append("userdn", $("#selected-userdn").val());
+
+                    request(API('change_userdn'), data, function(response) {
+                        userdn = JSON.parse(response)["message"];
+                        $('#userTreeModal').modal('show');
+                        $('#selected-userdn').val(userdn);
+                        //showUserTree(userdn);  
+                        Swal.close();
+                    }, function(response) {
+                        let error = JSON.parse(response);
+                        showSwal(error.message, 'error', 3000);
+                    });
+                    //inputtan dni alıcaz userdn = document.getElementById("selected-userdn").value;
+                    //controllera dni gönderip değiştirip bilgileri alıcaz tree formatında 
+                    //treeyi göstericez
+                }
 
                 function createUser(){
 
@@ -89,6 +281,7 @@
                         showSwal(error.message, 'error', 3000);
                     });
                 }
+
                 function deleteUser(line){
                 
                 var form = new FormData();
@@ -103,6 +296,7 @@
                         showSwal(error.message, 'error', 5000);
                    });
             }
+          
 
             function showAttributes(node){
 

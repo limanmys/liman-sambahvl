@@ -50,6 +50,10 @@ return [
     "list_organizations" => "LdapController@listOrganizations",
     "create_computer" => "LdapController@createComputer",
     "delete_computer" => "LdapController@deleteComputer",
+    "get_userdn" => "LdapController@getUserDN",
+    "change_userdn" => "LdapController@changeUserDN",
+    "show_userdn_tree" => "LdapController@showUserdnTree",
+    "get_userbasedn" => "LdapController@getUserBaseDN",
     
     "create_site" => "LdapController@createSite",
     "delete_site" => "LdapController@deleteSite",

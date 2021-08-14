@@ -110,12 +110,100 @@ class LdapController
                     "target" => "deleteUser",  
                     "icon" => "fa-trash-alt",             
                 ],
+                "Taşı" => [
+                    "target" => "moveUser",  
+                    "icon" => "fas fa-angle-double-right",             
+                ],
                 ]
     
         ]);
 
     }
+ 
 
+    
+        function showUserdnTree(){
+        $ldap = $this->connect();
+        $filePath = request('path');    // staj.lab
+        if($filePath == strtolower(extensionDb('domainName'))){
+            $baseDN = $this->basedn;
+        }
+        
+        else{  
+            $baseDN = $filePath;     //ou=tr,dc=staj,dc=lab
+        }
+
+
+        $filter = "(|(cn=*)(ou=*))";
+        $list = ldap_list($ldap, $baseDN, $filter);
+        $info = ldap_get_entries($ldap, $list);
+        
+        
+        $data = [];
+   
+        for($i=0; $i<$info["count"]; $i++){
+           $dn= $info[$i]["dn"];         //OU=ankara,OU=TR,DC=staj,DC=lab
+           $pos = stripos($dn,',');
+           $parentdn = substr($dn,$pos+1); //OU=TR,DC=staj,DC=lab
+           $item_parent[$dn] =  $parentdn;      
+        }
+
+       foreach($item_parent as $key=>$value){
+            $pid = $value;
+            $id = $key; 
+
+            $str = explode(",",$key);        //OU=ankara,OU=TR,DC=staj,DC=lab
+            $str = explode("=",$str[0]);    // OU=ankara
+            $name = $str[1];                // ankara
+    
+            array_push($data, [
+                "id" => $id,
+                "parent" => $pid,
+                "text" => $name,
+                "type" => "folder"
+            ]);
+        }
+        return respond($data,200);
+    }
+    
+    function getUserBaseDN(){}
+
+    function getUserDN(){
+       $output = Command::runSudo("samba-tool user show @{:samacname} --attributes=dn",
+        [
+            "samacname" => request("samacname")
+        ]);
+        $pos= stripos($output, " ");
+        $output = substr($output, $pos+1);
+        return respond($output, 200);
+    }
+
+    function changeUserDN(){
+
+        $userdn = request("userdn");    //CN=xyz    CN=domain,CN=users,DC=staj,DC=lab
+        $dn = explode(",",$userdn, 2); 
+        $pos = stripos($dn[0], "=");
+
+        $username = substr($dn[0], $pos+1);
+        $parentdn = $dn[1];
+
+        $output = Command::runSudo("samba-tool user move @{:username} @{:parentdn} 2>&1",
+        [
+            "username" => $username,
+            "parentdn" => $parentdn
+        ]);
+
+        if(str_contains($output,"parent does not exist")){
+            return respond("Parent does not exists",201);
+        }
+        else if(!(str_contains($output,"ERROR"))){
+            return respond($userdn, 200);
+        }
+        else{
+            return respond($output,201);
+        }
+        
+    }
     function getAttributes(){
 
         $ldap = $this->connect();
@@ -154,6 +242,7 @@ class LdapController
     function deleteUser(){
         $user = request("name");
         $output=runCommand(sudo()."smbpasswd -x ". $user);
+    
         return respond($output,200);
     }
 

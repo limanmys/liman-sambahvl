@@ -339,6 +339,35 @@ class LdapController
         ]);
     
     }
+    //ORGANIZATIONS
+
+    function listOrganizations(){
+
+        $ldap = $this->connect();
+
+        $filter = "ou=*";
+        $justthese = ["ou"];
+        $list = ldap_list($ldap, $this->basedn ,$filter, $justthese);
+        $info = ldap_get_entries($ldap, $list);
+        $data = [];
+
+        for($i = 0; $i < $info["count"]; $i++){
+
+            $nameItem = $info[$i]["ou"][0];
+            $data[] = [
+                "name" => $nameItem
+            ];
+        }
+
+        $this->close($ldap);
+
+        return view('table', [
+                    "value" => $data,
+                    "title" => ["Organizasyon"],
+                    "display" => ["name"],
+                ]);
+    }
+
 
     function createComputer(){
 

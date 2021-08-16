@@ -9,6 +9,13 @@
     <div class="col-sm-6">
         <div class="card">
         <div class="card-body">
+            <div class="table-responsive" id="organizationsTable"></div>
+        </div>
+        </div>
+    </div>
+    <div class="col-sm-6">
+        <div class="card">
+        <div class="card-body">
             <div id="organizationsTree"></div>
         </div>
         </div>

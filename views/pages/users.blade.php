@@ -81,22 +81,31 @@
 
             <script>
                 
-
-              /*  setTimeout(() => {
-                    showUserdnTree(getUserbasedn());
-                }, 500);
-
-                let path = getUserdn();  
-                */
+               
                 let icons = {
-                    "folder" : {
+                    "container" : {
                         "icon" : "fas fa-folder"
                     },
-                    "file" : {
-                        "icon" : "fas fa-file"
+                    "organizationalUnit" : {
+                        "icon" : "fas fa-folder"
                     },
                     "base": {
                         "icon" : "fas fa-server"
+                    },
+                    "computer": {
+                        "icon" : "fas fa-desktop"
+                    },
+                    "person": {
+                        "icon" : "fas fa-user"
+                    },
+                    "user": {
+                        "icon" : "fas fa-user"
+                    },
+                    "group": {
+                        "icon" : "fas fa-users"
+                    },
+                    "file" : {
+                        "icon" : "fas fa-file"
                     }
                 };
 
@@ -123,9 +132,9 @@
                         path = data["node"]["id"];
                         type = data["node"]["type"];
                         //console.log($("#fileTree").jstree("get_selected")[0]);    // dizin2ye bas -> /srv/dizin1/dizin2 
-                        if (type === "folder"){
-                            showUserdnTree(path);
-                        }
+                        
+                        showUserdnTree(path);
+                      
                     });
 
 
@@ -144,12 +153,13 @@
                         let data = JSON.parse(response)["message"];  //console.log(message);
                         let fileTree = $("#userTree").jstree(true); //get instance without creating one
                         let selected = fileTree.get_selected()[0]; 
+                        console.log(data);
                         data.forEach(element => {
                                 if(!fileTree.get_node(element["id"])){
                                     fileTree.create_node(selected,element,"inside",function(){});
                                 }
                         });
-                        fileTree.sort(selected,true);
+                       // fileTree.sort(selected,true);
                         fileTree.open_node(selected,false);
                         Swal.close();
                     }, function(response){
@@ -199,7 +209,7 @@
                 }
 
                 function moveUser(line){
-
+                    showSwal('{{__("Yükleniyor...")}}','info');
                     var form = new FormData();
                     let samacname = line.querySelector("#samaccountname").innerHTML;
                     form.append("samacname",samacname);
@@ -211,7 +221,7 @@
                         $('#selected-user-dn').text(userdn);
                         $('#userTreeModal').modal('show');
                         //$('#selected-userdn').val(userdn);
-                       
+                        Swal.close();
                     }, function(response) {
                         let error = JSON.parse(response);
                         showSwal(error.message, 'error', 3000);

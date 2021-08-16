@@ -32,7 +32,8 @@
                 "id" => "createGroupModal",
                 "title" => "Lütfen oluşturmak istediğiniz grup bilgilerini giriniz",
                 
-            ]) 
+            ])
+
             <form>
                 <div class="form-group">
                     <label for="groupnameCreate">{{__('Grup adı')}}</label>
@@ -42,11 +43,48 @@
             </form>
             <button class="btn btn-success" onclick="createGroup()" style="float:right;">{{__('Oluştur')}}</button>
             @endcomponent
+
+            @component("modal-component", [
+                "id" => "groupMembersModal",
+                "title" => "Grup Üyeleri",
+                "footer" => 
+                   [
+                    "class" => "btn-success",
+                    "onclick" => "closeMembersModal()",
+                    "text" => "Kapat"
+                    ]
+                ])    
+                <div id="group-members"></div>
+
+            @endcomponent
             <br />
             <br />
             <div class="table-responsive" id="groupsTable"></div>
 
             <script>
+
+                function showGroupMembers(node){
+                    showSwal("{{__('Yükleniyor...')}}", 'info');
+                    // console.log(node);
+
+                    let data = new FormData();
+                    data.append("name", $(node).find("#name").html());   
+
+                    request(API('get_group_members'), data, function(response) {
+                        console.log(response);
+                        $('#group-members').html(response);
+                        $('#groupMembersModal').modal('show');
+                        Swal.close();
+                    }, function(response) {
+                        let error = JSON.parse(response);
+                        Swal.close();
+                        showSwal(error.message, 'error', 3000);
+                    });
+                }
+
+                function closeMembersModal(){
+                    $('#groupMembersModal').modal('hide');+
+                }
 
                 function createGroup(){
 

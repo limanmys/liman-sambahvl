@@ -49,6 +49,7 @@ function getOrganizations(){
 
         message = JSON.parse(response)["message"];  //console.log(message);
         let data = message;
+       
         $('#organizationsTree').jstree({
             "plugins": [
                 "contextmenu","search","types", "wholerow", "sort", "grid"

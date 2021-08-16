@@ -72,7 +72,7 @@ function listOrganizations(path = null){
     formData.append("path",path);
 
     request(API('list_organizations'), formData, function(response){
-        console.log(response);
+        //console.log(response);
         let data = JSON.parse(response)["message"];  //console.log(message);
         let fileTree = $("#organizationsTree2").jstree(true); //get instance without creating one
         let selected = fileTree.get_selected()[0]; 

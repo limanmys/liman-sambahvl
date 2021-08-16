@@ -54,6 +54,7 @@ return [
     "change_userdn" => "LdapController@changeUserDN",
     "show_userdn_tree" => "LdapController@showUserdnTree",
     "get_userbasedn" => "LdapController@getUserBaseDN",
+    "get_group_members" => "LdapController@getGroupMembers",
     
     "create_site" => "LdapController@createSite",
     "delete_site" => "LdapController@deleteSite",

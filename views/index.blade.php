@@ -40,7 +40,11 @@
         <i class="fas fa-desktop mr-2"></i>
         {{__('Bilgisayarlar')}}</a>
     </li>
-    
+    <li class="nav-item">
+        <a class="nav-link"  href="#organizations"  data-toggle="tab">
+        <i class="fas fa-clock mr-2"></i>
+        {{__('Organizasyonlar')}}</a>
+    </li>
     <li class="nav-item">
         <a class="nav-link "  id="fsmo_li" onclick="printTable()" href="#fsmo" data-toggle="tab">
         <i class="fas fa-id-card mr-2"></i>
@@ -70,16 +74,6 @@
         <i class="fas fa-clock mr-2"></i>
         {{__('Sistem Saati')}}</a>
     </li>
-    <!--
-    <li class="nav-item">
-        <a class="nav-link" id="sites_li" onclick="getOrganizations()" href="#organizations"  data-toggle="tab">
-        <i class="fas fa-clock mr-2"></i>
-        {{__('Organizasyon')}}</a>
-    </li>
-    -->
-
-  
-
 </ul>
 
 <div class="tab-content">
@@ -107,6 +101,10 @@
         @include('pages.computers')
     </div>
 
+    <div id="organizations" class="tab-pane">
+        @include('pages.organizations')
+    </div>
+
     <div id="fsmo" class="tab-pane">
         @include('pages.fsmo')
     </div>
@@ -127,11 +125,6 @@
     <div id="clock" class="tab-pane">
         @include('pages.clock')
     </div>
-    <div id="organizations" class="tab-pane">
-        @include('pages.organizations')
-    </div>
-
-
 </div>
 
 <script>

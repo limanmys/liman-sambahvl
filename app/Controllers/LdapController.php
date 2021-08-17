@@ -1,6 +1,8 @@
 <?php
 namespace App\Controllers;
 
+use Liman\Toolkit\Shell\Command;
+
 class LdapController
 {
     private $basedn = "";
@@ -235,10 +237,42 @@ class LdapController
         return view('table', [
             "value" => $data,
             "title" => ["Bilgisayarlar"],
-            "display" => ["name"]
+            "display" => ["name"],
+            "menu" => [
+                "Sil" => [
+                    "target" => "deleteComputer",  
+                    "icon" => "fa-trash-alt",             
+                ],
+            ]
         ]);
-    
     }
+
+    function createComputer(){
+
+        $output = Command::runSudo("samba-tool computer create @{:computerName} 2>&1",
+        [
+            "computerName" => request("computerName")
+        ]);
+
+        if(str_contains($output,"already exists")){
+            return respond("Bilgisayar zaten mevcut !",201);
+        }
+        else if(str_contains($output,"created")){
+            return respond("Bilgisayar başarıyla oluşturuldu.",200);
+        }
+        else{
+            return respond($output,201);
+        }
+    }
+
+    function deleteComputer(){
+        $output = Command::runSudo("samba-tool computer delete @{:computerName}",
+        [
+            "computerName" => request("computerName")
+        ]);
+        return respond($output,200);
+    }
+
     //ORGANIZATIONS
 
     function listOrganizations(){

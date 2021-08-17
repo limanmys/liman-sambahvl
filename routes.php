@@ -48,6 +48,7 @@ return [
     "list_organizations" => "LdapController@listOrganizations",
     "create_computer" => "LdapController@createComputer",
     "delete_computer" => "LdapController@deleteComputer",
+    "get_group_members" => "LdapController@getGroupMembers",
     
     "create_site" => "LdapController@createSite",
     "delete_site" => "LdapController@deleteSite",

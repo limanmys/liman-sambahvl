@@ -42,6 +42,20 @@
             </form>
             <button class="btn btn-success" onclick="createGroup()" style="float:right;">{{__('Oluştur')}}</button>
             @endcomponent
+
+            @component("modal-component", [
+                "id" => "groupMembersModal",
+                "title" => "Grup Üyeleri",
+                "footer" => 
+                   [
+                    "class" => "btn-success",
+                    "onclick" => "closeMembersModal()",
+                    "text" => "Kapat"
+                    ]
+                ])    
+                <div class="table-responsive" id="membersTable"></div>
+
+            @endcomponent
             <br />
             <br />
             <div class="table-responsive" id="groupsTable"></div>
@@ -95,6 +109,28 @@
                         showSwal(error.message, 'error', 5000);
                    });
             }
+            function showGroupMembers(node){
+                    showSwal("{{__('Yükleniyor...')}}", 'info');
+                     console.log(node);
+
+                    let data = new FormData();
+                    data.append("groupDN", $(node).find("#dn").html());     
+                    request(API('get_group_members'), data, function(response) {
+                        console.log(response);
+                        $('#membersTable').html(response).find('table').DataTable(dataTablePresets('normal'));
+                        //$('#group-members').html(message);
+                        $('#groupMembersModal').modal('show');
+                        Swal.close();
+                    }, function(response) {
+                        let error = JSON.parse(response);
+                        Swal.close();
+                        showSwal(error.message, 'error', 3000);
+                    });
+                }
+
+                function closeMembersModal(){
+                    $('#groupMembersModal').modal('hide');
+                }
             </script>
         @else
             <div id="noLDAPDiv2" style="visibility:none;">

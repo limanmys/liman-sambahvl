@@ -70,13 +70,11 @@
         <i class="fas fa-clock mr-2"></i>
         {{__('Sistem Saati')}}</a>
     </li>
-    <!--
     <li class="nav-item">
-        <a class="nav-link" id="sites_li" onclick="getOrganizations()" href="#organizations"  data-toggle="tab">
+        <a class="nav-link"  href="#organizations2"  data-toggle="tab">
         <i class="fas fa-clock mr-2"></i>
-        {{__('Organizasyon')}}</a>
+        {{__('Organizasyonlar')}}</a>
     </li>
-    -->
 
   
 
@@ -126,9 +124,6 @@
     -->
     <div id="clock" class="tab-pane">
         @include('pages.clock')
-    </div>
-    <div id="organizations" class="tab-pane">
-        @include('pages.organizations')
     </div>
     <div id="organizations2" class="tab-pane">
         @include('pages.organizations2')

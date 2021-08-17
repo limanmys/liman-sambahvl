@@ -393,7 +393,7 @@
 
         request(API('show_config'), form, function(response) {
             $('#conf').html(response);
-            console.log(response);
+           // console.log(response);
         }, function(response) {
             let error = JSON.parse(response);
             showSwal(error.message, 'error', 3000);

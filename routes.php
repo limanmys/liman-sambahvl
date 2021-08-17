@@ -53,7 +53,6 @@ return [
     "get_userdn" => "LdapController@getUserDN",
     "change_userdn" => "LdapController@changeUserDN",
     "show_userdn_tree" => "LdapController@showUserdnTree",
-    "get_userbasedn" => "LdapController@getUserBaseDN",
     "get_group_members" => "LdapController@getGroupMembers",
     
     "create_site" => "LdapController@createSite",
@@ -98,7 +97,5 @@ return [
     "show_config" => "SambaController@showConfig",
     "get_dnsForwarder"=> "SambaController@getDNSForwarder",
     "change_DNSForwarder" => "SambaController@changeDNSForwarder",
-    "get_organizations" => "LdapController@getOrganizations",
-    "get_child_nodes" =>"LdapController@getChildNodes",
     "list_organizations" => "LdapController@ListOrganizations"
 ];

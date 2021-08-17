@@ -83,7 +83,7 @@
                 }
 
                 function closeMembersModal(){
-                    $('#groupMembersModal').modal('hide');+
+                    $('#groupMembersModal').modal('hide');
                 }
 
                 function createGroup(){

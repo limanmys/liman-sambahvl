@@ -18,13 +18,12 @@
 
 <script>
 
-
 setTimeout(() => {
     listOrganizations("{{extensionDb('domainName')}}");
 }, 500);
 
 let path = "{{extensionDb('domainName')}}"    
-console.log(path);
+
 $("#organizationsTree2").jstree({
         core :{
             data : {
@@ -49,15 +48,12 @@ $("#organizationsTree2").jstree({
                 }
             },
         },
-        types : icon_types,
+        types : icons,
     }).on('select_node.jstree',function(event,data){
         path = data["node"]["id"];
         type = data["node"]["type"];
         //console.log($("#fileTree").jstree("get_selected")[0]);    // dizin2ye bas -> /srv/dizin1/dizin2 
-        if (type === "folder"){
-            listOrganizations(path);
-            
-        }
+            listOrganizations(path); 
     });
 
 
@@ -72,51 +68,35 @@ function listOrganizations(path = null){
     formData.append("path",path);
 
     request(API('list_organizations'), formData, function(response){
-        //console.log(response);
-        let data = JSON.parse(response)["message"];  //console.log(message);
-        let fileTree = $("#organizationsTree2").jstree(true); //get instance without creating one
-        let selected = fileTree.get_selected()[0]; 
-        data.forEach(element => {
-                if(!fileTree.get_node(element["id"])){
-                    fileTree.create_node(selected,element,"inside",function(){});
-                }
-        });
-        fileTree.sort(selected,true);
-        Swal.close();
-    }, function(response){
-        response = JSON.parse(response);
-        showSwal(response.message, 'error');
-    });
-}
-
-/*
-
-    function getChildNodes(id){
-        showSwal('{{__("Yükleniyor...")}}','info');
-        if(id == null){
-            id = $("#organizationsTree").jstree("get_selected")[0];
-        }
-        let formData = new FormData();
-        formData.append("nodebase",id);
-        request(API('get_child_nodes'), formData, function(response) {
-            
-            data = JSON.parse(response)["message"]
-            let fileTree = $("#organizationsTree").jstree(true); //get instance without creating one
+      //  let data = JSON.parse(response)["message"];
+      //console.log(response);
+     
+        if (!isEmpty(response)){
+            let data = JSON.parse(response)["message"];
+            let fileTree = $("#organizationsTree2").jstree(true); //get instance without creating one
             let selected = fileTree.get_selected()[0]; 
             data.forEach(element => {
                 if(!fileTree.get_node(element["id"])){
                     fileTree.create_node(selected,element,"inside",function(){});
                 }
             });
-           // fileTree.sort(selected,true);
+            fileTree.sort(selected,true);
             fileTree.open_node(selected,false);
-            Swal.close(); 
-        }, function(error) {
-            error = JSON.parse(error)["message"]
-            showSwal(error,'error');
-        });
-    }
- */
+        }
+       
+        Swal.close();
+    }, function(response){
+        response = JSON.parse(response);
+        showSwal(response.message, 'error');
+    });
+}
+/*
+let isEmpty = function(str) {
+    // This doesn't work the same way as the isEmpty function used 
+    // in the first example, it will return true for strings containing only whitespace
+    return (str.length === 0 || !str.trim());
+};
+*/
 
 </script>
 

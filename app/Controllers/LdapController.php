@@ -7,10 +7,6 @@ class LdapController
     private $basedn = "";
     private $demote = 0;
     private $theIP = "";
-    private $item_id = [];
-    private $item_parent = [];
-    private $item_dn = [];
-
 
 	function connect(){
         $ip = ($this->demote == 0) ? $this->getIP() : $this->theIP;
@@ -119,26 +115,21 @@ class LdapController
         ]);
 
     }
- 
 
-    
-        function showUserdnTree(){
+
+    function showUserdnTree(){
         $ldap = $this->connect();
         $filePath = request('path');    // staj.lab
         if($filePath == strtolower(extensionDb('domainName'))){
             $baseDN = $this->basedn;
         }
-        
-        else{  
+        else{
             $baseDN = $filePath;     //ou=tr,dc=staj,dc=lab
         }
-
 
         $filter = "(|(cn=*)(ou=*))";
         $list = ldap_list($ldap, $baseDN, $filter);
         $info = ldap_get_entries($ldap, $list);
-        
-        
         $data = [];
    
         for($i=0; $i<$info["count"]; $i++){
@@ -148,14 +139,14 @@ class LdapController
            $item_parent[$dn] =  $parentdn;      
         }
 
-       foreach($item_parent as $key=>$value){
+        if(empty($item_parent)) {return;}
+
+        foreach($item_parent as $key=>$value){
             $pid = $value;
             $id = $key; 
-
             $str = explode(",",$key);        //OU=ankara,OU=TR,DC=staj,DC=lab
             $str = explode("=",$str[0]);    // OU=ankara
-            $name = $str[1];                // ankara
-    
+            $name = $str[1];                // ankara    
             array_push($data, [
                 "id" => $id,
                 "parent" => $pid,
@@ -165,9 +156,8 @@ class LdapController
         }
         return respond($data,200);
     }
-    
-    function getUserBaseDN(){}
 
+   
     function getUserDN(){
        $output = Command::runSudo("samba-tool user show @{:samacname} --attributes=dn",
         [
@@ -179,8 +169,7 @@ class LdapController
     }
 
     function changeUserDN(){
-
-        $userdn = request("userdn");    //CN=xyz    CN=domain,CN=users,DC=staj,DC=lab
+        $userdn = request("userdn");    
         $dn = explode(",",$userdn, 2); 
         $pos = stripos($dn[0], "=");
 
@@ -201,9 +190,9 @@ class LdapController
         }
         else{
             return respond($output,201);
-        }
-        
+        }    
     }
+
     function getAttributes(){
 
         $ldap = $this->connect();
@@ -266,7 +255,6 @@ class LdapController
     
         }
     }
-    
     function listGroups(){
         $ldap = $this->connect();
         $groupType = request("groupType");
@@ -309,6 +297,8 @@ class LdapController
         $output=runCommand(sudo()."samba-tool group delete " . $group);
         return respond($output,200);
     }
+
+    //Computers
     function listComputers(){
         $ldap = $this->connect();
     
@@ -339,35 +329,6 @@ class LdapController
         ]);
     
     }
-    //ORGANIZATIONS
-
-    function listOrganizations(){
-
-        $ldap = $this->connect();
-
-        $filter = "ou=*";
-        $justthese = ["ou"];
-        $list = ldap_list($ldap, $this->basedn ,$filter, $justthese);
-        $info = ldap_get_entries($ldap, $list);
-        $data = [];
-
-        for($i = 0; $i < $info["count"]; $i++){
-
-            $nameItem = $info[$i]["ou"][0];
-            $data[] = [
-                "name" => $nameItem
-            ];
-        }
-
-        $this->close($ldap);
-
-        return view('table', [
-                    "value" => $data,
-                    "title" => ["Organizasyon"],
-                    "display" => ["name"],
-                ]);
-    }
-
 
     function createComputer(){
 
@@ -380,7 +341,7 @@ class LdapController
             return respond("Bilgisayar zaten mevcut !",201);
         }
         else if(str_contains($output,"created")){
-            return respond("Grup başarıyla oluşturuldu.",200);
+            return respond("Bilgisayar başarıyla oluşturuldu.",200);
         }
         else{
             return respond($output,201);
@@ -388,7 +349,6 @@ class LdapController
     }
 
     function deleteComputer(){
-        $computerName = request("computerName");
         $output = Command::runSudo("samba-tool computer delete @{:computerName}",
         [
             "computerName" => request("computerName")
@@ -396,7 +356,7 @@ class LdapController
         return respond($output,200);
     }
 
-    //ORGANIZATIONS
+    //Organizations
     function ListOrganizations(){
 
 
@@ -414,7 +374,7 @@ class LdapController
         $justthese = ["ou"];
         $list = ldap_list($ldap, $baseDN, $filter, $justthese);
         $info = ldap_get_entries($ldap, $list);
-        
+  
         
         $data = [];
    
@@ -424,6 +384,9 @@ class LdapController
            $parentdn = substr($dn,$pos+1); //OU=TR,DC=staj,DC=lab
            $item_parent[$dn] =  $parentdn;      
         }
+
+        	
+       if(empty($item_parent)) {return;}
 
        foreach($item_parent as $key=>$value){
             $pid = $value;
@@ -444,114 +407,6 @@ class LdapController
        
     }
 
-    function getOrganizations(){
-
-        $ldap = $this->connect();
-        $filter = "objectClass=organizationalUnit";
-        $justthese = ["ou"];
-        $list = ldap_search($ldap,$this->basedn ,$filter, $justthese);
-        $info = ldap_get_entries($ldap, $list);
-
-        $data =[];
-        $item_parent = [];
-        $item_id = [];
-
-        //set basedn
-        $basedn = explode(",",$this->basedn);// "dc=staj","dc=lab"
-        $pos = stripos($basedn[0],"=");
-        $basename = substr($basedn[0],$pos+1) . "." . substr($basedn[1],$pos+1);    // staj.lab
-        $item_id[$basename]=0;
-        $item_parent[$basename]="#";
-
-        $id = 1;
-        for($i=0; $i < $info["count"]; $i++){
-
-            $name = $info[$i]["ou"][0]; // ankara
-
-            $dn = $info[$i]["dn"];          //OU=ankara,OU=TR,DC=staj,DC=lab
-            $pos = stripos($dn,',');
-            $parentdn = substr($dn,$pos+1); //OU=TR,DC=staj,DC=lab
-
-            if($parentdn == $this->basedn){     
-                $item_parent[$name] = $basename;
-            }
-            else
-            {
-                $str = explode(",",$parentdn);  // ["OU=TR","DC=staj","DC=lab"]
-                $str = explode("=",$str[0]);   // ["OU","TR"]
-                $parent = $str[1];
-                $item_parent[$name] = $parent;
-            }
-            $item_id[$name] = $id;
-            $id++; 
-        }
-
-        $index=0;
-        foreach($item_parent as $key=>$value){
-
-            $pname = $value;   
-            $pid = $item_id[$pname]; 
-            $id = $item_id[$key]; 
-            $name = $key; 
-
-            if($index == 0)
-                array_push($data, [
-                    "id" => $id,
-                    "parent" => "#",
-                    "text" => $name,
-                    "type" => "base"
-                ]);
-
-            else
-                array_push($data, [
-                    "id" => $id,
-                    "parent" => $pid,
-                    "text" => $name,
-                    "type" => "folder"
-                ]);
-                //$data[$index] = $id." ".$pid." ".$name." "."folder";
-           $index++;
-            }
-        return respond($data,200);
-    }
-
-        
-/*
-        function getChildNodes(){
-        
-            $ldap = $this->connect();
-            $nodeid = request("nodebase"); // 1
-            $baseDN =  $this->item_dn[$nodeid]; // OU=DomainController,DC=staj,DC=lab
-            return respond($baseDN,200);
-            $filter = "ou=*";
-            $justthese = ["ou","objectClass"];
-            $list = ldap_list($ldap, $baseDN ,$filter, $justthese);
-            $info = ldap_get_entries($ldap, $list);
-
-            $id = 0;
-            foreach($info as $key=>$value){
-                $item_parent[$key]="#";
-                $item_id[$key]=$id;
-                $item_dn[$id]= $key;
-                $parent=$key;
-                //$item_type[$key]="folder";
-                $id++;
-              
-    
-                for($i=0; $i<$value["count"]; $i++){
-                    $name = $value[$i]["ou"][0];
-                    $item_parent[$name] = $parent;
-                    $item_id[$name] = $id;
-                    $item_dn[$id]= $value[$i]["dn"];
-                  //  $lastclass = $value[$i]["objectClass"]["count"]-1;
-                  //  $item_type[$name] = $value[$i]["objectClass"][$lastclass];
-                    $id++;
-                }
-            }
-
-
-        }
-*/
     //Site
     function listSites(){
 

@@ -192,18 +192,20 @@ class LdapController
         $data = [];
         for($i=0 ; $i<$count ; $i++){
             $nameItem = $entries[$i]["name"][0];
+            $dn = $entries[$i]["dn"];
             $data[] = [
-                "name" => $nameItem
+                "name" => $nameItem,
+                "dn" => $dn
             ];
         }
         $this->close($ldap);
     
         return view('table', [
             "value" => $data,
-            "title" => ["Gruplar"],
-            "display" => ["name"],
+            "title" => ["Gruplar", "*hidden*"],
+            "display" => ["name", "dn:dn"],
+            "onclick" =>"showGroupMembers",
             "menu" => [
-
                 "Sil" => [
                     "target" => "deleteGroup", 
                     "icon" => "fa-trash-alt",              
@@ -216,6 +218,34 @@ class LdapController
         $group = request("name");
         $output=runCommand(sudo()."samba-tool group delete " . $group);
         return respond($output,200);
+    }
+
+    function getGroupMembers(){
+        $ldap = $this->connect();
+        $groupDN= request("groupDN");
+        $filter = "memberOf=" . $groupDN;
+        $result = ldap_search($ldap, $this->basedn, $filter, ["name"]);
+        $entries = ldap_get_entries($ldap,$result);
+    
+       
+        $count = $entries["count"];
+        $data = [];
+        for($i=0 ; $i<$count ; $i++){
+            $name = $entries[$i]["name"][0];
+            //$dn = $entries[$i]["dn"];
+            $data[] = [
+                "name" => $name,
+            ];
+        }
+        $this->close($ldap);
+    
+        return view('table', [
+            "value" => $data,
+            "title" => ["Üyeler"],
+            "display" => ["name"]
+        ]);
+
+        return respond($entries,200);
     }
     function listComputers(){
         $ldap = $this->connect();

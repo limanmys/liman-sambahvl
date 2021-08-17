@@ -1,4 +1,3 @@
-
 @if (certificateExists(server()->ip_address, 636))
     @if (isCertificateValid(server()->ip_address, 636))
         @if (ldapCheck(strtolower(extensionDb('domainName')), "administrator", extensionDb('domainPassword'), server()->ip_address, 636))
@@ -6,13 +5,6 @@
 
 
 <div class="row">
-    <div class="col-sm-6">
-        <div class="card">
-        <div class="card-body">
-            <div class="table-responsive" id="organizationsTable"></div>
-        </div>
-        </div>
-    </div>
     <div class="col-sm-6">
         <div class="card">
         <div class="card-body">
@@ -25,19 +17,94 @@
 
 <script>
 
-function getOrganizations(){
+let icon_types = {
+        "folder" : {
+            "icon" : "fa fa-folder"
+        },
+        "base" : {
+            "icon" : "fa fa-server"
+        }
+    };
 
-    showSwal('{{__("Yükleniyor...")}}','info');
-    var form = new FormData();
-    request(API('list_organizations'), form, function(response) {
-        $('#organizationsTable').html(response).find('table').DataTable(dataTablePresets('normal'));
+setTimeout(() => {
+    listOrganizations("{{extensionDb('domainName')}}");
+}, 500);
+
+let path = "{{extensionDb('domainName')}}"    
+
+$("#organizationsTree").jstree({
+        core :{
+            data : {
+                "id" : path,
+                "text" : path,
+                "state" : {"opened": false, "selected": true},  //ilkini açtı kökün altındaki 1.dizinler gösteriliyor
+                "type" : "base"
+            },
+            "check_callback": true
+        },
+        plugins : ["contextmenu", "types", "wholerow", "sort", "grid"],
+        contextmenu: {
+            items: function (item) {
+                return {
+                    move: {
+                        label: 'Taşı',
+                        icon : "fas fa-angle-double-right",
+                        action: function () {
+                            //
+                        }
+                    },
+                }
+            },
+        },
+        types : icon_types
+    }).on('select_node.jstree',function(event,data){
+        path = data["node"]["id"];
+        type = data["node"]["type"];
+        //console.log($("#fileTree").jstree("get_selected")[0]);    // dizin2ye bas -> /srv/dizin1/dizin2 
+            listOrganizations(path); 
+    });
+
+let isEmpty = function(str) {
+    // This doesn't work the same way as the isEmpty function used 
+    // in the first example, it will return true for strings containing only whitespace
+    return (str.length === 0 || !str.trim());
+};
+
+function listOrganizations(path = null){
+    showSwal("Yükleniyor...", 'info');
+  
+    if(path == null){
+        path = $("#organizationsTree").jstree("get_selected")[0];
+    }
+
+    let formData = new FormData();
+    formData.append("path",path);
+
+    request(API('list_organizations'), formData, function(response){
+      //  let data = JSON.parse(response)["message"];
+      //console.log(response);
+     
+        if (!isEmpty(response)){
+            let data = JSON.parse(response)["message"];
+            let fileTree = $("#organizationsTree").jstree(true); //get instance without creating one
+            let selected = fileTree.get_selected()[0]; 
+            data.forEach(element => {
+                if(!fileTree.get_node(element["id"])){
+                    fileTree.create_node(selected,element,"inside",function(){});
+                }
+            });
+            fileTree.sort(selected,true);
+            fileTree.open_node(selected,false);
+        }
+       
         Swal.close();
-    }, function(response) {
-        let error = JSON.parse(response);
-        Swal.close();
-        showSwal(error.message, 'error', 3000);
+    }, function(response){
+        response = JSON.parse(response);
+        showSwal(response.message, 'error');
     });
 }
+
+
 
 </script>
 
@@ -100,4 +167,3 @@ function getOrganizations(){
     </script>
 
 @endif
-

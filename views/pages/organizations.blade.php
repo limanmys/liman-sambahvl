@@ -42,8 +42,8 @@ $("#organizationsTree").jstree({
             },
             "check_callback": true
         },
-        plugins : ["contextmenu", "types", "wholerow", "sort", "grid"],
-        contextmenu: {
+        plugins : ["types", "wholerow", "sort", "grid"],
+        /*contextmenu: {
             items: function (item) {
                 return {
                     move: {
@@ -55,7 +55,7 @@ $("#organizationsTree").jstree({
                     },
                 }
             },
-        },
+        },*/
         types : icon_types
     }).on('select_node.jstree',function(event,data){
         path = data["node"]["id"];

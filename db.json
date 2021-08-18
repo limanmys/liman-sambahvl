@@ -1,8 +1,8 @@
 {
     "name": "SambaHVL",
     "publisher": "Administrator",
-    "version": "0.0.4",
-    "version_code": 13,
+    "version": "0.0.5",
+    "version_code": 14,
     "database": {
         "1": {
             "variable": "domainName",

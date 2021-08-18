@@ -23,6 +23,8 @@
       {{__('Loglar')}}</a>
       <a class="nav-link" onclick="showConfig()" id="v-pills-configuration-tab" data-toggle="pill" href="#v-pills-configuration" role="tab" aria-controls="v-pills-configuration" aria-selected="false">
       {{__('Konfigürasyon')}}</a>
+      <a class="nav-link" onclick="showDNSupdate()" id="v-pills-dnsupdate-tab" data-toggle="pill" href="#v-pills-dnsupdate" role="tab" aria-controls="v-pills-dnsupdate" aria-selected="false">
+      {{__('DNS Güncelle')}}</a>
 
     </div>
   </div>
@@ -116,6 +118,24 @@
                 <button onclick="changednsForward()" class="btn btn-primary">{{__("Güncelle")}}</button>
         </div>
         <pre id="conf"></pre>
+    </div>
+
+    <div class="tab-pane fade" id="v-pills-dnsupdate" role="tabpanel" aria-labelledby="v-pills-dnsupdate-tab">
+        <div class="card-body">
+                <div class="alert alert-primary d-flex align-items-center " role="alert" id="infoAlert">
+                    <svg class="bi flex-shrink-0 me-2" width="24" height="24" role="img" aria-label="Info:"><use xlink:href="#info-fill"/></svg>
+                    <i class="fas fa-icon mr-2"></i>
+                    <div>
+                        {{__('Buton yardımıyla samba dns güncellemesi yapabilirsiniz.')}}
+                    </div>
+                </div>
+                <br>
+                <button onclick="dnsUpdateOutput()" class="btn btn-primary">{{__("Güncelle")}}</button>
+        </div>   
+        <div  style="height: 300px; width: 100%;">
+             <pre id="dnsupdate-output" style="height: 100%; overflow-y: scroll;"></pre>
+        </div> 
+        
     </div>
 
     </div>
@@ -425,4 +445,21 @@
         });
     }
 
+    function showDNSupdate(){
+
+        showSwal('{{__("Güncelleniyor...")}}','info');
+        var form = new FormData();
+        request(API('dnsupdate'), form, function(response) {   
+            message = JSON.parse(response)["message"];
+            $('#dnsupdate-output').html(message);
+            Swal.close();
+        }, function(response) {
+            let error = JSON.parse(response);
+            showSwal(error.message, 'error', 3000);
+        });
+    }
+
+    function dnsUpdateOutput(){ 
+        showDNSupdate();
+    }
 </script>

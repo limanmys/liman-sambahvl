@@ -91,5 +91,6 @@ return [
 
     "show_config" => "SambaController@showConfig",
     "get_dnsForwarder"=> "SambaController@getDNSForwarder",
-    "change_DNSForwarder" => "SambaController@changeDNSForwarder"
+    "change_DNSForwarder" => "SambaController@changeDNSForwarder",
+    "dnsupdate" => "SambaController@DnsUpdate"
 ];

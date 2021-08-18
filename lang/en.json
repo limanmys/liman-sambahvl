@@ -16,7 +16,8 @@
     "Etki Alanı Mevcut Değil !":"Domain Not Available",
     "Bu eklenti ile bu makineye daha önce \nsambahvl kurulmamış.": "\n Sambahvl has not been previously installed on this machine with this extension.",
     "Bu eklenti ile bu makinede etki alanı oluşturma \nveya göç işlemi yapılmamış.": "No domain creation \n or migration has been performed on this machine with this extension.",
-    
+    "Buton yardımıyla samba dns güncellemesi yapabilirsiniz.": "You can update samba dns with the help of the button.",
+    "DNS Güncelle": "Update DNS",
 
     "Sistem Saati": "System Clock",
     "Donanım Saati": "Hardware Clock",
@@ -148,5 +149,8 @@
     "Yükleniyor...": "Loading...",
 
     "Güncelle": "Update",
-    "Konfigürasyon Dosyası": "Configuration File"
+    "Konfigürasyon Dosyası": "Configuration File",
+    "Konfigürasyon": "Configuration",
+
+    "Güncelleniyor...": "Updating..." 
 }

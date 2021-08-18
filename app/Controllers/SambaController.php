@@ -661,6 +661,11 @@ class SambaController{
         return respond(request("dnsForwardData")); 
     }
 
+    function DnsUpdate(){
+        $output = Command::runSudo("samba_dnsupdate --verbose 2>&1");
+        return respond($output);
+    }
+
 
 }
 ?>

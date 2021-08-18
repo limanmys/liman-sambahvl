@@ -23,7 +23,7 @@
       {{__('Loglar')}}</a>
       <a class="nav-link" onclick="showConfig()" id="v-pills-configuration-tab" data-toggle="pill" href="#v-pills-configuration" role="tab" aria-controls="v-pills-configuration" aria-selected="false">
       {{__('Konfigürasyon')}}</a>
-      <a class="nav-link" onclick="showDNSupdate()" id="v-pills-dnsupdate-tab" data-toggle="pill" href="#v-pills-dnsupdate" role="tab" aria-controls="v-pills-dnsupdate" aria-selected="false">
+      <a class="nav-link" id="v-pills-dnsupdate-tab" data-toggle="pill" href="#v-pills-dnsupdate" role="tab" aria-controls="v-pills-dnsupdate" aria-selected="false">
       {{__('DNS Güncelle')}}</a>
 
     </div>
@@ -130,7 +130,7 @@
                     </div>
                 </div>
                 <br>
-                <button onclick="dnsUpdateOutput()" class="btn btn-primary">{{__("Güncelle")}}</button>
+                <button onclick="DNSupdate()" class="btn btn-primary">{{__("Güncelle")}}</button>
         </div>   
         <div  style="height: 300px; width: 100%;">
              <pre id="dnsupdate-output" style="height: 100%; overflow-y: scroll;"></pre>
@@ -445,7 +445,7 @@
         });
     }
 
-    function showDNSupdate(){
+    function DNSupdate(){
 
         showSwal('{{__("Güncelleniyor...")}}','info');
         var form = new FormData();
@@ -459,7 +459,4 @@
         });
     }
 
-    function dnsUpdateOutput(){ 
-        showDNSupdate();
-    }
 </script>

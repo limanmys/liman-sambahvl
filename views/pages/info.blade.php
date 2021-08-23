@@ -72,6 +72,7 @@
                         white-space: pre-wrap;"></pre>
             </div>
         </div>
+        
       </div>
 
       <div class="tab-pane fade" id="v-pills-updates" role="tabpanel" aria-labelledby="v-pills-updates-tab">    

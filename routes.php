@@ -65,6 +65,7 @@ return [
     "list_modules" => "SambaController@listModules",
     "get_samba_details" => "SambaController@getSambaDetails",
     "get_samba_version" => "SambaController@getSambaVersion",
+    "get_sambahvl_version" => "SambaController@getSambaHvlVersion",
 
     "check_sambahvl" => "SambaController@checkSambahvl",
     "check_domain" => "SambaController@checkDomain",

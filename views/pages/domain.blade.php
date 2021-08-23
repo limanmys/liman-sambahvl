@@ -1,24 +1,22 @@
 <div class="p-3 text-center ">
-    <h1 class="mb-3">{{__('Etki Alanı Oluşturma')}}</h1>
-</div>
-<div class="alert alert-primary d-flex align-items-center " role="alert" id="infoAlert">
-    <svg class="bi flex-shrink-0 me-2" width="24" height="24" role="img" aria-label="Info:"><use xlink:href="#info-fill"/></svg>
-    <i class="fas fa-icon mr-2"></i>
-    <div>
+    <h2 class="mb-3"
+        style="
+        text-transform: uppercase;
+        font-weight: 700;"
+    >{{__('Etki Alanı Oluşturma')}}</h2>
+    <p>
     {{__('Etki alanı oluşturmak için butonu kullanabilirsiniz.')}}
-    </div>
+    </p>
 </div>
-<br />
-<button class="btn btn-success mb-2" id="createDomainButton" onclick="createDomain()" type="button">{{__('Etki Alanı Oluştur')}}</button>
+<div class="mycontainer" style="width: 100%; display: flex; align-items:center; justify-content: center;">
+    <button class="btn btn-success mb-2" id="createDomainButton" onclick="createDomain()" type="button" style="padding: .5rem 2rem;
+        font-size: 1.25rem;
+        line-height: 1.5;
+        border-radius: .3rem;"><i class="fas fa-network-wired mr-2"></i>{{__('Etki Alanı Oluştur')}}</button>
+</div>
 <div id="domainStatus"></div> 
-<pre id="createDomainLogs" style="overflow:auto;height:200px"> </pre>
-
-
 
 <script>
-
-// Create New Domain == Tab 2 ==
-
     function tab2(){
         var form = new FormData();
         request(API('verify_domain'), form, function(response) {
@@ -59,11 +57,12 @@
 
     function observe(){
         var form = new FormData();
+        $("#sambaHvlLogs").css("display", "inline-block");
         request(API('observe_installation'), form, function(response) {
             message = JSON.parse(response)["message"];
-            $("#createDomainLogs").text(message);
+            $("#sambaHvlLogs").text(message);
             window.setInterval(function() {
-                var elem = document.getElementById('createDomainLogs');
+                var elem = document.getElementById('sambaHvlLogs');
                 elem.scrollTop = elem.scrollHeight;
             }, 1000);
             setTimeout(() => {
@@ -73,10 +72,10 @@
         }, function(response) {
           let error = JSON.parse(response);
            if(error["status"] == 202){
-            $('#createDomainLogs').append(error.message);
+            $('#sambaHvlLogs').append(error.message);
             refreshAfterLog();
            } else{
-            $('#createDomainLogs').append("{{__('Kurulum sırasında hata oluştu.')}}");
+            $('#sambaHvlLogs').append("{{__('Kurulum sırasında hata oluştu.')}}");
            }
            let x = document.getElementById("createDomainButton");
             let y = document.getElementById("site");

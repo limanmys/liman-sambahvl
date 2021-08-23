@@ -61,31 +61,35 @@
 @endcomponent
 
 <div class="p-3 text-center ">
-    <h1 class="mb-3">{{__('Migration İşlemi')}}</h1>
-</div>
-<div class="alert alert-primary d-flex align-items-center " role="alert" id="infoAlert">
-    <svg class="bi flex-shrink-0 me-2" width="24" height="24" role="img" aria-label="Info:"><use xlink:href="#info-fill"/></svg>
-    <i class="fas fa-icon mr-2"></i>
-    <div>
-      {{__('Migration için aşağıdaki butonu kullanabilirsiniz.')}}
-    </div>
+    <h2 class="mb-3"
+        style="
+        text-transform: uppercase;
+        font-weight: 700;"
+    >{{__('Migration İşlemi')}}</h2>
+    <p>
+    {{__('Migration için aşağıdaki butonu kullanabilirsiniz.')}}
+    </p>
 </div>
 <div class="text-area" id="checkInfo"></div>
-<br />
-<button class="btn btn-success mb-2" id="site" onclick="showSiteMigration()" type="button">{{__('Migrate Et')}}</button>
+<div class="mycontainer" style="width: 100%; display: flex; align-items:center; justify-content: center;">
+  <button class="btn btn-primary mb-2" id="site" onclick="showSiteMigration()" type="button" style="padding: .5rem 2rem;
+      font-size: 1.25rem;
+      line-height: 1.5;
+      border-radius: .3rem;"><i class="fas fa-people-carry mr-2"></i> {{__('Migrate Et')}}</button>
+</div>
 <div id="migrationInfo"></div>
-<pre id="migrationLogs" style="overflow:auto;height:200px"> </pre>
 
 <script>
 
 
     function observeMigration(){
         var form = new FormData();
+        $("#sambaHvlLogs").css("display", "inline-block");
         request(API('migrate_log'), form, function(response) {
             message = JSON.parse(response)["message"];
-            $("#migrationLogs").text(message);
+            $("#sambaHvlLogs").text(message);
             window.setInterval(function() {
-                var elem = document.getElementById('migrationLogs');
+                var elem = document.getElementById('sambaHvlLogs');
                 elem.scrollTop = elem.scrollHeight;
             }, 1000);
             setTimeout(() => {
@@ -94,10 +98,10 @@
         }, function(response) {
           let error = JSON.parse(response);
            if(error["status"] == 202){
-            $('#migrationLogs').append(error.message);
+            $('#sambaHvlLogs').append(error.message);
             refreshAfterLog();
            } else{
-            $('#migrationLogs').append("\n\nKurulum sırasında hata oluştu.");
+            $('#sambaHvlLogs').append("\n\nKurulum sırasında hata oluştu.");
            }
            let x = document.getElementById("createDomainButton");
             let y = document.getElementById("site");

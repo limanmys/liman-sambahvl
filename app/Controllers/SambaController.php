@@ -372,13 +372,29 @@ class SambaController{
 
     }
 
+    function getSambaHvlVersion(){
+        $type = $this->getSambaType();
+        
+        if($type == "sambahvl"){
+            $output = runCommand(sudo() . "dpkg -s sambahvl | grep Version");
+            $output = explode(" ", $output);
+            $output = $output[1];
+        }
+        else{
+            $output = "- ";
+        }
+        return respond($output,200);
+
+    }
+
     function getSambaVersion(){
 
         $type = $this->getSambaType();
 
         if($type !== "not installed"){
             $version = runCommand(sudo() . "samba --version");
-            return respond($version,200);
+            $version = explode(" ", $version);
+            return respond($version[1], 200);
         }
         else{
             return respond("",200);

@@ -32,22 +32,46 @@
     <div class="tab-content" id="v-pills-tabContent">
       <div class="tab-pane fade show active" id="v-pills-info" role="tabpanel" aria-labelledby="v-pills-info-tab">
         <div class="row">
-        <div class="col-sm-6">
-            <div class="card">
-            <div class="card-body">
-                <pre id="details"></pre>
+            <div class="col-sm-12" style="display: flex;
+                align-items: center;
+                justify-content: center;">
+                @include("components.system-tree")
             </div>
-            </div>
-        </div>
-        <div class="col-sm-6">
-            <div class="card">
-            <div class="card-body">
-                <pre id="version"></pre>
-            </div>
-            </div>
-        </div>
-        </div>
+            <div class="col-sm-5">
+                <div class="small-box bg-primary">
+                    <div class="inner">
+                        <h3 id="sambahvl_version"> </h3>
+                        <p>SAMBAHVL Version</p>
+                    </div>
+                    <div class="icon">
+                        <i class="fas fa-code-branch"></i>
+                    </div>
+                </div>
 
+                <div class="small-box bg-danger">
+                    <div class="inner">
+                        <h3 id="version"> </h3>
+                        <p>SAMBA Version</p>
+                    </div>
+                    <div class="icon">
+                        <i class="fas fa-code-branch"></i>
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-7">
+                <pre id="details"
+                class="mx-2"
+                        style="
+                        border-radius: 5px;
+                        background-color: black;
+                        color: white;
+                        font-size: medium; 
+                        font-family: Consolas,Monaco,Lucida Console,Liberation Mono,DejaVu Sans Mono,Bitstream Vera Sans Mono,Courier New, monospace;
+                        width: 100%;
+                        word-wrap: break-word;
+                        white-space: pre-wrap;"></pre>
+            </div>
+        </div>
       </div>
 
       <div class="tab-pane fade" id="v-pills-updates" role="tabpanel" aria-labelledby="v-pills-updates-tab">    
@@ -87,24 +111,34 @@
       <div class="tab-pane fade" id="v-pills-logs" role="tabpanel" aria-labelledby="v-pills-logs-tab">
         <div class="row">
             <div class="col-sm-6">
-                <div class="card">
                 <div class="p-2 text-center ">
-                    <h5 class="mb-3">{{__('Kurulum')}}</h5>
+                    <h5>{{__('Kurulum')}}</h5>
                 </div>
-                <div class="card-body">
-                    <pre id="install-logs" style="height:325px;overflow:auto;"></pre>
-                </div>
-                </div>
+                    <pre id="install-logs" class="mx-2"
+                        style="
+                        border-radius: 5px;
+                        background-color: black;
+                        color: white;
+                        font-size: medium; 
+                        font-family: Consolas,Monaco,Lucida Console,Liberation Mono,DejaVu Sans Mono,Bitstream Vera Sans Mono,Courier New, monospace;
+                        width: 100%;
+                        overflow:auto;
+                        height: 325px;"></pre>
             </div>
             <div class="col-sm-6">
-                <div class="card">
                 <div class="p-2 text-center ">
-                    <h5 class="mb-3">{{__('Etki Alanı')}}</h5>
+                    <h5>{{__('Etki Alanı')}}</h5>
                 </div>
-                <div class="card-body">
-                    <pre id="other-logs" style="height:325px;overflow:auto;"></pre>
-                </div>
-                </div>
+                    <pre id="other-logs" class="mx-2"
+                        style="
+                        border-radius: 5px;
+                        background-color: black;
+                        color: white;
+                        font-size: medium; 
+                        font-family: Consolas,Monaco,Lucida Console,Liberation Mono,DejaVu Sans Mono,Bitstream Vera Sans Mono,Courier New, monospace;
+                        width: 100%;
+                        overflow:auto;
+                        height: 325px;"></pre>
             </div>
             </div>
       </div>
@@ -163,7 +197,28 @@
             showSwal(error.message, 'error', 3000);
         });
         getVersion();
-        
+        getHvlVersion();
+    }
+
+    function getHvlVersion()
+    {
+        var form = new FormData();
+
+        request(API('get_sambahvl_version'), form, function(response) {
+            
+            message = JSON.parse(response)["message"];
+            if(message == ""){
+                $('#sambahvl_version').html('{{__("Yüklü bir samba bulunamadı !")}}');
+            }
+            else{
+                $('#sambahvl_version').html(message);
+
+            }
+            
+        }, function(response) {
+            let error = JSON.parse(response);
+            showSwal(error.message, 'error', 3000);
+        });
     }
     
     function getVersion(){

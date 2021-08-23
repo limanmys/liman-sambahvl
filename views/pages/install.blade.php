@@ -12,30 +12,49 @@
     {{__('SambaHVL paketini kurmak için lütfen aşağıdaki butonu kullanabilirsiniz.')}} 
     </div>
 </div>
-<button class="btn btn-success mb-2" id="install" onclick="installSmbPackage()" style="float:left;">{{__('SambaHVL Paketini Kur')}} </button>
+<button class="btn btn-block btn-success mb-2" id="install" onclick="installSmbPackage()" style="padding: .5rem 1rem;
+    font-size: 1.25rem;
+    line-height: 1.5;
+    border-radius: .3rem;"><i class="fas fa-box-open mr-1"></i> {{__('SambaHVL Paketini Kur')}} </button>
 <button class="btn btn-danger mb-2" id="delete" style="float:left;margin-left:10px;visibility:hidden;"></button>
 
-<br>
-<br>
-<br>
-
-<div id="nestedList" class="row" style="display:none;">
+<div id="nestedList" class="row border-between mt-4" style="display:none; ">
     <div class="col-sm-6">
-        <div class="card">
-        <div class="card-body">
-            @include('pages.domain')
-
-        </div>
-        </div>
+        @include('pages.domain')
     </div>
     <div class="col-sm-6">
-        <div class="card">
-        <div class="card-body">
-            @include('pages.migration')
-        </div>
-        </div>
+        @include('pages.migration')
     </div>
+    <pre id="sambaHvlLogs" 
+        class="mx-2 mt-4"
+        style="
+        border-radius: 5px;
+        background-color: black;
+        color: white;
+        font-size: medium; 
+        font-family: Consolas,Monaco,Lucida Console,Liberation Mono,DejaVu Sans Mono,Bitstream Vera Sans Mono,Courier New, monospace;
+        width: 100%;
+        display: none;
+        overflow:auto;
+        height: 200px;">
+    </pre>
 </div>
+
+<style>
+.border-between > [class*='col-']:before {
+   background: #e3e3e3;
+   bottom: 0;
+   content: " ";
+   left: 0;
+   position: absolute;
+   width: 1px;
+   top: 0;
+}
+
+.border-between > [class*='col-']:first-child:before {
+   display: none;
+}
+</style>
 
 <script>
 

@@ -41,7 +41,7 @@
         {{__('Bilgisayarlar')}}</a>
     </li>
     <li class="nav-item">
-        <a class="nav-link"  href="#organizations"  data-toggle="tab">
+        <a class="nav-link" id="organizations_li" href="#organizations"  data-toggle="tab">
         <i class="fas fa-clock mr-2"></i>
         {{__('Organizasyonlar')}}</a>
     </li>
@@ -149,7 +149,9 @@
                 document.getElementById("users_li").style.display = "none";
                 document.getElementById("groups_li").style.display = "none";
                 document.getElementById("computers_li").style.display = "none";
-                document.getElementById("demote_li").style.display = "none";
+                $("#info_li").css("display", "none");
+                $("#organizations_li").css("display", "none");
+                //document.getElementById("demote_li").style.display = "none";
             }
             else{
                 checkDomain();
@@ -171,7 +173,9 @@
                 document.getElementById("users_li").style.display = "none";
                 document.getElementById("groups_li").style.display = "none";
                 document.getElementById("computers_li").style.display = "none";
-                document.getElementById("demote_li").style.display = "none";
+                $("#info_li").css("display", "none");
+                $("#organizations_li").css("display", "none");
+                //document.getElementById("demote_li").style.display = "none";
             }
             else{
                 document.getElementById("tab1_li").style.display = "none";

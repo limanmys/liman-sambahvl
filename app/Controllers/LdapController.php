@@ -734,4 +734,45 @@ class LdapController
         runCommand(sudo()."systemctl stop samba4.service");
         return respond("Başarılı", 200);
     }
+
+    function getTreeJSON(){
+
+        $ldap = $this->connect(); //Returns a positive LDAP link identifier 
+        $ip = $this->getIP();
+        $domainName= strtolower($this->getDomainNameAnonymously($ip));
+
+        $filter = "objectClass=site";
+        $result = ldap_search($ldap, "CN=Configuration,".$this->basedn, $filter,[
+            "cn"
+        ]);
+        $samba_sites = ldap_get_entries($ldap,$result);
+
+        $filter = "objectClass=server";
+        $result = ldap_search($ldap, "CN=Configuration,".$this->basedn, $filter,[
+            "serverReference",
+            "cn"
+        ]);
+        $samba_servers = ldap_get_entries($ldap,$result);
+        unset($samba_sites["count"]);
+        unset($samba_servers["count"]);
+        $arr = array();
+        $arr["D: ".$domainName]=array();
+        foreach($samba_sites as $site){
+            //print_r($site['cn'][0]."\n");
+            $arr["D: ".$domainName]["S: ".$site['cn'][0]] = array();
+            foreach($samba_servers as $server){
+                if(str_contains($server['dn'], $site['cn'][0])){
+                    if(isset($server['serverreference'][0])){
+                        if(str_contains($server['serverreference'][0], "Domain Controllers")){
+                            $arr["D: ".$domainName]["S: ".$site['cn'][0]]["DC: ".$server['cn'][0]] = array();
+                            //print_r("\t".$server['cn'][0]."\n");
+                        }
+                    }
+                } 
+            }
+            
+        }
+        $json = json_encode($arr);
+        return respond($json,200);
+    }
 }

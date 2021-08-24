@@ -1,50 +1,45 @@
 <script>
-  let myTree = {
-    "MainServer": {
-        "SubServer1": {
-            "AltServer1": {},
-            "AltServer2": {}
-        },
-        "SubServer2": {
-            "AltServer5": {},
-            "AltServer4": {},
-            "AltServer3": {}
-        },
-        "SubServer3": {
-            "AltServer6": {}
-        },
-        "SubServer4": {}
-    }
+
+  function getTreeJSON(){  
+
+    var form = new FormData();
+    request(API('get_tree_json'), form, function(response) {
+        response = JSON.parse(response);
+        message = JSON.parse(response.message);
+        
+        newTraverse(message, $(".tree"));
+
+        $(".tree").find("ul").each(function (idx, elem) {
+          if(elem.innerHTML.trim() == "") {
+            elem.remove();
+          }
+        })
+
+    }, function(response) {
+        let error = JSON.parse(response);
+        showSwal(error.message, 'error', 3000);
+    });
   }
 
   function newTraverse (obj, parent) {
     for (let item in obj) {
       addToTree(item, parent)
       if (obj[item] !== null && typeof(obj[item]) == "object") {
-        newTraverse(obj[item], $(`#${item}`));
+        newTraverse(obj[item], $(`ul[data-id="${item}"]`));
       }
     }
   }
 
   function addToTree(key, parent) {
-    parent.append(`<li><span>${key}</span><ul id="${key}"></ul></li>`);
+    parent.append(`<li><span>${key}</span><ul data-id="${key}"></ul></li>`);
   }
 
   setTimeout(() => {
-    newTraverse(myTree, $(".tree"), false);
+    getTreeJSON();
   }, 300);
-
-  setTimeout(() => {
-    $(".tree").find("ul").each(function (idx, elem) {
-      if(elem.innerHTML.trim() == "") {
-        elem.remove();
-      }
-    })
-  }, 1000);
 </script>
 
 <ul class="tree">
-
 </ul>
 
 <style>

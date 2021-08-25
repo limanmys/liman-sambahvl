@@ -1,14 +1,17 @@
 <script>
   let myTree = {
     "MainServer": {
+
         "type": "Domain",
         "SubServer1": {
             "type": "Site",
+
             "AltServer1": {},
             "AltServer2": {}
         },
         "SubServer2": {
             "type": "Site",
+
             "AltServer5": {},
             "AltServer4": {},
             "AltServer3": {}
@@ -16,20 +19,25 @@
         "SubServer3": {
             "AltServer6": {}
         },
+
         "SubServer4": {
             "type": "DC"
         }
+
     }
   }
 
   function newTraverse (obj, parent) {
     for (let item in obj) {
+
       addToTree(item, parent, obj[item].type)
+
       if (obj[item] !== null && typeof(obj[item]) == "object") {
         newTraverse(obj[item], $(`#${item}`));
       }
     }
   }
+
 
   function addToTree(key, parent, type) {
     if (key == "type") {
@@ -41,6 +49,7 @@
     } else {
       parent.append(`<li><span>${key}</span><ul id="${key}"></ul></li>`);
     }
+
   }
 
   setTimeout(() => {
@@ -49,6 +58,7 @@
 
   setTimeout(() => {
     $(".tree").find("ul").each(function (idx, elem) {
+
       if ($(elem).attr("data-type")) {
         if ($(elem).attr("data-type") == "Domain") {
           $(elem).parent().find("span").first().css("border", "2px #287ed6 solid");
@@ -62,6 +72,7 @@
           $(elem).parent().find("span").first().css("border", "2px #663399 solid");
         }
       }
+
 
       if(elem.innerHTML.trim() == "") {
         elem.remove();
@@ -123,6 +134,7 @@
 
 .tree code,
 .tree span {
+
     border: solid 2px #1a202c;
     border-radius: .2em;
     display: inline-block;

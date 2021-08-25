@@ -757,14 +757,19 @@ class LdapController
         unset($samba_servers["count"]);
         $arr = array();
         $arr["D: ".$domainName]=array();
+        $arr["D: ".$domainName]['type']='Domain';
         foreach($samba_sites as $site){
             //print_r($site['cn'][0]."\n");
             $arr["D: ".$domainName]["S: ".$site['cn'][0]] = array();
+            $arr["D: ".$domainName]["S: ".$site['cn'][0]]['type'] = 'Site';
+
             foreach($samba_servers as $server){
                 if(str_contains($server['dn'], $site['cn'][0])){
                     if(isset($server['serverreference'][0])){
                         if(str_contains($server['serverreference'][0], "Domain Controllers")){
                             $arr["D: ".$domainName]["S: ".$site['cn'][0]]["DC: ".$server['cn'][0]] = array();
+                            $arr["D: ".$domainName]["S: ".$site['cn'][0]]["DC: ".$server['cn'][0]]['type'] = 'DC';
+
                             //print_r("\t".$server['cn'][0]."\n");
                         }
                     }

@@ -738,8 +738,7 @@ class LdapController
     function getTreeJSON(){
 
         $ldap = $this->connect(); //Returns a positive LDAP link identifier 
-        $ip = $this->getIP();
-        $domainName= strtolower($this->getDomainNameAnonymously($ip));
+        $domainName= extensionDb('domainName');
 
         $filter = "objectClass=site";
         $result = ldap_search($ldap, "CN=Configuration,".$this->basedn, $filter,[

@@ -60,18 +60,8 @@
     }
 
     function showUpdateTime(line) {
-        var form = new FormData();
 
         let lastUpdateTime = line.querySelector("#lastUpdateTime").innerHTML;   
-
-        form.append("lastUpdateTime", lastUpdateTime);
-
-        request(API('show_update_time'), form, function(response) {
-            message = JSON.parse(response)["message"];
-            showSwal('{{__("Başarılı")}}', 'success', 3000);
-        }, function(response) {
-            let error = JSON.parse(response);
-            showSwal(error.message, 'error', 3000);
-        });
+        showSwal(lastUpdateTime, 'info', 3000);
     }
 </script>

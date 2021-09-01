@@ -318,9 +318,9 @@ class LdapController
             $baseDN = $filePath;     //ou=tr,dc=staj,dc=lab
         }
 
-        $filter = "ou=*";
-        $justthese = ["ou"];
-        $list = ldap_list($ldap, $baseDN, $filter, $justthese);
+        $filter = "objectClass=container";
+        #$justthese = ["ou"];
+        $list = ldap_list($ldap, $baseDN, $filter);
         $info = ldap_get_entries($ldap, $list);
   
         
@@ -355,6 +355,35 @@ class LdapController
        
     }
 
+    function listObjects(){
+
+        $ldap = $this->connect();
+        $theBaseDN = request('path'); 
+        $filter = "(!(dn=".$theBaseDN."))";
+        $result = ldap_search($ldap, $theBaseDN, $filter);
+        $entries = ldap_get_entries($ldap,$result);
+        $count = ldap_count_entries($ldap, $result);
+
+        if($count == 0){
+            return view('table', []);
+        }
+
+        $data = [];
+        
+        for($i=0 ; $i<$count ; $i++){
+            $nameItem = $entries[$i]["name"][0];
+            $data[] = [
+                "name" => $nameItem
+            ];
+        }
+        $this->close($ldap);
+    
+        return view('table', [
+            "value" => $data,
+            "title" => ["Objeler"],
+            "display" => ["name"],
+        ]);
+    }
 
     //Site
     function listSites(){

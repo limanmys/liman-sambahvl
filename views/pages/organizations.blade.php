@@ -12,6 +12,14 @@
         </div>
         </div>
     </div>
+    <div class="col-sm-6">
+        <div class="card">
+        <div class="card-body">
+            <input class="form-control" type="text" id="tableMessage" readonly>
+            <div class="table-responsive objectsTable" id="objectsTable"></div> 
+        </div>
+        </div>
+    </div>
 </div>
 
 
@@ -64,6 +72,7 @@ $("#organizationsTree").jstree({
             listOrganizations(path); 
     });
 
+
 let isEmpty = function(str) {
     // This doesn't work the same way as the isEmpty function used 
     // in the first example, it will return true for strings containing only whitespace
@@ -95,8 +104,12 @@ function listOrganizations(path = null){
             });
             fileTree.sort(selected,true);
             fileTree.open_node(selected,false);
+            listObjects(null)
         }
-       
+        
+        else{
+            listObjects(path)
+        }
         Swal.close();
     }, function(response){
         response = JSON.parse(response);
@@ -104,6 +117,32 @@ function listOrganizations(path = null){
     });
 }
 
+function listObjects(path = null){
+    
+    if(path == null){
+        $('.objectsTable').html(null).find('table').DataTable(dataTablePresets('normal'));
+        document.getElementById("tableMessage").value = "Organizasyon leaf değil!";
+    }
+
+    else{
+        showSwal("Yükleniyor...", 'info', 1500);
+        let formData = new FormData();
+        formData.append("path",path);
+        request(API('list_objects'), formData, function(response){
+            if (isEmpty(response)){
+                $('.objectsTable').html(null).find('table').DataTable(dataTablePresets('normal'));
+                document.getElementById("tableMessage").value = "Organizasyonun altında obje yok!";
+            }
+            else{
+                $('.objectsTable').html(response).find('table').DataTable(dataTablePresets('normal'));
+                document.getElementById("tableMessage").value = "Organizasyonun objeleri bulundu!";
+            }
+        }, function(response){
+            response = JSON.parse(response);
+            showSwal(response.message, 'error');
+        });
+    }
+}
 
 
 </script>

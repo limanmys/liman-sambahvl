@@ -294,12 +294,6 @@ class SambaController{
         return respond("Başarılı", 200);
     }
 
-    function showUpdateTime(){
-        $lastUpdateTime = request('lastUpdateTime');
-        return respond($lastUpdateTime, 200);
-        
-    }
-
     //MIGRATION
     function migrateDomain(){
 

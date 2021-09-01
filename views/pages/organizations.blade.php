@@ -121,7 +121,7 @@ function listObjects(path = null){
     
     if(path == null){
         $('.objectsTable').html(null).find('table').DataTable(dataTablePresets('normal'));
-        document.getElementById("tableMessage").value = "Organizasyon leaf değil!";
+        document.getElementById("tableMessage").value = "{{__('Organizasyon leaf değil!')}}";
     }
 
     else{
@@ -131,11 +131,11 @@ function listObjects(path = null){
         request(API('list_objects'), formData, function(response){
             if (isEmpty(response)){
                 $('.objectsTable').html(null).find('table').DataTable(dataTablePresets('normal'));
-                document.getElementById("tableMessage").value = "Organizasyonun altında obje yok!";
+                document.getElementById("tableMessage").value = "{{__('Organizasyonun altında obje yok!')}}";
             }
             else{
                 $('.objectsTable').html(response).find('table').DataTable(dataTablePresets('normal'));
-                document.getElementById("tableMessage").value = "Organizasyonun objeleri bulundu!";
+                document.getElementById("tableMessage").value = "{{__('Organizasyonun objeleri bulundu!')}}";
             }
         }, function(response){
             response = JSON.parse(response);

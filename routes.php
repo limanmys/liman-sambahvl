@@ -95,5 +95,6 @@ return [
     "change_DNSForwarder" => "SambaController@changeDNSForwarder",
     "dnsupdate" => "SambaController@DnsUpdate",
 
-    "get_tree_json" => "LdapController@getTreeJSON"
+    "get_tree_json" => "LdapController@getTreeJSON",
+    "list_objects" => "LdapController@listObjects"
 ];

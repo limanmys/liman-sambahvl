@@ -152,5 +152,8 @@
     "Konfigürasyon Dosyası": "Configuration File",
     "Konfigürasyon": "Configuration",
 
-    "Organizasyonlar": "Organizations"
+    "Organizasyonlar": "Organizations",
+    "Organizasyon leaf değil!": "This organization is not leaf!",
+    "Organizasyonun altında obje yok!": "This organization has not any objects!",
+    "Organizasyonun objeleri bulundu!": "Objects of this organization has been found!"
 }

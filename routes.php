@@ -11,6 +11,8 @@ return [
 
     "verify_installation" => "SambaController@verifyInstallation",
     "check_installation" => "SambaController@checkInstallation",
+    "check_bind9" => "SambaController@checkBind9",
+    "remove_bind9" => "SambaController@removeBind9",
     "install_smb_package" => "SambaController@installSmbPackage",
     "delete_smb_package" => "SambaController@deleteSambaPackage",
     "observe_installation" => "SambaController@observeInstallation",

@@ -3,6 +3,18 @@
     "title" => "Görev İşleniyor",
 ])
 @endcomponent
+
+@component('modal-component',[
+    "id" => "removeBind9Modal",
+    "title" => "Remove",
+    "footer" => [
+        "text" => "Evet",
+        "class" => "btn-success",
+        "onclick" => "removeAccepted()"
+    ]
+])           
+@endcomponent
+
 <div id="errorDiv" style="visibility:none;"></div>
 <div id="successDiv" style="visibility:none;"></div>
 <div class="alert alert-primary d-flex align-items-center " role="alert" id="infoAlert">
@@ -12,7 +24,7 @@
     {{__('SambaHVL paketini kurmak için lütfen aşağıdaki butonu kullanabilirsiniz.')}} 
     </div>
 </div>
-<button class="btn btn-block btn-success mb-2" id="install" onclick="installSmbPackage()" style="padding: .5rem 1rem;
+<button class="btn btn-block btn-success mb-2" id="install" onclick="checkBind9()" style="padding: .5rem 1rem;
     font-size: 1.25rem;
     line-height: 1.5;
     border-radius: .3rem;"><i class="fas fa-box-open mr-1"></i> {{__('SambaHVL Paketini Kur')}} </button>
@@ -73,9 +85,60 @@
             removeSambaPackageSteps();
         });
     }
-    function installSmbPackage(){
+
+    function checkBind9(){
+
         var form = new FormData();
         showSwal('{{__("Yükleniyor...")}}','info',2000);
+        let x = document.getElementById("install");
+        x.disabled = true;
+        request(API('check_bind9'), new FormData(), function (response) {
+            message = JSON.parse(response)["message"];
+            if(message){
+                showSwal('{{__("Sunucuda bind9 paketi tespit edildi! Paketi kaldırmadan devam edemezsiniz.")}}','info', 3000);
+                $('#removeBind9Modal').find('.modal-footer').html(
+                    '<button type="button" class="btn btn-success" onClick="removeBind9Accepted()">{{__("Evet")}}</button> '
+                    + '<button type="button" class="btn btn-danger" onClick="removeBind9Rejected()">{{__("Hayır")}}</button>');
+                    $('#removeBind9Modal').find('.modal-body').html('{{__("bind9 paketini kaldırmadan eklentiyi kullanmaya devam edemezsiniz. Kaldırmak istediğinize emin misiniz? Bu işlem geri alınamayacaktır.")}}');
+                    $('#removeBind9Modal').modal("show");
+            }
+            else{
+                showSwal('{{__("Sunucuda bind9 paketi tespit edilmedi. Devam ediliyor.")}}','info',3000);
+                installSmbPackage();
+            }
+        }, function(error) {
+            showSwal(error.message, 'error', 3000);
+        });
+    }
+
+    function removeBind9Accepted(){
+
+        showSwal('{{__("bind9 kaldırılıyor...")}}','info', 2000);
+        $('#removeBind9Modal').modal("hide");
+
+        var form = new FormData();
+        request(API('remove_bind9'), form, function(response) { 
+            message = JSON.parse(response)["message"];
+            showSwal('{{__("bind9 başarıyla kaldırıldı. Eklentiyi kullanmaya devam edebilirsiniz.")}}','info', 3000);
+            let x = document.getElementById("install");
+            x.disabled = false;
+        }, function(error) {
+            showSwal(error.message, 'error', 3000);
+            console.log(error);
+        });
+    }
+
+    function removeBind9Rejected(){
+
+        showSwal('{{__("bind9 kaldırılmadı, geri dönülüyor...")}}','info', 2000);
+        $('#removeBind9Modal').modal("hide");
+        let x = document.getElementById("install");
+        x.disabled = false;
+    }
+
+    function installSmbPackage(){
+
+        var form = new FormData();
         request(API('install_smb_package'), new FormData(), function (response) {
             const output = JSON.parse(response).message;
             $("#install").attr("disabled","true");

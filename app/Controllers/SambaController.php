@@ -52,6 +52,20 @@ class SambaController{
         }
     }
 
+    function checkBind9(){
+
+        $bind9output = runCommand(sudo() . "bind9-config --version");
+        $sonuc = str_contains($bind9output, "VERSION=");
+        return respond($sonuc, 200);
+    }
+
+    function removeBind9(){
+
+        runCommand(sudo() . "apt remove -y bind9");
+        runCommand(sudo() . "apt remove -y bind9utils");
+        return respond("okey",200);
+    }
+
     public function installSmbPackage()
 	{
 		return respond(

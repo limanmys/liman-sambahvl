@@ -46,10 +46,14 @@
                     "target_id" => "createSiteModal",
                     "text" => "Site Oluştur"
                     ])
+            <button id="back" class="btn btn-danger mb-2" onclick="returnPreviousPage()">Geri</button>
             <div class="table-responsive" id="table3"></div>
+            
+            <div class="table-responsive" id="servers"></div>
 
             <script>
-
+                $("servers").hide();
+                $("#back").hide()
                 function listSites(){
                     var form = new FormData();
                     request(API('list_sites'), form, function(response) {
@@ -135,6 +139,28 @@
                     });
                 }
 
+                function openSite(line){
+                    let siteName = $(line).find("#name").html()
+                    let form = new FormData();
+                    console.log(siteName)
+                    form.append("siteName",siteName);
+                    request(API('list_site_servers'), form, function(response) { 
+                        $("#table3").slideUp();
+                        $('#servers').html(response).find('table').DataTable(dataTablePresets('normal'));
+                        $("#servers").slideDown();
+                        $("#back").slideDown()
+                    }, function(response) {
+                        let error = JSON.parse(response);
+                        showSwal(error.message, 'error', 3000);
+                    });
+                }
+
+                function returnPreviousPage(line){
+                    $("#back").slideUp()
+                    $("#back").hide()
+                    $("#servers").hide()
+                    $("#table3").slideDown();
+                }
             </script>
         @else
             <div id="noLDAPDiv4" style="visibility:none;"></div>

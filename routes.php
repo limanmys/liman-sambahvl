@@ -56,6 +56,7 @@ return [
     "servers_of_site" => "LdapController@serversOfSite",
     "add_server_to_site" => "LdapController@addServerToSite",
     "add_this_server" => "LdapController@addThisServer",
+    "list_site_servers" => "LdapController@listSiteServers",
 
     "check_samba_type" => "SambaController@checkSambaType",
     "list_paths" => "SambaController@listPaths",

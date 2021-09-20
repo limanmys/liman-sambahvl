@@ -408,6 +408,7 @@ class LdapController
             "value" => $data,
             "title" => ["Sitelar"],
             "display" => ["name"],
+            "onclick" => "openSite",
             "menu" => [
                 "Site Sil" => [
                     "target" => "deleteSite",
@@ -420,7 +421,7 @@ class LdapController
                 "Sunucu Ekle" => [
                     "target" => "addServerToSite",
                     "icon" => "fas fa-plus",
-                ],  
+                ]
             ],
         ]);
     }
@@ -780,9 +781,11 @@ class LdapController
             "serverReference",
             "cn"
         ]);
+
         $samba_servers = ldap_get_entries($ldap,$result);
         unset($samba_sites["count"]);
         unset($samba_servers["count"]);
+
         $arr = array();
         $arr["D: ".$domainName]=array();
         $arr["D: ".$domainName]['type']='Domain';
@@ -807,5 +810,39 @@ class LdapController
         }
         $json = json_encode($arr);
         return respond($json,200);
+    }
+
+    public function listSiteServers(){
+        $ldap = $this->connect(); //Returns a positive LDAP link identifier 
+        $domainName= extensionDb('domainName');
+
+        $filter = "objectClass=site";
+        $result = ldap_search($ldap, "CN=Configuration,".$this->basedn, $filter,[
+            "cn"
+        ]);
+        $samba_sites = ldap_get_entries($ldap,$result);
+
+        $filter = "(objectClass=server)";
+        $result = ldap_search($ldap, "CN=Configuration,".$this->basedn, $filter,[
+            "cn"
+        ]);
+
+        $samba_servers = ldap_get_entries($ldap,$result);
+        unset($samba_sites["count"]);
+        unset($samba_servers["count"]);
+        //dd(request("siteName"));
+        $siteServers=[];
+        foreach($samba_servers as $server){
+            if (strpos($server["dn"], request("siteName")) !== false) {
+                array_push($siteServers,["name" => $server["dn"]]);
+            }
+        } 
+
+        return view('table', [
+            "value" => $siteServers,
+            "title" => ["Domain Kontrolcüsü"],
+            "display" => ["name"]
+        ]); 
+
     }
 }

@@ -1,6 +1,7 @@
 <?php
 namespace App\Controllers;
 
+use Liman\Toolkit\Formatter;
 use Liman\Toolkit\Shell\Command;
 
 class LdapController
@@ -828,16 +829,17 @@ class LdapController
             $name = $dcs[$i]["dn"];
             $site = str_replace("CN=","",explode(",",$name)[2]);
             $data[] = [
-                "name" => $name,
-                "site" => $site 
+                "dc" => str_replace("CN=","",explode(",",$name)[0]),
+                "site" => $site,
+                "name" => $name
             ];
         }
 
         return view('table', [
             "value" => $data,
             "onclick" => "showRepl",
-            "title" => ["Etki Alanı Denetleyicisi","Site"],
-            "display" => ["name","site"]
+            "title" => ["Etki Alanı Denetleyicisi","Site","*hidden*"],
+            "display" => ["dc","site","name:name"],
         ]); 
     }
 
@@ -849,10 +851,12 @@ class LdapController
         ]);
 
         $dcs = ldap_get_entries($ldap,$result);
-        $count = $dcs["count"];
         unset($dcs["count"]);
-        //dd(str_replace("CN=","",explode(",",$dcs[0]["fromserver"][0])[1])); // str_replace("CN=","",explode(",",$dcs[0]["fromserver"][0])[2]);
 
+        if(count($dcs) == 0){
+            return respond(__("Bu DC'ye ait bağlantı bulunamadı !"),201);
+        }
+        
         foreach($dcs as $dc){
             $data[] = [
                 "fromServer" => str_replace("CN=","",explode(",",$dc["fromserver"][0])[1]),
@@ -863,7 +867,46 @@ class LdapController
         return view('table', [
             "value" => $data,
             "title" => ["Nereden","Nereye"],
-            "display" => ["fromServer","toServer"]
+            "display" => ["fromServer","toServer"],
+            "onclick" => "showReplModal",
+            "menu" => [
+                "Replike Et" => [
+                    "target" => "showReplModal",  
+                    "icon" => "fa-clone",             
+                ],
+            ]
         ]); 
+    }
+
+    function replicate(){
+        $this->connect();
+        $choiceDict = array(
+            "Root" => $this->basedn,
+            "ForestDnsZones" => "DC=ForestDnsZones," . $this->basedn,
+            "Configuration" => "CN=Configuration," . $this->basedn,
+            "DomainDnsZones" => "DC=DomainDnsZones," . $this->basedn,
+            "Schema" => "CN=Schema,CN=Configuration," . $this->basedn,
+        );
+
+        if(request("synctype") == true){
+            $sync = "--full-sync";
+        }
+        else{
+            $sync="";
+        }
+
+        $resp = Command::runSudo("samba-tool drs replicate @{:to} @{:from} @{:dn} @{:sync}",[
+            "from" => request("fromServer"),
+            "to" => request("toServer"),
+            "dn" => $choiceDict[request("choice")],
+            "sync" => $sync
+        ]);
+
+        if($resp == ""){
+            return respond(__("Replikasyon yapılamadı !"),201);
+        }
+        else{
+            return respond(__($resp),200);
+        }
     }
 }

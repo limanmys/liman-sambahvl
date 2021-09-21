@@ -42,7 +42,7 @@
     </li>
     <li class="nav-item">
         <a class="nav-link" id="organizations_li" href="#organizations"  data-toggle="tab">
-        <i class="fas fa-clock mr-2"></i>
+        <i class="fas fa-sitemap mr-2"></i>
         {{__('Organizasyonlar')}}</a>
     </li>
     <li class="nav-item">
@@ -70,7 +70,7 @@
     </li>-->
 
     <li class="nav-item">
-        <a class="nav-link" id="sites_li" onclick="showTables()" href="#repl"  data-toggle="tab">
+        <a class="nav-link" id="repl_li" onclick="showTables()" href="#repl"  data-toggle="tab">
         <i class="fas fa-atom mr-2"></i>
         {{__('Replikasyon Test')}}</a>
     </li>
@@ -159,6 +159,7 @@
                 document.getElementById("users_li").style.display = "none";
                 document.getElementById("groups_li").style.display = "none";
                 document.getElementById("computers_li").style.display = "none";
+                document.getElementById("repl_li").style.display = "none";
                 $("#info_li").css("display", "none");
                 $("#organizations_li").css("display", "none");
                 //document.getElementById("demote_li").style.display = "none";
@@ -183,6 +184,7 @@
                 document.getElementById("users_li").style.display = "none";
                 document.getElementById("groups_li").style.display = "none";
                 document.getElementById("computers_li").style.display = "none";
+                document.getElementById("repl_li").style.display = "none";
                 $("#info_li").css("display", "none");
                 $("#organizations_li").css("display", "none");
                 //document.getElementById("demote_li").style.display = "none";

@@ -101,4 +101,5 @@ return [
 
     "list_dcs" => "LdapController@listDcs",
     "list_repls" => "LdapController@listRepls",
+    "replicate" => "LdapController@replicate",
 ];

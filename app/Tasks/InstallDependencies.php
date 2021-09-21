@@ -5,7 +5,6 @@ namespace App\Tasks;
 use Liman\Toolkit\Formatter;
 use Liman\Toolkit\OS\Distro;
 use Liman\Toolkit\RemoteTask\Task;
-use Liman\Toolkit\Shell\Command;
 
 class InstallDependencies extends Task
 {

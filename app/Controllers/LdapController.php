@@ -812,37 +812,58 @@ class LdapController
         return respond($json,200);
     }
 
-    public function listSiteServers(){
+    public function listDcs(){
         $ldap = $this->connect(); //Returns a positive LDAP link identifier 
-        $domainName= extensionDb('domainName');
-
-        $filter = "objectClass=site";
-        $result = ldap_search($ldap, "CN=Configuration,".$this->basedn, $filter,[
-            "cn"
-        ]);
-        $samba_sites = ldap_get_entries($ldap,$result);
-
-        $filter = "(objectClass=server)";
-        $result = ldap_search($ldap, "CN=Configuration,".$this->basedn, $filter,[
-            "cn"
+        $filter = "(&(objectClass=server))";
+        $result = ldap_search($ldap, "CN=Sites,CN=Configuration,".$this->basedn, $filter,[
+            "name",
         ]);
 
-        $samba_servers = ldap_get_entries($ldap,$result);
-        unset($samba_sites["count"]);
-        unset($samba_servers["count"]);
-        //dd(request("siteName"));
-        $siteServers=[];
-        foreach($samba_servers as $server){
-            if (strpos($server["dn"], request("siteName")) !== false) {
-                array_push($siteServers,["name" => $server["dn"]]);
-            }
-        } 
+        $dcs = ldap_get_entries($ldap,$result);
+        $count = $dcs["count"];
+        unset($dcs["count"]);
+
+        $data = [];
+        for($i=0 ; $i<$count ; $i++){
+            $name = $dcs[$i]["dn"];
+            $site = str_replace("CN=","",explode(",",$name)[2]);
+            $data[] = [
+                "name" => $name,
+                "site" => $site 
+            ];
+        }
 
         return view('table', [
-            "value" => $siteServers,
-            "title" => ["Domain Kontrolcüsü"],
-            "display" => ["name"]
+            "value" => $data,
+            "onclick" => "showRepl",
+            "title" => ["Etki Alanı Denetleyicisi","Site"],
+            "display" => ["name","site"]
         ]); 
+    }
 
+    public function listRepls(){
+        $ldap = $this->connect(); //Returns a positive LDAP link identifier 
+        $filter = "(&(fromServer=*))";
+        $result = ldap_search($ldap, request("dn"), $filter,[
+            "fromServer",
+        ]);
+
+        $dcs = ldap_get_entries($ldap,$result);
+        $count = $dcs["count"];
+        unset($dcs["count"]);
+        //dd(str_replace("CN=","",explode(",",$dcs[0]["fromserver"][0])[1])); // str_replace("CN=","",explode(",",$dcs[0]["fromserver"][0])[2]);
+
+        foreach($dcs as $dc){
+            $data[] = [
+                "fromServer" => str_replace("CN=","",explode(",",$dc["fromserver"][0])[1]),
+                "toServer" => str_replace("CN=","",explode(",",request("dn"))[0]),
+            ];
+        }
+
+        return view('table', [
+            "value" => $data,
+            "title" => ["Nereden","Nereye"],
+            "display" => ["fromServer","toServer"]
+        ]); 
     }
 }

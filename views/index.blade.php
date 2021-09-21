@@ -70,6 +70,12 @@
     </li>-->
 
     <li class="nav-item">
+        <a class="nav-link" id="sites_li" onclick="showTables()" href="#repl"  data-toggle="tab">
+        <i class="fas fa-atom mr-2"></i>
+        {{__('Replikasyon Test')}}</a>
+    </li>
+
+    <li class="nav-item">
         <a class="nav-link" id="sites_li" onclick="getClocks()" href="#clock"  data-toggle="tab">
         <i class="fas fa-clock mr-2"></i>
         {{__('Sistem Saati')}}</a>
@@ -115,6 +121,10 @@
 
     <div id="sites" class="tab-pane">
         @include('pages.sites')
+    </div>
+
+    <div id="repl" class="tab-pane">
+        @include('pages.repl')
     </div>
 
     <!--

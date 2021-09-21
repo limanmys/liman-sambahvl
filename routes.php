@@ -97,5 +97,8 @@ return [
     "dnsupdate" => "SambaController@DnsUpdate",
 
     "get_tree_json" => "LdapController@getTreeJSON",
-    "list_objects" => "LdapController@listObjects"
+    "list_objects" => "LdapController@listObjects",
+
+    "list_dcs" => "LdapController@listDcs",
+    "list_repls" => "LdapController@listRepls",
 ];

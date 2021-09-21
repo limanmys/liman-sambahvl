@@ -18,7 +18,7 @@
     "Bu eklenti ile bu makinede etki alanı oluşturma \nveya göç işlemi yapılmamış.": "No domain creation \n or migration has been performed on this machine with this extension.",
     "Buton yardımıyla samba dns güncellemesi yapabilirsiniz.": "You can update samba dns with the help of the button.",
     "DNS Güncelle": "Update DNS",
-
+    "Etki Alanı Denetleyicisi":"Domain Controller",
     "Sistem Saati": "System Clock",
     "Donanım Saati": "Hardware Clock",
     "Sistem Saatini Bul": "Get System Clock",

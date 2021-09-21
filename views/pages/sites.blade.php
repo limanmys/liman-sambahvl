@@ -139,28 +139,6 @@
                     });
                 }
 
-                function openSite(line){
-                    let siteName = $(line).find("#name").html()
-                    let form = new FormData();
-                    console.log(siteName)
-                    form.append("siteName",siteName);
-                    request(API('list_site_servers'), form, function(response) { 
-                        $("#table3").slideUp();
-                        $('#servers').html(response).find('table').DataTable(dataTablePresets('normal'));
-                        $("#servers").slideDown();
-                        $("#back").slideDown()
-                    }, function(response) {
-                        let error = JSON.parse(response);
-                        showSwal(error.message, 'error', 3000);
-                    });
-                }
-
-                function returnPreviousPage(line){
-                    $("#back").slideUp()
-                    $("#back").hide()
-                    $("#servers").hide()
-                    $("#table3").slideDown();
-                }
             </script>
         @else
             <div id="noLDAPDiv4" style="visibility:none;"></div>

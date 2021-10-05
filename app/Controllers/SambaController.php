@@ -664,9 +664,8 @@ class SambaController{
             "newDNS" => request("dnsForwardData"),
             "loc" => $locOfFile
         ]);
-        
-        $reload = "systemctl restart samba4.service";
-      //  runCommand(sudo().$reload);
+
+        Command::runSudo("systemctl restart samba4.service");
 
         return respond(request("dnsForwardData")); 
     }

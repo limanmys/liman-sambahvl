@@ -17,6 +17,7 @@ return [
     "verify_domain" => "SambaController@verifyDomain",
     "create_samba_domain" => "SambaController@createSambaDomain",
     "return_domain_informations" => "SambaController@returnDomainInformations",
+    "restart_samba_service" => "SambaController@restartSambaService",
     "return_samba_service_status" => "SambaController@returnSambaServiceStatus",
     "return_samba_service_log" => "SambaController@sambaLog",
 

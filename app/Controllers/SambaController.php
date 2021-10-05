@@ -172,6 +172,12 @@ class SambaController{
         }
     }
 
+    function restartSambaService(){
+        Command::runSudo("systemctl restart samba4.service");
+
+        return respond(__("Servis başarıyla yeniden başlatıldı."),200);
+    }
+
     function sambaLog(){
         $command = "systemctl status samba4.service";
 

@@ -72,7 +72,7 @@
     <li class="nav-item">
         <a class="nav-link" id="repl_li" onclick="showTables()" href="#repl"  data-toggle="tab">
         <i class="fas fa-atom mr-2"></i>
-        {{__('Replikasyon Test')}}</a>
+        {{__('Replike Et')}}</a>
     </li>
 
     <li class="nav-item">

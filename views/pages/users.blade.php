@@ -133,6 +133,7 @@
                     });
                 }
 
+
                 function refreshAttributesTable(){
                     let data = new FormData();
                     data.append("samaccountname", $("#updateAttributeSamaccountname").val());   
@@ -158,6 +159,7 @@
 
                     $("#updateAttributeSamaccountname").val($(node).find("#samaccountname").text());
                     refreshAttributesTable();
+
 
                 }
 
@@ -192,7 +194,12 @@
 
 
                         $('#updateAttributeModal').modal('hide');
+
+                        $('#attributesModal').modal('hide');
                         refreshAttributesTable();
+                        $('#attributesModal').modal('show');
+
+
                     }, function(error) {
                         error = JSON.parse(error);
                         console.log(error);

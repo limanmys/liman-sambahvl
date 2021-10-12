@@ -172,12 +172,6 @@ class SambaController{
         }
     }
 
-    function restartSambaService(){
-        Command::runSudo("systemctl restart samba4.service");
-
-        return respond(__("Servis başarıyla yeniden başlatıldı."),200);
-    }
-
     function sambaLog(){
         $command = "systemctl status samba4.service";
 
@@ -657,19 +651,22 @@ class SambaController{
         $locOfFile = explode(" ", $locOfFile);
         $locOfFile =  $locOfFile[1];
       
+      
         $cmd1 = "grep 'dns forwarder' " . $locOfFile;
         $output = runCommand(sudo().$cmd1);
         $output = explode("= ", $output);
         $dnsForwarderData = $output[1];
     
+       //sed -i 's/oldData/newData/gI' <filepath>
         Command::runSudo("sed -i 's/'@{:oldDNS}'/'@{:newDNS}'/gI' @{:loc}",
         [
             "oldDNS" =>  $dnsForwarderData,
             "newDNS" => request("dnsForwardData"),
             "loc" => $locOfFile
         ]);
-
-        Command::runSudo("systemctl restart samba4.service");
+        
+        $reload = "systemctl restart samba4.service";
+      //  runCommand(sudo().$reload);
 
         return respond(request("dnsForwardData")); 
     }
@@ -678,6 +675,7 @@ class SambaController{
         $output = Command::runSudo("samba_dnsupdate --verbose 2>&1");
         return respond($output);
     }
+
 
 }
 ?>

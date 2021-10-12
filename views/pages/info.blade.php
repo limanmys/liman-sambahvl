@@ -79,9 +79,6 @@
       </div>
       
       <div class="tab-pane fade" id="v-pills-servicestatus" role="tabpanel" aria-labelledby="v-pills-servicestatus-tab">
-        <div id="service-status"></div>
-        <button class="btn btn-success mb-2" onclick="restartService()"> {{__("Servisi Yeniden Başlat")}}</button>
-
         <pre id="sambaLog"></pre>
       </div>
 
@@ -251,14 +248,14 @@
             message = JSON.parse(response)["message"];
             if(message == true){
                 isActive = '<div class="alert alert-success" role="alert">{{__("Samba Servisi Aktif")}}</div>' ;
-                $('#service-status').html(isActive);
+                $('#v-pills-servicestatus').html(isActive);
 
                 var d1 = document.getElementById('v-pills-servicestatus');
                 d1.insertAdjacentHTML('beforeend', '<pre id="sambaLog">   </pre>');
                 sambaLog();
             } else{
                 isActive = '<div class="alert alert-danger" role="alert">{{__("Samba Servisi Aktif Değil !")}}</div>' ;
-                $('#service-status').html(isActive);
+                $('#v-pills-servicestatus').html(isActive);
 
             }
         }, function(error) {
@@ -517,17 +514,5 @@
             showSwal(error.message, 'error', 3000);
         });
     }
-
-    function restartService(){
-        showSwal('{{__("Servis yeniden başlatılıyor...")}}','info');
-        var form = new FormData();
-        request(API('restart_samba_service'), form, function(response) {   
-            serviceStatus();
-            showSwal('{{__("Servis başarıyla yeniden başlatıldı!")}}','success',2000);
-        }, function(response) {
-            let error = JSON.parse(response);
-            showSwal(error.message, 'error', 3000);
-        });
-        }
 
 </script>

@@ -1,3 +1,4 @@
+
 <div class="row">
   <div class="col-3">
     <div class="nav flex-column nav-pills" id="v-pills-tab" role="tablist" aria-orientation="vertical">
@@ -30,6 +31,8 @@
   </div>
   <div class="col-9">
     <div class="tab-content" id="v-pills-tabContent">
+@if (certificateExists(server()->ip_address, 636) && isCertificateValid(server()->ip_address, 636) && ldapCheck(strtolower(extensionDb('domainName')), "administrator", extensionDb('domainPassword'), server()->ip_address, 636))
+        
       <div class="tab-pane fade show active" id="v-pills-info" role="tabpanel" aria-labelledby="v-pills-info-tab">
         <div class="row">
             <div class="col-sm-12" style="display: flex;
@@ -74,7 +77,23 @@
         </div>
         
       </div>
-
+      @else
+    <script>
+        function showTables() {
+            //
+        }
+    </script>
+        <div class="alert alert-danger" role="alert"> 
+            <h4 class="alert-heading">Hata !</h4> 
+            <p>Sunucuda bağlantı sertifikası bulunamadı !</p> 
+            <hr>     
+            <p class="mb-0">
+                <a href="/ayarlar/sertifika?hostname={{server()->ip_address}}&port=636">  
+                {{__("Buraya tıklayarak sunucunuza sertifika ekleyebilirsiniz.")}}
+                </a> 
+            </p> 
+        </div>
+    @endif
       <div class="tab-pane fade" id="v-pills-updates" role="tabpanel" aria-labelledby="v-pills-updates-tab">    
       </div>
       

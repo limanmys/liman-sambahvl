@@ -192,7 +192,10 @@
 
 
                         $('#updateAttributeModal').modal('hide');
+                        $('#attributesModal').modal('hide');
                         refreshAttributesTable();
+                        $('#attributesModal').modal('show');
+
                     }, function(error) {
                         error = JSON.parse(error);
                         console.log(error);

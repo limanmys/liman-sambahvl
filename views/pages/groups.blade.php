@@ -53,9 +53,38 @@
                     "text" => "Kapat"
                     ]
                 ])    
+                <div class="d-flex justify-content-end">
+                    <div>
+                        <button class="btn btn-success my-2" onclick="showAddUserToGroupModal()">
+                            Kullanıcı Ekle
+                        </button>
+                    </div>
+                </div>
                 <div class="table-responsive" id="membersTable"></div>
 
             @endcomponent
+
+            @component('modal-component',[
+                "id" => "addUserToGroupModal",
+                "title" => "Lütfen eklenecek kullanıcının adını girin.",
+                
+            ]) 
+       
+                <form onsubmit="return false;">
+                    <div class="form-group">
+                        <label for="addUserToGroupUser">{{__('Kullanıcı Adı')}}</label>
+                        <input class="form-control" id="addUserToGroupUser" aria-describedby="addUserToGroupUser" placeholder="{{__('Kullanıcı Adı')}}"/>
+                    </div>
+
+                    <input id="addUserToGroupGroup" type="hidden"/>
+
+                    <button class="btn btn-success" onclick="addUserToGroup()" style="float:right;">{{__('Kullanıcı Ekle')}}</button>
+                </form>
+            
+            @endcomponent
+
+
+
             <br />
             <br />
             <div class="table-responsive" id="groupsTable"></div>
@@ -96,25 +125,24 @@
                         showSwal(error.message, 'error', 3000);
                     });
                 }
-                function deleteGroup(line){
                 
-                var form = new FormData();
-                let name = line.querySelector("#name").innerHTML;
-                form.append("name",name);
-                request(API('delete_group'), form, function(response) {
-                    message = JSON.parse(response)["message"];
-                    listGroups();
-                    showSwal(message,'success', 3000);
-                }, function(error) {
-                        showSwal(error.message, 'error', 5000);
-                   });
-            }
-            function showGroupMembers(node){
-                    showSwal("{{__('Yükleniyor...')}}", 'info');
-                     console.log(node);
+                function deleteGroup(line){
+                    
+                    var form = new FormData();
+                    let name = line.querySelector("#name").innerHTML;
+                    form.append("name",name);
+                    request(API('delete_group'), form, function(response) {
+                        message = JSON.parse(response)["message"];
+                        listGroups();
+                        showSwal(message,'success', 3000);
+                    }, function(error) {
+                            showSwal(error.message, 'error', 5000);
+                    });
+                }
 
+                function updateGroupTable(){
                     let data = new FormData();
-                    data.append("groupDN", $(node).find("#dn").html());     
+                    data.append("groupDN", $("#addUserToGroupGroup").val());     
                     request(API('get_group_members'), data, function(response) {
                         console.log(response);
                         $('#membersTable').html(response).find('table').DataTable(dataTablePresets('normal'));
@@ -125,13 +153,54 @@
                         let error = JSON.parse(response);
                         Swal.close();
                         showSwal(error.message, 'error', 3000);
-                    });
+                        });
                 }
 
+                function showGroupMembers(node){
+                    showSwal("{{__('Yükleniyor...')}}", 'info');
+                    console.log(node);
+
+
+                    $("#addUserToGroupGroup").val($(node).find("#dn").text());
+
+                    updateGroupTable();
+                }
+
+            
                 function closeMembersModal(){
                     $('#groupMembersModal').modal('hide');
+                    $('.modal-backdrop').remove();
+                    $("#addUserToGroupGroup").val(null);
                 }
-            </script>
+
+                function showAddUserToGroupModal(){
+                    $("#addUserToGroupModal").modal('show');
+                }
+           
+           
+                function addUserToGroup(){
+                    let user = $("#addUserToGroupUser").val();
+                    let group = $("#addUserToGroupGroup").val();
+
+                    let data = new FormData();
+                    data.append("user", user);
+                    data.append("group", group);
+
+                    request(API('add_user_to_group'), data, function(response) {
+                        console.log(response);                        
+
+
+                        updateGroupTable();
+                        $('#addUserToGroupModal').modal('hide');
+
+                    }, function(error) {
+                        console.log(error);
+                        showSwal(error.message, 'error', 5000);
+                    });
+                }
+           
+           
+           </script>
         @else
             <div id="noLDAPDiv2" style="visibility:none;">
             <div class="alert alert-danger d-flex align-items-center"  role="alert">

@@ -51,6 +51,7 @@ class LdapController
         $ip = runCommand(sudo().$command);
         return $ip;
     }
+
     function createUser(){
 
         validate([
@@ -78,6 +79,7 @@ class LdapController
             return respond($output,201);
         }
     }
+
     function listUsers(){
         $ldap = $this->connect(); //Returns a positive LDAP link identifier 
 
@@ -108,7 +110,7 @@ class LdapController
                     "target" => "deleteUser",  
                     "icon" => "fa-trash-alt",             
                 ],
-                ]
+            ]
     
         ]);
 
@@ -123,7 +125,9 @@ class LdapController
         $info = ldap_get_entries($ldap, $search);
         $attributes = [];
         $attrSize = $info[0]["count"];
-    
+
+
+        
         for ($i = 0; $i < $attrSize; $i++)
         {
             $key = $info[0][$i];
@@ -133,6 +137,8 @@ class LdapController
                 array_splice($info[0][$key],0,1);
                 $info[0][$key][0] = implode(",",$info[0][$key]); 
             }
+          
+
             $value = $info[0][$key][0];
             array_push($attributes, 
             [	
@@ -145,14 +151,77 @@ class LdapController
         return view('table', [
             "value" => $attributes,
             "title" => ["Nitelik", "Değer"],
+            "onclick" => "showAttributeUpdateModal",
             "display" => ["key", "value"]
         ]);
+    }
+
+    function updateAttribute(){
+
+        $ldap = $this->connect();
+        $samacname = request("samaccountname");
+        $filter = "CN=".$samacname;
+        $search = ldap_search($ldap, $this->basedn, $filter);
+        $info = ldap_get_entries($ldap, $search);
+        $attrSize = $info[0]["count"];
+
+        $update_key = request("key");
+        $update_value = request("value");
+
+
+
+        if($attrSize > 0){
+            $old_value =$info[0][$update_key][0];
+
+
+            if($old_value != NULL){
+                if($old_value == $update_value)
+                    return respond('Deger Degismedi', 201);
+
+                $values = explode(',', $update_value);
+                
+                $res = ldap_mod_replace($ldap, $info[0]['dn'], [$update_key => $values[0]]);
+
+
+                return respond($res, 200);
+            }
+            else{
+                $this->close($ldap);
+                return respond('ERROR', 404);
+            }
+        }
+
+        $this->close($ldap);
+        return respond('OK', 200);
     }
 
     function deleteUser(){
         $user = request("name");
         $output=runCommand(sudo()."smbpasswd -x ". $user);
         return respond($output,200);
+    }
+
+    function addUserToGroup(){
+        $group = request("group");
+
+
+        $ldap = $this->connect();
+        $user = request("user");
+        $filter = "CN=".$user;
+        $search = ldap_search($ldap, $this->basedn, $filter);
+        $userInfo = ldap_get_entries($ldap, $search);
+
+        $search = ldap_search($ldap, $this->basedn, $group);
+        $groupInfo = ldap_get_entries($ldap, $search);
+
+
+        if(count($userInfo) == 0 || count($groupInfo) == 0)
+            return respond("NOT FOUND", 404);
+        
+            
+
+        $res = ldap_mod_add($ldap, $group, ["member" => $userInfo[0]["dn"]]);
+        return respond($res, 200);
     }
 
     function createGroup(){
@@ -215,6 +284,7 @@ class LdapController
         ]);
     
     }
+
     function deleteGroup(){
         $group = request("name");
         $output=runCommand(sudo()."samba-tool group delete " . $group);
@@ -248,6 +318,7 @@ class LdapController
 
         return respond($entries,200);
     }
+
     function listComputers(){
         $ldap = $this->connect();
     

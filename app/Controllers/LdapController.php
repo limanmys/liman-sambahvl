@@ -18,6 +18,7 @@ class LdapController
         $server = 'ldaps://'.$ip;
         $port="636";
         
+        
         $str = explode(".",$domainname);
         $tmp = "";
         for($i=0 ; $i<count($str) ; $i++){

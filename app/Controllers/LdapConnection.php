@@ -32,6 +32,11 @@ class LdapConnection
         
     }
 
+    function __destruct()
+    {
+        ldap_close($this->connection);
+    }
+
     private function initWindows()
     {
         // Create Ldap Connection Object

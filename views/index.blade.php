@@ -142,47 +142,44 @@
 
 <script>
 
-    if(location.hash === ""){
-        tab1();
-    }
 
     $(".nav-item-installation").css("display", "none");
     $(".nav-item-operation").css("display", "none");
 
-    if(checkSambahvl()){
-        if(checkDomain()){
-            $(".nav-item-operation").css("display", "block");
-            $('.nav-tabs a[href="#info"]').tab('show');
-            //$('[href="#info"]').tab('show');
-            //$('#info').trigger('click')
-            //$(location).href("#info");
-            getInfo();
-        }
-    }
-    else{
-        $(".nav-item-installation").css("display", "block");                    
-    }
+    checkSambahvl();
 
     function checkSambahvl(){
         var form = new FormData();
         request(API('check_sambahvl'), form, function(response) {
-            message = JSON.parse(response)["message"];
-        }, function(response) {
-            let error = JSON.parse(response);
+            msg = JSON.parse(response).message;
+            if(msg){
+                //if sambahvl exist check domain
+                checkDomain();
+            }
+            else{
+                //if sambahvl not exist display installation tab
+                $(".nav-item-installation").css("display", "block"); 
+            }
+            
+        }, function(error) {
             showSwal(error.message, 'error', 3000);
         });
-        return message;
     }
 
     function checkDomain(){
         var form = new FormData();
         request(API('check_domain'), form, function(response) {
-            message = JSON.parse(response)["message"];
-        }, function(response) {
-            let error = JSON.parse(response);
+            msg = JSON.parse(response).message;
+            if(msg){
+                // if domain exist show operation tabs and open info tab and call initial function
+                $(".nav-item-operation").css("display", "block");
+                $('.nav-tabs a[href="#info"]').tab('show');
+                getInfo();
+            }
+
+        }, function(error) {
             showSwal(error.message, 'error', 3000);
         });
-        return message;    
     }
 
     async function refreshAfterLog(){

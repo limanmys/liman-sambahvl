@@ -142,10 +142,14 @@
 
 <script>
 
+    if(location.hash === ""){
+        tab1();
+    }
 
     $(".nav-item-installation").css("display", "none");
     $(".nav-item-operation").css("display", "none");
-
+    $(".tab-content").css("display", "none");
+    
     checkSambahvl();
 
     function checkSambahvl(){
@@ -158,7 +162,9 @@
             }
             else{
                 //if sambahvl not exist display installation tab
+                $(".tab-content").css("display", "block");
                 $(".nav-item-installation").css("display", "block"); 
+
             }
             
         }, function(error) {
@@ -170,6 +176,7 @@
         var form = new FormData();
         request(API('check_domain'), form, function(response) {
             msg = JSON.parse(response).message;
+            $(".tab-content").css("display", "block");
             if(msg){
                 // if domain exist show operation tabs and open info tab and call initial function
                 $(".nav-item-operation").css("display", "block");

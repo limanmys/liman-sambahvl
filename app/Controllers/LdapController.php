@@ -4,47 +4,39 @@ namespace App\Controllers;
 use Liman\Toolkit\Formatter;
 use Liman\Toolkit\Shell\Command;
 
-class LdapController
+class LdapController extends LdapConnection
 {
     private $basedn = "";
     private $demote = 0;
     private $theIP = "";
 
-	function connect(){
-        $ip = ($this->demote == 0) ? $this->getIP() : $this->theIP;
-        $domainname= strtolower(extensionDb('domainName'));
-        $user = "administrator@".$domainname;
-        $pass = extensionDb('domainPassword');
-        $server = 'ldaps://'.$ip;
-        $port="636";
-        
-        
+	function __construct(){
+
+        $IP = ($this->demote == 0) ? $this->getIP() : $this->theIP;
+        $USERNAME = "administrator";
+        $PASSWORD = extensionDb('domainPassword');
+        $SSL = true;
+        $BASE_DN = $this->getBaseDN(strtolower(extensionDb('domainName')));
+        $PORT=636;
+
+        parent::__construct($IP, $USERNAME, $PASSWORD, $SSL, $BASE_DN, $PORT);
+
+        $this->basedn = $BASE_DN;
+        $this->demote = 0;
+    }
+    
+    function getBaseDN($domainname){
+        $BASE_DN = "";
         $str = explode(".",$domainname);
-        $tmp = "";
         for($i=0 ; $i<count($str) ; $i++){
             if($str[$i] == end($str)){
-                $tmp .= "DC=".$str[$i];
+                $BASE_DN .= "DC=".$str[$i];
             }
             else{
-                $tmp .= "DC=".$str[$i].",";
+                $BASE_DN .= "DC=".$str[$i].",";
             }
         }
-        $this->basedn = $tmp;
-        $this->demote = 0;
-
-        $ldap = ldap_connect($server);
-        ldap_set_option($ldap, LDAP_OPT_PROTOCOL_VERSION, 3);
-        ldap_set_option($ldap, LDAP_OPT_X_TLS_REQUIRE_CERT, LDAP_OPT_X_TLS_NEVER);
-        ldap_set_option($ldap, LDAP_OPT_REFERRALS, 0);
-        $bind=ldap_bind($ldap, $user, $pass);
-        if (!$bind) {
-            exit('Binding failed');
-        }
-        return $ldap;
-    }
-
-    function close($ldap){
-        ldap_close($ldap);
+        return $BASE_DN;
     }
 
     function getIP(){
@@ -82,8 +74,7 @@ class LdapController
     }
 
     function listUsers(){
-        $ldap = $this->connect(); //Returns a positive LDAP link identifier 
-
+        $ldap= parent::getConnection();
         $filter = "(&(objectClass=user)(objectCategory=person))";
         $result = ldap_search($ldap, $this->basedn, $filter);
         $entries = ldap_get_entries($ldap,$result);
@@ -98,7 +89,6 @@ class LdapController
                 "samaccountname" => $samAcName
             ];
         }
-        $this->close($ldap);
 
         return view('table', [
             "value" => $data,
@@ -119,7 +109,7 @@ class LdapController
 
     function getAttributes(){
 
-        $ldap = $this->connect();
+        $ldap= parent::getConnection();
         $samacname = request("samaccountname");
         $filter = "CN=".$samacname;
         $search = ldap_search($ldap, $this->basedn, $filter);
@@ -147,7 +137,6 @@ class LdapController
                 "value" => $value,
             ]);
         }
-        $this->close($ldap);
 
         return view('table', [
             "value" => $attributes,
@@ -159,7 +148,7 @@ class LdapController
 
     function updateAttribute(){
 
-        $ldap = $this->connect();
+        $ldap= parent::getConnection();
         $samacname = request("samaccountname");
         $filter = "CN=".$samacname;
         $search = ldap_search($ldap, $this->basedn, $filter);
@@ -187,12 +176,10 @@ class LdapController
                 return respond($res, 200);
             }
             else{
-                $this->close($ldap);
                 return respond('ERROR', 404);
             }
         }
 
-        $this->close($ldap);
         return respond('OK', 200);
     }
 
@@ -206,7 +193,7 @@ class LdapController
         $group = request("group");
 
 
-        $ldap = $this->connect();
+        $ldap= parent::getConnection();
         $user = request("user");
         $filter = "CN=".$user;
         $search = ldap_search($ldap, $this->basedn, $filter);
@@ -247,7 +234,7 @@ class LdapController
     }
     
     function listGroups(){
-        $ldap = $this->connect();
+        $ldap= parent::getConnection();
         $groupType = request("groupType");
         if($groupType == "none")
             $filter="objectClass=group";
@@ -269,7 +256,6 @@ class LdapController
                 "dn" => $dn
             ];
         }
-        $this->close($ldap);
     
         return view('table', [
             "value" => $data,
@@ -293,7 +279,7 @@ class LdapController
     }
 
     function getGroupMembers(){
-        $ldap = $this->connect();
+        $ldap= parent::getConnection();
         $groupDN= request("groupDN");
         $filter = "memberOf=" . $groupDN;
         $result = ldap_search($ldap, $this->basedn, $filter, ["name"]);
@@ -309,7 +295,6 @@ class LdapController
                 "name" => $name,
             ];
         }
-        $this->close($ldap);
     
         return view('table', [
             "value" => $data,
@@ -321,7 +306,7 @@ class LdapController
     }
 
     function listComputers(){
-        $ldap = $this->connect();
+        $ldap= parent::getConnection();
     
         $filter = "objectClass=computer";
         $result = ldap_search($ldap, $this->basedn, $filter);
@@ -335,7 +320,6 @@ class LdapController
                 "name" => $nameItem
             ];
         }
-        $this->close($ldap);
     
         return view('table', [
             "value" => $data,
@@ -381,7 +365,7 @@ class LdapController
     function listOrganizations(){
 
 
-        $ldap = $this->connect();
+        $ldap= parent::getConnection();
         $filePath = request('path');    // staj.lab
         if($filePath == strtolower(extensionDb('domainName'))){
             $baseDN = $this->basedn;
@@ -430,7 +414,7 @@ class LdapController
 
     function listObjects(){
 
-        $ldap = $this->connect();
+        $ldap= parent::getConnection();
         $theBaseDN = request('path'); 
         $filter = "(!(dn=".$theBaseDN."))";
         $result = ldap_search($ldap, $theBaseDN, $filter);
@@ -449,8 +433,6 @@ class LdapController
                 "name" => $nameItem
             ];
         }
-        $this->close($ldap);
-    
         return view('table', [
             "value" => $data,
             "title" => ["Objeler"],
@@ -461,7 +443,7 @@ class LdapController
     //Site
     function listSites(){
 
-        $ldap = $this->connect();
+        $ldap= parent::getConnection();
 
         $filter = "objectClass=site";
         $result = ldap_search($ldap, "CN=Configuration,".$this->basedn, $filter);
@@ -475,7 +457,6 @@ class LdapController
                 "name" => $nameItem,
             ];
         }
-        $this->close($ldap);
 
         return view('table', [
             "value" => $data,
@@ -523,7 +504,7 @@ class LdapController
 
         $siteName = request("siteName");
 
-        $ldap = $this->connect();
+        $ldap= parent::getConnection();
         $filter = "objectClass=server";
 
         $result = ldap_search($ldap, "CN=Configuration,".$this->basedn, $filter);
@@ -538,7 +519,6 @@ class LdapController
                 ];
             }       
         }
-        $this->close($ldap);
 
         return view('table', [
             "value" => $data,
@@ -550,7 +530,7 @@ class LdapController
     function addServerToSite(){
 
         $newSiteName = request("newSiteName");
-        $ldap = $this->connect();
+        $ldap= parent::getConnection();
         $filter = "objectClass=server";
         $result = ldap_search($ldap, "CN=Configuration,".$this->basedn, $filter);
         $entries = ldap_get_entries($ldap,$result);
@@ -567,7 +547,6 @@ class LdapController
                 ];
             }       
         }
-        $this->close($ldap);
 
         return view('table', [
             "value" => $data,
@@ -581,17 +560,15 @@ class LdapController
 
         $dnOfServer = request("dnOfServer");
         $newSiteName = request("newSiteName");
-        $ldap = $this->connect();
+        $ldap= parent::getConnection();
 
         $newRDN = substr($dnOfServer, 0, strpos($dnOfServer, ","));
         $newParent = "CN=Servers,CN=".$newSiteName.",CN=Sites,CN=Configuration,".$this->basedn;
 
         if(ldap_rename($ldap, $dnOfServer, $newRDN, $newParent, true)){
-            $this->close($ldap);
             return respond("Success!",200);
         }
         else {
-            $this->close($ldap);
             return respond("Error!",201);
         }
     }
@@ -634,7 +611,6 @@ class LdapController
             $nameItem[] = $entries[$i]["name"][0];
         }
 
-        $this->close($ldap);
         
         return respond($nameItem,200);
     }
@@ -662,7 +638,6 @@ class LdapController
                         $domainName .= str_replace("DC=","",$base[$i]) . ".";
                     }
                 }
-                ldap_close($ldapconn);
 
             } else {
                 echo "LDAP bind anonymous failed...";
@@ -675,7 +650,7 @@ class LdapController
     function listDemotable(){
 
         $hostNameOfThis = runCommand(sudo()."hostname");
-        $ldap = $this->connect();
+        $ldap= parent::getConnection();
         $filter = "objectClass=computer";
         $binddn = $this->basedn;
 
@@ -743,7 +718,7 @@ class LdapController
             $this->theIP = substr(explode(":", $firstLine)[1],1);
             $this->demote = 1;
 
-            $ldap = $this->connect();
+            $ldap= parent::getConnection();
             $filter = "objectClass=server";
             $result = ldap_search($ldap, "CN=Configuration,".$this->basedn, $filter);
             $entries = ldap_get_entries($ldap,$result);
@@ -759,7 +734,6 @@ class LdapController
             $this->recursiveLdapDelete($ldap, $dn);
             $dn = "CN=".$serverName.",CN=Computers,".$this->basedn;
             $this->recursiveLdapDelete($ldap, $dn);
-            ldap_close($ldap);
 
             $smbdOutput = runCommand(sudo()."smbd -b | grep PRIVATE");
             $privateDir = explode(":", $smbdOutput)[1];
@@ -796,7 +770,7 @@ class LdapController
         $this->theIP = substr(explode(":", $firstLine)[1],1);
         $this->demote = 1;
 
-        $ldap = $this->connect();
+        $ldap= parent::getConnection();
         $filter = "objectClass=server";
         $result = ldap_search($ldap, "CN=Configuration,".$this->basedn, $filter);
         $entries = ldap_get_entries($ldap,$result);
@@ -812,7 +786,6 @@ class LdapController
         $this->recursiveLdapDelete($ldap, $dn);
         $dn = "CN=".$serverName.",CN=Computers,".$this->basedn;
         $this->recursiveLdapDelete($ldap, $dn);
-        ldap_close($ldap);
 
         $smbdOutput = runCommand(sudo()."smbd -b | grep PRIVATE");
         $privateDir = explode(":", $smbdOutput)[1];
@@ -840,7 +813,7 @@ class LdapController
 
     function getTreeJSON(){
 
-        $ldap = $this->connect(); //Returns a positive LDAP link identifier 
+        $ldap= parent::getConnection(); //Returns a positive LDAP link identifier 
         $domainName= extensionDb('domainName');
 
         $filter = "objectClass=site";
@@ -886,7 +859,7 @@ class LdapController
     }
 
     public function listDcs(){
-        $ldap = $this->connect(); //Returns a positive LDAP link identifier 
+        $ldap= parent::getConnection(); //Returns a positive LDAP link identifier 
         $filter = "(&(objectClass=server))";
         $result = ldap_search($ldap, "CN=Sites,CN=Configuration,".$this->basedn, $filter,[
             "name",
@@ -916,7 +889,7 @@ class LdapController
     }
 
     public function listRepls(){
-        $ldap = $this->connect(); //Returns a positive LDAP link identifier 
+        $ldap= parent::getConnection(); //Returns a positive LDAP link identifier 
         $filter = "(&(fromServer=*))";
         $result = ldap_search($ldap, request("dn"), $filter,[
             "fromServer",
@@ -951,7 +924,7 @@ class LdapController
     }
 
     function replicate(){
-        $this->connect();
+        $ldap= parent::getConnection();
         $choiceDict = array(
             "Root" => $this->basedn,
             "ForestDnsZones" => "DC=ForestDnsZones," . $this->basedn,

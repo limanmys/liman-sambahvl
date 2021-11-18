@@ -11,72 +11,75 @@
 </svg>
 
 <ul class="nav nav-tabs" role="tablist" style="margin-bottom: 15px;">
-    <li class="nav-item">
-        <a class="nav-link active" id="tab1_li" onclick="tab1()" href="#tab1" data-toggle="tab">
+
+    <li class="nav-item-installation" >
+        <a class="nav-link active" onclick="tab1()" href="#tab1" data-toggle="tab">
         <i class="fas fa-download mr-2"></i>
         {{__('Kurulum')}}</a>
     </li>
 
-    <li class="nav-item">
-        <a class="nav-link" onclick="getInfo()" id="info_li" href="#info"  data-toggle="tab">
+    <li class="nav-item-operation" >
+        <a class="nav-link" onclick="getInfo()" href="#info"  data-toggle="tab">
         <i class="fas fa-info mr-2"></i>
         {{__('Samba Bilgileri')}}</a>
     </li>
 
-    <li class="nav-item">
-        <a class="nav-link " id="users_li" onclick="listUsers()" href="#users" data-toggle="tab">
+    <li class="nav-item-operation">
+        <a class="nav-link" onclick="listUsers()" href="#users" data-toggle="tab">
         <i class="fas fa-user mr-2"></i>
         {{__('Kullanıcılar')}}</a>
     </li>
 
-    <li class="nav-item">
-        <a class="nav-link " id="groups_li" href="#groups" data-toggle="tab">
+    <li class="nav-item-operation">
+        <a class="nav-link" href="#groups" data-toggle="tab">
         <i class="fas fa-users mr-2"></i>
         {{__('Gruplar')}}</a>
     </li>
 
-    <li class="nav-item">
-        <a class="nav-link " id="computers_li" onclick="listComputers()" href="#computers"  data-toggle="tab">
+    <li class="nav-item-operation">
+        <a class="nav-link" onclick="listComputers()" href="#computers"  data-toggle="tab">
         <i class="fas fa-desktop mr-2"></i>
         {{__('Bilgisayarlar')}}</a>
     </li>
-    <li class="nav-item">
-        <a class="nav-link" id="organizations_li" href="#organizations"  data-toggle="tab">
+
+    <li class="nav-item-operation">
+        <a class="nav-link" href="#organizations"  data-toggle="tab">
         <i class="fas fa-sitemap mr-2"></i>
         {{__('Organizasyonlar')}}</a>
     </li>
-    <li class="nav-item">
-        <a class="nav-link "  id="fsmo_li" onclick="printTable()" href="#fsmo" data-toggle="tab">
+
+    <li class="nav-item-operation">
+        <a class="nav-link" onclick="printTable()" href="#fsmo" data-toggle="tab">
         <i class="fas fa-id-card mr-2"></i>
         {{__('FSMO Rol Yönetimi')}}</a>
     </li>
 
-    <li class="nav-item">
-        <a class="nav-link " id="replication_li" onclick="replicationInfo()" href="#replication" data-toggle="tab">
+    <li class="nav-item-operation">
+        <a class="nav-link" onclick="replicationInfo()" href="#replication" data-toggle="tab">
         <i class="fas fa-retweet mr-2"></i>
         {{__('Replikasyon Bilgisi')}}</a>
     </li>
 
-    <li class="nav-item">
-        <a class="nav-link" id="sites_li" onclick="listSites()" href="#sites"  data-toggle="tab">
+    <li class="nav-item-operation">
+        <a class="nav-link" onclick="listSites()" href="#sites"  data-toggle="tab">
         <i class="fas fa-network-wired mr-2"></i>
         {{__('Site Listesi')}}</a>
     </li>
     <!--
-    <li class="nav-item">
+    <li class="nav-item-operation">
         <a class="nav-link " id = "demote_li" onclick="listDemotable()" href="#demote" data-toggle="tab">
         <i class="fas fa-unlink mr-2"></i>
         {{__('Etki Alanı Denetleyicisini Düşür')}}</a>
     </li>-->
 
-    <li class="nav-item">
-        <a class="nav-link" id="repl_li" onclick="showTables()" href="#repl"  data-toggle="tab">
+    <li class="nav-item-operation">
+        <a class="nav-link" onclick="showTables()" href="#repl"  data-toggle="tab">
         <i class="fas fa-atom mr-2"></i>
         {{__('Replike Et')}}</a>
     </li>
 
-    <li class="nav-item">
-        <a class="nav-link" id="sites_li" onclick="getClocks()" href="#clock"  data-toggle="tab">
+    <li class="nav-item-operation">
+        <a class="nav-link" onclick="getClocks()" href="#clock"  data-toggle="tab">
         <i class="fas fa-clock mr-2"></i>
         {{__('Sistem Saati')}}</a>
     </li>
@@ -142,69 +145,58 @@
     if(location.hash === ""){
         tab1();
     }
-    check();
 
-    function check(){
-        checkSambahvl();
-        
-    }
+    $(".nav-item-installation").css("display", "none");
+    $(".nav-item-operation").css("display", "none");
+    $(".tab-content").css("display", "none");
+    
+    checkSambahvl();
+
     function checkSambahvl(){
         var form = new FormData();
         request(API('check_sambahvl'), form, function(response) {
-            message = JSON.parse(response)["message"];
-            if(!message){
-                document.getElementById("fsmo_li").style.display = "none";
-                document.getElementById("replication_li").style.display = "none";
-                document.getElementById("sites_li").style.display = "none";
-                document.getElementById("users_li").style.display = "none";
-                document.getElementById("groups_li").style.display = "none";
-                document.getElementById("computers_li").style.display = "none";
-                document.getElementById("repl_li").style.display = "none";
-                $("#info_li").css("display", "none");
-                $("#organizations_li").css("display", "none");
-                //document.getElementById("demote_li").style.display = "none";
-            }
-            else{
+            msg = JSON.parse(response).message;
+            if(msg){
+                //if sambahvl exist check domain
                 checkDomain();
             }
-        }, function(response) {
-            let error = JSON.parse(response);
+            else{
+                //if sambahvl not exist display installation tab
+                $(".tab-content").css("display", "block");
+                $(".nav-item-installation").css("display", "block"); 
+
+            }
+            
+        }, function(error) {
             showSwal(error.message, 'error', 3000);
         });
-        
     }
+
     function checkDomain(){
         var form = new FormData();
         request(API('check_domain'), form, function(response) {
-            message = JSON.parse(response)["message"];
-            if(!message){
-                document.getElementById("fsmo_li").style.display = "none";
-                document.getElementById("replication_li").style.display = "none";
-                document.getElementById("sites_li").style.display = "none";
-                document.getElementById("users_li").style.display = "none";
-                document.getElementById("groups_li").style.display = "none";
-                document.getElementById("computers_li").style.display = "none";
-                document.getElementById("repl_li").style.display = "none";
-                $("#info_li").css("display", "none");
-                $("#organizations_li").css("display", "none");
-                //document.getElementById("demote_li").style.display = "none";
+            msg = JSON.parse(response).message;
+            $(".tab-content").css("display", "block");
+            if(msg){
+                // if domain exist show operation tabs and open info tab and call initial function
+                $(".nav-item-operation").css("display", "block");
+                $(document).ready(function(){
+                    $('a[data-toggle="tab"]').on('show.bs.tab', function(e) {
+                        localStorage.setItem('activeTab', $(e.target).attr('href'));
+                    });
+                    var activeTab = localStorage.getItem('activeTab');
+                    if(activeTab){
+                        console.log(activeTab)
+                        $('.nav-tabs a[href="' + activeTab + '"]').tab('show');
+                        if(activeTab == '#info')
+                            getInfo();
+                    }
+                });
             }
-            else{
-                document.getElementById("tab1_li").style.display = "none";
-                $('.nav-tabs a[href="#info"]').tab('show');
-                getInfo();
-            }
-        }, function(response) {
-            let error = JSON.parse(response);
+
+        }, function(error) {
             showSwal(error.message, 'error', 3000);
-        });    
-    }
-
-    function demoted(){
-
-        checkDomain();
-        document.getElementById("tab1_li").style.display = "block";
-        $('.nav-tabs a[href="#tab1"]').tab('show');
+        });
     }
 
     async function refreshAfterLog(){
@@ -217,9 +209,17 @@
       })
 
       if (accept) {
+        localStorage.setItem('activeTab', "#info");
         window.location.reload();
       }
     }
+
+    /*function demoted(){
+
+        checkDomain();
+        document.getElementById("tab1_li").style.display = "block";
+        $('.nav-tabs a[href="#tab1"]').tab('show');
+    }*/
 
     
 </script>

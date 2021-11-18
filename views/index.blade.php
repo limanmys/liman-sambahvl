@@ -180,8 +180,18 @@
             if(msg){
                 // if domain exist show operation tabs and open info tab and call initial function
                 $(".nav-item-operation").css("display", "block");
-                $('.nav-tabs a[href="#info"]').tab('show');
-                getInfo();
+                $(document).ready(function(){
+                    $('a[data-toggle="tab"]').on('show.bs.tab', function(e) {
+                        localStorage.setItem('activeTab', $(e.target).attr('href'));
+                    });
+                    var activeTab = localStorage.getItem('activeTab');
+                    if(activeTab){
+                        console.log(activeTab)
+                        $('.nav-tabs a[href="' + activeTab + '"]').tab('show');
+                        if(activeTab == '#info')
+                            getInfo();
+                    }
+                });
             }
 
         }, function(error) {

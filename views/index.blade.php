@@ -209,6 +209,7 @@
       })
 
       if (accept) {
+        localStorage.setItem('activeTab', "#info");
         window.location.reload();
       }
     }

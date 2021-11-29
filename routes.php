@@ -2,9 +2,6 @@
 
 return [
     "index" => "HomeController@index",
-    "install_task" => "HostnameController@get",
-    "get_hostname" => "HostnameController@get",
-    "set_hostname" => "HostnameController@set",
 
     "runTask" => "TaskController@runTask",
     "checkTask" => "TaskController@checkTask",

@@ -101,4 +101,8 @@ return [
     "list_dcs" => "LdapController@listDcs",
     "list_repls" => "LdapController@listRepls",
     "replicate" => "LdapController@replicate",
+
+    "check_certificate_exists" => "CheckController@checkCertificateExists",
+    "check_certificate_valid" => "CheckController@checkCertificateValid",
+    "check_ldap_connection" => "CheckController@checkLdapConnection",
 ];

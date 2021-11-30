@@ -29,7 +29,6 @@ let myTree = {
     request(API('get_tree_json'), form, function(response) {
         response = JSON.parse(response);
         message = JSON.parse(response.message);
-        console.log(message);
         newTraverse(message, $(".tree"));
 
         $(".tree").find("ul").each(function (idx, elem) {

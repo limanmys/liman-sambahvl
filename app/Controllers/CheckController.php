@@ -16,6 +16,10 @@ class CheckController
     function checkLdapConnection()
     {
         //return respond(true,200);
-        return respond(ldapCheck(strtolower(extensionDb('domainName')), "administrator", extensionDb('domainPassword'), server()->ip_address, 636),200);
+        if(ldapCheck(strtolower(extensionDb('domainName')), "administrator", extensionDb('domainPassword'), server()->ip_address, 636))
+            return respond(true,200);
+        else
+            return respond(false,200);
+
     }
 }

@@ -177,51 +177,12 @@
         request(API('check_domain'), form, function(response) {
             flag = JSON.parse(response).message;
             if(flag){
-                // if domain exist check ldap connection
-                checkLdapConnection();
+                // if domain exist check certificate exists
+                checkCertificateExists();
             }
             else{
                 // if domain not exist show tab-content
                 $(".tab-content").css("display", "block");
-            }
-
-        }, function(error) {
-            showSwal(error.message, 'error', 3000);
-        });
-    }
-
-    function checkLdapConnection(){
-        var form = new FormData();
-        request(API('check_ldap_connection'), form, function(response) {
-            flag = JSON.parse(response).message;
-            if(flag){
-                // if ldap connection is successfull then check certificate
-                console.log("Ldap success")
-                console.log(flag)
-
-                checkCertificateExists();
-            }
-            else{
-                // if ldap connection is unsuccessfull then print error message
-                console.log("LDAP error !")
-                console.log(flag)
-
-                $(".tab-content").css("display", "block");
-                $('.tab-content').html(
-                    '<svg xmlns="http://www.w3.org/2000/svg" style="display: none;">'+
-                    '<symbol id="exclamation-triangle-fill" fill="currentColor" viewBox="0 0 16 16">'+
-                    '<path d="M8.982 1.566a1.13 1.13 0 0 0-1.96 0L.165 13.233c-.457.778.091 1.767.98 1.767h13.713c.889 0 1.438-.99.98-1.767L8.982 1.566zM8 5c.535 0 .954.462.9.995l-.35 3.507a.552.552 0 0 1-1.1 0L7.1 5.995A.905.905 0 0 1 8 5zm.002 6a1 1 0 1 1 0 2 1 1 0 0 1 0-2z"/>'+
-                    '</symbol>'+
-                    '</svg>'+
-                        '<div class="alert alert-danger d-flex align-items-center"  role="alert">' +
-                            '<svg class="bi flex-shrink-0 me-2" width="20" height="24" role="img" aria-label="Danger:"><use xlink:href="#exclamation-triangle-fill" /></svg>' +
-                            '<div>'+
-                            '&nbsp;&nbsp;'+
-                                '{{__("Hata : LDAP\'a Bağlanılamadı !")}}'+
-                            '</div>'+
-                        '</div>'
-                    
-                    );
             }
 
         }, function(error) {
@@ -269,9 +230,35 @@
         request(API('check_certificate_valid'), form, function(response) {
             flag = JSON.parse(response).message;
             if(flag){
-                // if certificate is valid continue
+                // if certificate is valid check ldap connection
                 console.log("Certificate Valid")
+                checkLdapConnection();
+            }
+            else{
+                // if certificate is not valid print error message
 
+                console.log("Certificate Not Valid !")
+                $(".tab-content").css("display", "block");
+                $('.tab-content').html(
+                    '<div class="alert alert-danger" role="alert">' +
+                    '<h4 class="alert-heading">Hata !</h4>' +
+                    '<hr>' +
+                    '<p>Sertifikanız hatalı veya güncel değil !</p>'
+                );
+            }
+
+        }, function(error) {
+            showSwal(error.message, 'error', 3000);
+        });
+    }
+
+    function checkLdapConnection(){
+        var form = new FormData();
+        request(API('check_ldap_connection'), form, function(response) {
+            flag = JSON.parse(response).message;
+            if(flag){
+                // if ldap connection is successfull then check certificate
+                console.log("Ldap success")
                 $(".nav-item-operation").css("display", "block");
                 $(document).ready(function(){
                     $('a[data-toggle="tab"]').on('show.bs.tab', function(e) {
@@ -287,22 +274,18 @@
                 });
                 $(".tab-content").css("display", "block");
 
-
             }
             else{
-                // if certificate is not valid print error message
+                // if ldap connection is unsuccessfull then print error message
+                console.log("LDAP error !")
 
-                console.log("Certificate Not Valid !")
                 $(".tab-content").css("display", "block");
                 $('.tab-content').html(
-                    '<div class="alert alert-danger d-flex align-items-center"  role="alert">' +
-                    '<svg class="bi flex-shrink-0 me-2" width="24" height="24" role="img" aria-label="Danger:"><use xlink:href="#exclamation-triangle-fill" /></svg>' +
-                    '<i class="fas fa-icon mr-2"></i>' +
-                    '<div>'+
-                        '{{__("Hata : Sertifikanız hatalı veya güncel değil !")}}'+
-                    '</div>'+
-                    '</div>'
-                    );
+                    '<div class="alert alert-danger" role="alert">' +
+                    '<h4 class="alert-heading">Hata !</h4>' +
+                    '<hr>' +
+                    '<p>LDAP\'a Bağlanılamadı !</p>'
+                );
             }
 
         }, function(error) {

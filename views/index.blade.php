@@ -196,7 +196,6 @@
             flag = JSON.parse(response).message;
             if(flag){
                 // if certificate exists then check wheter is valid or not
-                console.log("Certificate Exist")
                 checkCertificateValid();
 
             }
@@ -231,7 +230,6 @@
             flag = JSON.parse(response).message;
             if(flag){
                 // if certificate is valid check ldap connection
-                console.log("Certificate Valid")
                 checkLdapConnection();
             }
             else{
@@ -258,7 +256,6 @@
             flag = JSON.parse(response).message;
             if(flag){
                 // if ldap connection is successfull then check certificate
-                console.log("Ldap success")
                 $(".nav-item-operation").css("display", "block");
                 $(document).ready(function(){
                     $('a[data-toggle="tab"]').on('show.bs.tab', function(e) {
@@ -266,7 +263,6 @@
                     });
                     var activeTab = localStorage.getItem('activeTab');
                     if(activeTab){
-                        console.log(activeTab)
                         $('.nav-tabs a[href="' + activeTab + '"]').tab('show');
                         if(activeTab == '#info')
                             getInfo();
@@ -277,8 +273,6 @@
             }
             else{
                 // if ldap connection is unsuccessfull then print error message
-                console.log("LDAP error !")
-
                 $(".tab-content").css("display", "block");
                 $('.tab-content').html(
                     '<div class="alert alert-danger" role="alert">' +

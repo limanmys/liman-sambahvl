@@ -1,4 +1,3 @@
-@if (certificateExists(server()->ip_address, 636) && isCertificateValid(server()->ip_address, 636) && ldapCheck(strtolower(extensionDb('domainName')), "administrator", extensionDb('domainPassword'), server()->ip_address, 636))
 <div class="row">
     <div class="col-6"> 
         <div id="dcs" class="table-responsive"></div>
@@ -112,22 +111,3 @@
         $("#replModal").modal("show");
     }
 </script>
-
-@else
-<script>
-    function showTables() {
-        //
-    }
-</script>
-    <div class="alert alert-danger" role="alert"> 
-        <h4 class="alert-heading">Hata !</h4> 
-        <p>Sunucuda bağlantı sertifikası bulunamadı !</p> 
-        <hr>     
-        <p class="mb-0">
-            <a href="/ayarlar/sertifika?hostname={{server()->ip_address}}&port=636">  
-            {{__("Buraya tıklayarak sunucunuza sertifika ekleyebilirsiniz.")}}
-            </a> 
-        </p> 
-    </div>
-@endif
-

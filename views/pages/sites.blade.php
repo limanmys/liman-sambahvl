@@ -1,7 +1,3 @@
-@if (certificateExists(server()->ip_address, 636))
-    @if (isCertificateValid(server()->ip_address, 636))
-
-        @if (ldapCheck(strtolower(extensionDb('domainName')), "administrator", extensionDb('domainPassword'), server()->ip_address, 636))
             @component('modal-component',[
                     "id" => "createSiteModal",
                     "title" => "Lütfen oluşturmak istediğiniz site ismini yazınız",
@@ -140,62 +136,3 @@
                 }
 
             </script>
-        @else
-            <div id="noLDAPDiv4" style="visibility:none;"></div>
-            <script>
-                function listSites(){
-                    $('#noLDAPDiv4').html(
-                        '<div class="alert alert-danger d-flex align-items-center"  role="alert">' +
-                        '<svg class="bi flex-shrink-0 me-2" width="24" height="24" role="img" aria-label="Danger:"><use xlink:href="#exclamation-triangle-fill" /></svg>' +
-                        '<i class="fas fa-icon mr-2"></i>' +
-                        '<div>'+
-                            '{{__("Hata : LDAP\'a Bağlanılamadı !")}}'+
-                        '</div>'+
-                        '</div>'
-                        );
-                }
-                
-                
-            </script>
-        @endif
-    @else
-        <div id="invalidCertificate4" style="visibility:none;"></div>
-        <script>
-            function listSites(){
-                $('#invalidCertificate4').html(
-                    '<div class="alert alert-danger d-flex align-items-center"  role="alert">' +
-                    '<svg class="bi flex-shrink-0 me-2" width="24" height="24" role="img" aria-label="Danger:"><use xlink:href="#exclamation-triangle-fill" /></svg>' +
-                    '<i class="fas fa-icon mr-2"></i>' +
-                    '<div>'+
-                        '{{__("Hata : Sertifikanız hatalı veya güncel değil !")}}'+
-                    '</div>'+
-                    '</div>'
-                    );
-            
-            }
-            
-        </script>
-    @endif
-@else
-    <div id="noCertificateDiv4" style="visibility:none;"></div>
-    <script>
-        function listSites(){
-            $('#noCertificateDiv4').html(
-                '<div class="alert alert-danger" role="alert">' +
-                '<h4 class="alert-heading">Hata !</h4>' +
-                '<p>Sunucuda bağlantı sertifikası bulunamadı !</p>' +
-                '<hr>' +
-                
-                '<p class="mb-0">'+
-                    '<a href="/ayarlar/sertifika?hostname={{server()->ip_address}}&port=636"> ' +
-                    '{{__("Buraya tıklayarak sunucunuza sertifika ekleyebilirsiniz.")}}'+
-                    '</a>' +
-                '</p>' +
-                '</div>'
-                
-                );
-        }
-    
-    </script>
-
-@endif

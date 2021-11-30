@@ -40,8 +40,7 @@ class LdapController extends LdapConnection
     }
 
     function getIP(){
-        $command = "hostname -I | awk '{print $1}'";
-        $ip = runCommand(sudo().$command);
+        $ip = Command::runSudo("hostname -I | awk '{print $1}'");
         return $ip;
     }
 
@@ -53,9 +52,11 @@ class LdapController extends LdapConnection
 
 		]);
 
-        $username = request("username");
-        $password = request("password");
-        $output = runCommand(sudo()."samba-tool user create ".$username." ".$password." 2>&1");
+        $output = Command::runSudo("samba-tool user create @{:username} @{:password} 2>&1", [
+			'username' => request("username"),
+			'password' => request("password"),
+		]);
+
         if(str_contains($output,"already exists")){
             return respond("Kullanıcı zaten mevcut !",201);
         }
@@ -184,8 +185,12 @@ class LdapController extends LdapConnection
     }
 
     function deleteUser(){
-        $user = request("name");
-        $output=runCommand(sudo()."smbpasswd -x ". $user);
+
+        $output = Command::runSudo("smbpasswd -x @{:username}", [
+			'username' => request("name")
+			
+		]);
+
         return respond($output,200);
     }
 
@@ -219,8 +224,10 @@ class LdapController extends LdapConnection
     
         ]);
     
-        $groupname = request("groupname");
-        $output = runCommand(sudo()."samba-tool group add ".$groupname." 2>&1");
+        $output = Command::runSudo("samba-tool group add @{:groupname} 2>&1", [
+			'groupname' => request("groupname")
+		]);
+
         if(str_contains($output,"already exists")){
             return respond("Grup zaten mevcut !",201);
         }
@@ -273,8 +280,11 @@ class LdapController extends LdapConnection
     }
 
     function deleteGroup(){
-        $group = request("name");
-        $output=runCommand(sudo()."samba-tool group delete " . $group);
+
+        $output = Command::runSudo("samba-tool group delete @{:groupname} 2>&1", [
+			'groupname' => request("name")
+		]);
+
         return respond($output,200);
     }
 
@@ -336,8 +346,7 @@ class LdapController extends LdapConnection
 
     function createComputer(){
 
-        $output = Command::runSudo("samba-tool computer create @{:computerName} 2>&1",
-        [
+        $output = Command::runSudo("samba-tool computer create @{:computerName} 2>&1",[
             "computerName" => request("computerName")
         ]);
 
@@ -486,18 +495,20 @@ class LdapController extends LdapConnection
 			'newSiteName' => 'required|string',
 		]);
 
-        $newSiteName = request("newSiteName");
-        $command = "samba-tool sites create ".$newSiteName;
-        $commandOutput = runCommand(sudo().$command);
-        return respond($commandOutput, 200);
+        $output = Command::runSudo("samba-tool sites create @{:newSiteName}",[
+            "newSiteName" => request("newSiteName")
+        ]);
+
+        return respond($output, 200);
     }
 
     function deleteSite(){
 
-        $siteName = request("siteName");
-        $command = "samba-tool sites remove ".$siteName;
-        $commandOutput = runCommand(sudo().$command);
-        return respond($commandOutput, 200);
+        $output = Command::runSudo("samba-tool sites remove @{:siteName}",[
+            "siteName" => request("siteName")
+        ]);
+
+        return respond($output, 200);
     }
 
     function serversOfSite(){

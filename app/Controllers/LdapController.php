@@ -13,7 +13,7 @@ class LdapController extends LdapConnection
 	function __construct(){
 
         $IP = ($this->demote == 0) ? $this->getIP() : $this->theIP;
-        $USERNAME = "administrator";
+        $USERNAME = extensionDb('domainAdminUserName');
         $PASSWORD = extensionDb('domainPassword');
         $SSL = true;
         $BASE_DN = $this->getBaseDN(strtolower(extensionDb('domainName')));

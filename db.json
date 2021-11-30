@@ -13,7 +13,7 @@
         "2": {
             "variable": "domainAdminUserName",
             "type": "text",
-            "name": "Domain Admin Username",
+            "name": "Domain Admin Kullanıcı Adı",
             "required": true
         },
         "3": {

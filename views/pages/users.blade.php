@@ -100,7 +100,7 @@
                 }
 
                 function listUsers(){
-                    showSwal('{{__("Yükleniyor...")}}','in0fo');
+                    showSwal('{{__("Yükleniyor...")}}','info');
                     var form = new FormData();
                     request(API('list_users'), form, function(response) {
                         $('#usersTable').html(response).find('table').DataTable(dataTablePresets('normal'));

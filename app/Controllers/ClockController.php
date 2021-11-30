@@ -1,19 +1,19 @@
 <?php
 namespace App\Controllers;
 
+use Liman\Toolkit\Shell\Command;
+
 class ClockController
 {
-	public function getHardwareClock(){
-        $command="hwclock";
-        $hwClock=runCommand(sudo() . $command);
-
+	public function getHardwareClock()
+    {
+        $hwClock = Command::runSudo("hwclock");
         return respond($hwClock,200);
     }
 
-    public function getSystemClock(){
-        $command="date";
-        $systemClock=runCommand(sudo() . $command);
-
+    public function getSystemClock()
+    {
+        $systemClock=Command::runSudo("date");
         return respond($systemClock,200);
     }
 }

@@ -7,10 +7,11 @@ class SambaController{
     
     //INSTALL
     function verifyInstallation(){
-        if(trim(runCommand('dpkg -s sambahvl | grep "Status" | grep -w "install" 1>/dev/null 2>/dev/null && echo "1" || echo "0"')) == "1"){
+        
+        if(trim(Command::runSudo('dpkg -s sambahvl | grep "Status" | grep -w "install" 1>/dev/null 2>/dev/null && echo "1" || echo "0"')) == "1"){
             return respond(true,200);
         }else{
-            if(trim(runCommand('dpkg -s samba | grep "Status" | grep -w "install" 1>/dev/null 2>/dev/null && echo "1" || echo "0"')) == "1"){
+            if(trim(Command::runSudo('dpkg -s samba | grep "Status" | grep -w "install" 1>/dev/null 2>/dev/null && echo "1" || echo "0"')) == "1"){
                 return respond("Samba error !",202);
             }else{
                 return respond(false,200);
@@ -19,7 +20,8 @@ class SambaController{
     }
 
     function checkInstallation(){
-        $log = runCommand(sudo() . 'cat /tmp/smbHvlLog.txt');
+
+        $log = Command::runSudo('cat /tmp/smbHvlLog.txt');
         if(str_contains($log,"gpg: no valid OpenPGP data found.")){
             return respond(false,201);
         }
@@ -31,13 +33,11 @@ class SambaController{
     //gpg: no valid OpenPGP data found.
 
     function deleteSambaPackage(){
-        $deletePackage = "apt -y autoremove samba*";
-        runCommand(sudo() . $deletePackage);
 
-        $deleteConfig = "rm -rf /etc/samba/smb.conf";
-        runCommand(sudo() . $deleteConfig);
+        Command::runSudo("apt -y autoremove samba*");
+        Command::runSudo("rm -rf /etc/samba/smb.conf");
 
-        if(trim(runCommand('dpkg -s samba | grep "Status" | grep -w "install" 1>/dev/null 2>/dev/null && echo "1" || echo "0"')) == "1"){
+        if(trim(Command::runSudo('dpkg -s samba | grep "Status" | grep -w "install" 1>/dev/null 2>/dev/null && echo "1" || echo "0"')) == "1"){
             return respond(false,202);
         }else{
             return respond(true,200);
@@ -45,7 +45,8 @@ class SambaController{
     }
 
     function verifyInstallationPhp(){
-        if(trim(runCommand('dpkg -s sambahvl | grep "Status" | grep -w "install" 1>/dev/null 2>/dev/null && echo "1" || echo "0"')) == "1"){
+
+        if(trim(Command::runSudo('dpkg -s sambahvl | grep "Status" | grep -w "install" 1>/dev/null 2>/dev/null && echo "1" || echo "0"')) == "1"){
             return true;
         }else{
             return false;
@@ -75,18 +76,8 @@ class SambaController{
 	}
 
     function observeInstallation(){
-        $log = runCommand(sudo() . 'cat /tmp/domainLog');
-        /*$check = "tail -n 1 /tmp/domainLog";
-        if(runCommand(sudo() . $check)  == "Created symlink /etc/systemd/system/multi-user.target.wants/samba4.service → /etc/systemd/system/samba4.service."){
-            if($this->checkDomainPhp() == true){
-                return respond($log .= "\n\nKurulum başarıyla tamamlandı.", 202);
-            }
-            else{
-                return respond("Domain kurulumu tamamlanamadı !",201);
-            } 
-        }
-        return respond($log, 200);
-        */
+
+        $log = Command::runSudo('cat /tmp/domainLog');
         $flag = $this->checkDomainPhp();
 
         if($flag == true){
@@ -99,14 +90,8 @@ class SambaController{
     }
 
     function migrateLog(){
-        $log = runCommand(sudo() . 'cat /tmp/migrateLog');
-        /*$check = "tail -n 1 /tmp/migrateLog";
 
-        $lastLine1 = "Created symlink /etc/systemd/system/multi-user.target.wants/samba4.service → /etc/systemd/system/samba4.service.";
-        $lastLine2 = "smb-migrate-domain: servisler yeniden başlatılıyor";
-
-        if(runCommand(sudo() . $check) == $lastLine1 or runCommand(sudo() . $check)  == $lastLine2){
-        */
+        $log = Command::runSudo('cat /tmp/migrateLog');
         $flag = $this->checkDomainPhp();
 
         if($flag == true){
@@ -116,12 +101,13 @@ class SambaController{
             return respond($log, 200);
 
         }
-        //}
     }
 
     function isFileExists($filePath){
-        $existsCommand = 'test -e '. $filePath .' && echo 1 || echo 0';
-        $existsFlag = runCommand(sudo() . $existsCommand);
+
+        $existsFlag = Command::runSudo('test -e @{:filePath} && echo 1 || echo 0', [
+			'filePath' => $filePath
+		]);
 
         if($existsFlag == 1){
             return true;
@@ -147,24 +133,24 @@ class SambaController{
 
     //CREATE DOMAIN
     function createSambaDomain(){
-        $domainName = extensionDb('domainName');
-        $domainPassword = extensionDb('domainPassword');
-        $createDomainCommand ="bash -c 'DEBIAN_FRONTEND=noninteractive smb-create-domain -d " . $domainName . " -p " . $domainPassword . " > /tmp/domainLog 2>&1 & disown'";
-        runCommand(sudo() . $createDomainCommand);
+
+        Command::runSudo("bash -c 'DEBIAN_FRONTEND=noninteractive smb-create-domain -d @{:domainName} -p @{:domainPassword} > /tmp/domainLog 2>&1 & disown'", [
+			'domainName' => extensionDb('domainName'),
+			'domainPassword' => extensionDb('domainPassword')
+		]);
+
     }
 
     function returnDomainInformations(){
-        $domainName = extensionDb('domainName');
-        $getDomainInformationCommand = "samba-tool domain info " . $domainName;
 
-        $domainInformations = runCommand(sudo() . $getDomainInformationCommand);
+        $domainInformations = Command::runSudo('samba-tool domain info @{:domainName}', [
+			'domainName' => extensionDb('domainName')
+		]);
         return respond($domainInformations,200);
     }
 
     function returnSambaServiceStatus(){
-        $output = runCommand(sudo() . "systemctl is-active samba4.service");
-
-        if (trim($output) == "active") {
+        if (trim(Command::runSudo("systemctl is-active samba4.service")) == "active") {
             return respond(true,200);
         } 
         else {
@@ -173,16 +159,14 @@ class SambaController{
     }
 
     function sambaLog(){
-        $command = "systemctl status samba4.service";
 
-        $output = runCommand(sudo() . $command);
-
-        return respond($output, 200);
+        return respond(Command::runSudo("systemctl status samba4.service"), 200);
     }
 
     //FSMO
     function returnRolesTable(){
-        $allData = runCommand(sudo()."samba-tool fsmo show");
+        
+        $allData = Command::runSudo("samba-tool fsmo show");
         $allDataList = explode("\n",$allData);
         $dict = [
             "SchemaMasterRole" => "schema",
@@ -227,31 +211,39 @@ class SambaController{
     }
 
     function takeTheRole(){
-        $contraction = request("contraction");
-        $output=runCommand(sudo()."samba-tool fsmo transfer --role=".$contraction." -UAdministrator");
+
+        $output = Command::runSudo('samba-tool fsmo transfer --role=@{:contraction} -UAdministrator', [
+			'contraction' => request('contraction')
+		]);
+
         if($output == ""){
-            $output=runCommand(sudo()."samba-tool fsmo transfer --role=".$contraction." -UAdministrator 2>&1");
+            $output = Command::runSudo('samba-tool fsmo transfer --role=@{:contraction} -UAdministrator 2>&1', [
+                'contraction' => request('contraction')
+            ]);
         }
         return respond($output,200);
     }
 
     function takeAllRoles(){
-        $output=runCommand(sudo()."samba-tool fsmo transfer --role=all -UAdministrator");
+
+        $output = Command::runSudo('samba-tool fsmo transfer --role=all -UAdministrator');
         return respond($output,200);
     }
 
     function seizeTheRole(){
-        $contraction = request("contraction");
-        $output=runCommand(sudo()."samba-tool fsmo seize --role=".$contraction." -UAdministrator");
+
+        $output = Command::runSudo('samba-tool fsmo seize --role=@{:contraction} -UAdministrator', [
+			'contraction' => request('contraction')
+		]);
         return respond($output,200);
     }
 
     
     //REPLICATION
     function replicationOrganized(){
-        $hostNameTo = runCommand("hostname");
+        $hostNameTo = Command::run("hostname");
 
-        $allInfo = runCommand(sudo() . "samba-tool drs showrepl --json");
+        $allInfo = Command::runSudo("samba-tool drs showrepl --json");
         $allInfo = json_decode($allInfo,true);
 
         $data = [];
@@ -287,10 +279,13 @@ class SambaController{
     }
 
     function createBound(){ 
-        $incomingHostName = request('inHost');
-        $outgoingHostName = request('outHost');
-        $info = request('info');
-        runCommand(sudo() . 'samba-tool drs replicate ' . $incomingHostName . $outgoingHostName . $info);
+
+        Command::runSudo('samba-tool drs replicate @{:incomingHostName} @{:outgoingHostName} @{:info}', [
+			'incomingHostName' => request('inHost'),
+			'outgoingHostName' => request('outHost'),
+			'info' => request('info')
+
+		]);
         return respond("Başarılı", 200);
     }
 
@@ -303,11 +298,13 @@ class SambaController{
 			'password' => 'required|string'
 		]);
         
-        $ip = request("ip");
-        $username = request("username");
-        $password = request("password");
-        $migrateCommand = "bash -c 'DEBIAN_FRONTEND=noninteractive smb-migrate-domain -s " . $ip . " -a " . $username . " -p " . $password . " > /tmp/migrateLog 2>&1 & disown'";
-        runCommand(sudo() . $migrateCommand);
+        Command::runSudo("bash -c 'DEBIAN_FRONTEND=noninteractive smb-migrate-domain -s @{:ip} -a @{:username} -p @{:password} > /tmp/migrateLog 2>&1 & disown'", [
+			'ip' => request('ip'),
+			'username' => request('username'),
+			'password' => request('password')
+
+		]);
+
         $this->timeupdate();
     }
 
@@ -326,22 +323,22 @@ class SambaController{
         $password = request("password");
         $site = request("site");
 
-        $parameters = "-s \"" . $ip . "\" -a \"" . $username . "\" -p \"" . $password . "\" -t \"". $site . "\" > /tmp/migrateLog 2>&1 & disown";
         $migrateCommand = "bash -c 'DEBIAN_FRONTEND=noninteractive smb-migrate-domain -s \"" . $ip . "\" -a \"" . $username . "\" -p \"" . $password . "\" -t \"". $site . "\" > /tmp/migrateLog 2>&1 & disown'";
 
         putFile(getPath("scripts/smb_migrate_domain"), "/tmp/smb_migrate_domain");
-        runCommand(sudo()."chmod +x /tmp/smb_migrate_domain");
-        runCommand(sudo()."cp /tmp/smb_migrate_domain /usr/local/bin/smb-migrate-domain");
-        runCommand(sudo() . $migrateCommand);
+        Command::runSudo("chmod +x /tmp/smb_migrate_domain");
+        Command::runSudo("cp /tmp/smb_migrate_domain /usr/local/bin/smb-migrate-domain");
+        Command::runSudo($migrateCommand);
         $this->timeupdate();
     }
 
     //INFO
     function getSambaType(){
-        if(trim(runCommand('dpkg -s sambahvl | grep "Status" | grep -w "install" 1>/dev/null 2>/dev/null && echo "1" || echo "0"')) == "1"){
+        
+        if(trim(Command::runSudo('dpkg -s sambahvl | grep "Status" | grep -w "install" 1>/dev/null 2>/dev/null && echo "1" || echo "0"')) == "1"){
             return "sambahvl";
         }else{
-            if(trim(runCommand('dpkg -s samba | grep "Status" | grep -w "install" 1>/dev/null 2>/dev/null && echo "1" || echo "0"')) == "1"){
+            if(trim(Command::runSudo('dpkg -s samba | grep "Status" | grep -w "install" 1>/dev/null 2>/dev/null && echo "1" || echo "0"')) == "1"){
                 return "samba";
             }
             return "not installed";
@@ -352,12 +349,10 @@ class SambaController{
         $type = $this->getSambaType();
         
         if($type == "samba"){
-            $output = runCommand(sudo() . "dpkg -s samba");
-
+            $output = Command::runSudo("dpkg -s samba");
         }
         else if($type == "sambahvl"){
-            $output = runCommand(sudo() . "dpkg -s sambahvl");
-
+            $output = Command::runSudo("dpkg -s sambahvl");
         }
         else{
             $output = "";
@@ -370,7 +365,7 @@ class SambaController{
         $type = $this->getSambaType();
         
         if($type == "sambahvl"){
-            $output = runCommand(sudo() . "dpkg -s sambahvl | grep Version");
+            $output = Command::runSudo("dpkg -s sambahvl | grep Version");
             $output = explode(" ", $output);
             $output = $output[1];
         }
@@ -386,7 +381,7 @@ class SambaController{
         $type = $this->getSambaType();
 
         if($type !== "not installed"){
-            $version = runCommand(sudo() . "samba --version");
+            $version = Command::runSudo("samba --version");
             $version = explode(" ", $version);
             return respond($version[1], 200);
         }
@@ -398,8 +393,8 @@ class SambaController{
     }
 
     function listPaths(){
-        $command = "smbd -b | sed -n -e '/Paths:/,/System Headers:/ p' | head -n -2 | sed '1d;'";
-        $output = runCommand(sudo().$command);
+
+        $output = Command::runSudo("smbd -b | sed -n -e '/Paths:/,/System Headers:/ p' | head -n -2 | sed '1d;'");
         $allDataList = explode("\n",$output);
         $data = [];
         for($i=0; $i<count($allDataList); $i++){
@@ -417,8 +412,8 @@ class SambaController{
     }
 
     function listHave(){
-        $command = "smbd -b | grep HAVE";
-        $output = runCommand(sudo().$command);
+
+        $output = Command::runSudo("smbd -b | grep HAVE");
         $allDataList = explode("\n",$output);
         $data = [];
         for($i=0; $i<count($allDataList); $i++){
@@ -435,8 +430,8 @@ class SambaController{
 
     }
     function listBuildOptions(){
-        $command = "smbd -b | sed -n -e '/Build Options:/,/Cluster support features:/ p' | head -n -2 | sed '1d;'";
-        $output = runCommand(sudo().$command);
+        
+        $output = Command::runSudo("smbd -b | sed -n -e '/Build Options:/,/Cluster support features:/ p' | head -n -2 | sed '1d;'");
         $allDataList = explode("\n",$output);
         $data = [];
         for($i=0; $i<count($allDataList); $i++){
@@ -454,8 +449,8 @@ class SambaController{
     }
 
     function listWithOptions(){
-        $command = "smbd -b | sed -n -e '/--with Options:/,/Build Options:/ p' | head -n -2 | sed '1d;'";
-        $output = runCommand(sudo().$command);
+
+        $output = Command::runSudo("smbd -b | sed -n -e '/--with Options:/,/Build Options:/ p' | head -n -2 | sed '1d;'");
         $allDataList = explode("\n",$output);
         $data = [];
         for($i=0; $i<count($allDataList); $i++){
@@ -473,8 +468,8 @@ class SambaController{
     }
 
     function listModules(){
-        $command = "smbd -b | grep 'Builtin modules:' -A1 | sed '1d;'";
-        $output = runCommand(sudo().$command);
+
+        $output = Command::runSudo("smbd -b | grep 'Builtin modules:' -A1 | sed '1d;'");
         $allDataList = explode(" ",$output);
         $data = [];
         for($i=0; $i<count($allDataList); $i++){
@@ -494,8 +489,7 @@ class SambaController{
     function getInstallLogs(){
         $flag1 = $this->isFileExists("/tmp/smbHvlLog.txt");
         if($flag1){
-            $output = runCommand(sudo() . "cat /tmp/smbHvlLog.txt");
-            return respond($output,200);
+            return respond(Command::runSudo("cat /tmp/smbHvlLog.txt"),200);
         }
         else{
             return respond("",200);
@@ -507,12 +501,10 @@ class SambaController{
         $flag1 = $this->isFileExists("/tmp/migrateLog");
         $flag2 = $this->isFileExists("/tmp/domainLog");
         if($flag1){
-            $output = runCommand(sudo() . "cat /tmp/migrateLog");
-            return respond($output,200);
+            return respond(Command::runSudo("cat /tmp/migrateLog"),200);
         }
         if($flag2){
-            $output = runCommand(sudo() . "cat /tmp/domainLog");
-            return respond($output,200);
+            return respond(Command::runSudo("cat /tmp/domainLog"),200);
         }
         return respond("",200);
         
@@ -520,7 +512,8 @@ class SambaController{
     }
 
     function checkSambahvl(){
-        if(trim(runCommand('dpkg -s sambahvl | grep "Status" | grep -w "install" 1>/dev/null 2>/dev/null && echo "1" || echo "0"')) == "1"){
+        
+        if(trim(Command::runSudo('dpkg -s sambahvl | grep "Status" | grep -w "install" 1>/dev/null 2>/dev/null && echo "1" || echo "0"')) == "1"){
             return respond(true,200);
         }
         else{
@@ -528,8 +521,8 @@ class SambaController{
         }
     }
     function checkDomain(){
-        //if(trim(runCommand('net ads info | grep Realm: 1>/dev/null 2>/dev/null && echo "1" || echo "0"')) == "1"){
-        if(trim(runCommand('getent passwd Administrator| grep administrator 1>/dev/null 2>/dev/null && echo "1" || echo "0"')) == "1"){
+        
+        if(trim(Command::runSudo('getent passwd Administrator| grep administrator 1>/dev/null 2>/dev/null && echo "1" || echo "0"')) == "1"){
             return respond(true,200);
         }
         else{
@@ -538,7 +531,8 @@ class SambaController{
     }
 
     function checkDomainPhp(){
-        if(trim(runCommand('getent passwd Administrator| grep administrator 1>/dev/null 2>/dev/null && echo "1" || echo "0"')) == "1"){
+        
+        if(trim(Command::runSudo('getent passwd Administrator| grep administrator 1>/dev/null 2>/dev/null && echo "1" || echo "0"')) == "1"){
             return true;
         }
         else{
@@ -547,8 +541,8 @@ class SambaController{
     }
 
     function timeUpdate(){
-
-        $output = runCommand(sudo()."ntpdate -u tr.pool.ntp.org");
+        
+        $output = Command::runSudo("ntpdate -u tr.pool.ntp.org");
         $output = explode("ntp", $output)[0];
         return respond($output, 200);
     }
@@ -556,13 +550,16 @@ class SambaController{
     function demoteThisOne(){
 
         $serverName = request("serverName");
-        $fsmoResult = runCommand(sudo()."samba-tool fsmo show");
+        $fsmoResult = Command::runSudo("samba-tool fsmo show");
         
         if(stripos($fsmoResult, $serverName) != false){
             return respond("Bu Domain Controller üzerinde hala FSMO rolü bulunmaktadır. Lütfen FSMO Rol Yönetimi sekmesinden üzerindeki rolleri alıp tekrar demote ediniz!", 201);
         }
 
-        $log = runCommand(sudo()."samba-tool domain demote --remove-other-dead-server=".$serverName);
+        $log = Command::runSudo("samba-tool domain demote --remove-other-dead-server=@{:serverName}", [
+			'serverName' => $serverName
+		]);
+
         if(str_contains($log, "ERROR")){
             return respond("Hata!", 201);
         }
@@ -570,8 +567,8 @@ class SambaController{
     }
 
     function checkForUpdates(){
-
-        $output = runCommand(sudo()."apt list --upgradable | grep -q sambahvl && echo true || echo false");
+        
+        $output = Command::runSudo("apt list --upgradable | grep -q sambahvl && echo true || echo false");
         $type = $this->getSambaType();
         if($type != "not installed"){
             if(str_contains($output,"true")){
@@ -589,7 +586,7 @@ class SambaController{
 
     function checkForUpdatesPhp(){
 
-        $output = runCommand(sudo()."apt list --upgradable | grep -q sambahvl && echo true || echo false");
+        $output = Command::runSudo("apt list --upgradable | grep -q sambahvl && echo true || echo false");
 
         if(str_contains($output,"true")){
             return true;
@@ -601,12 +598,13 @@ class SambaController{
     }
 
     function updateSambaPackage(){
-        runCommand(sudo()."bash -c 'DEBIAN_FRONTEND=noninteractive apt-get install sambahvl > /tmp/updateLog 2>&1 & disown'");
+
+        Command::runSudo("bash -c 'DEBIAN_FRONTEND=noninteractive apt-get install sambahvl > /tmp/updateLog 2>&1 & disown'");
     }
 
     function observeUpdate(){
-        $log = runCommand(sudo() . 'cat /tmp/updateLog');
         
+        $log = Command::runSudo('cat /tmp/updateLog');
         $flag = $this->checkForUpdatesPhp();
 
         if($flag == false){
@@ -619,26 +617,25 @@ class SambaController{
     }
     function showConfig(){  //return config file content
 
-        $cmd = "smbd -b | grep CONFIGFILE";
-        $output = runCommand(sudo().$cmd);
-        $output = explode(" ", $output);
-        $locOfFile = $output[1];
+        
+        $output = explode(" ", Command::runSudo("smbd -b | grep CONFIGFILE"));
 
-        $cmd = "cat ". $locOfFile;
-        $output = runCommand(sudo().$cmd);
+        $cmd_output = Command::runSudo("cat @{:locOfFile}", [
+			'locOfFile' => $output[1]
+		]);
 
-        return $output;
+        return $cmd_output;
     }
 
     function getDNSForwarder(){
 
-        $cmd = "smbd -b | grep CONFIGFILE";
-        $locOfFile= runCommand(sudo().$cmd);
+        $locOfFile= Command::runSudo("smbd -b | grep CONFIGFILE");
         $locOfFile = explode(" ", $locOfFile);
         $locOfFile =  $locOfFile[1];
-      
-        $cmd = "grep dns forwarder " . $locOfFile;
-        $output = runCommand(sudo().$cmd);
+
+        $output = Command::runSudo("grep dns forwarder  @{:locOfFile}", [
+			'locOfFile' => $locOfFile
+		]);
         $output = explode(" ", $output, 5);
         $dnsForwarderData = $output[4];
         return $dnsForwarderData;
@@ -646,14 +643,14 @@ class SambaController{
 
     function changeDNSForwarder(){
         
-        $cmd = "smbd -b | grep CONFIGFILE";
-        $locOfFile= runCommand(sudo().$cmd);
+        $locOfFile= Command::runSudo("smbd -b | grep CONFIGFILE");
         $locOfFile = explode(" ", $locOfFile);
         $locOfFile =  $locOfFile[1];
       
       
-        $cmd1 = "grep 'dns forwarder' " . $locOfFile;
-        $output = runCommand(sudo().$cmd1);
+        $output = Command::runSudo("grep dns forwarder  @{:locOfFile}", [
+			'locOfFile' => $locOfFile
+		]);
         $output = explode("= ", $output);
         $dnsForwarderData = $output[1];
     
@@ -666,7 +663,6 @@ class SambaController{
         ]);
         
         $reload = "systemctl restart samba4.service";
-      //  runCommand(sudo().$reload);
 
         return respond(request("dnsForwardData")); 
     }

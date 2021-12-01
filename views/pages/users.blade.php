@@ -148,7 +148,6 @@
                 function showAttributes(node){
 
                     showSwal("{{__('Yükleniyor...')}}", 'info');
-                    // console.log(node);
 
 
                     $("#updateAttributeSamaccountname").val($(node).find("#samaccountname").text());
@@ -183,9 +182,7 @@
 
 
 
-                    request(API('update_attribute'), data, function(response) {
-                        console.log(response);                        
-
+                    request(API('update_attribute'), data, function(response) {                   
 
                         $('#updateAttributeModal').modal('hide');
 
@@ -196,7 +193,6 @@
 
                     }, function(error) {
                         error = JSON.parse(error);
-                        console.log(error);
                         showSwal(error.message, 'error', 5000);
                     });
                 }

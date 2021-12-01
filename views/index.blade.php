@@ -201,7 +201,6 @@
             }
             else{
                 // if certificate not exists then print error message
-                console.log("Certificate Not Exist !")
                 $(".tab-content").css("display", "block");
                 $('.tab-content').html(
                         '<div class="alert alert-danger" role="alert">' +
@@ -235,7 +234,6 @@
             else{
                 // if certificate is not valid print error message
 
-                console.log("Certificate Not Valid !")
                 $(".tab-content").css("display", "block");
                 $('.tab-content').html(
                     '<div class="alert alert-danger" role="alert">' +

@@ -114,7 +114,6 @@
             window.location.reload();
         }, function(error) {
             showSwal(error.message, 'error', 3000);
-            console.log(error);
         });
     }
     function removeSambaPackageSteps(){

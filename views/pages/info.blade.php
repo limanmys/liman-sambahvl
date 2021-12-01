@@ -262,7 +262,6 @@
             }
         }, function(error) {
             showSwal(error.message, 'error', 3000);
-            console.log(error);
         });
     }
 
@@ -280,7 +279,6 @@
             }
         }, function(error) {
             showSwal(error.message, 'error', 3000);
-            console.log(error);
         });
     }
 
@@ -293,7 +291,6 @@
             $('#domainLog').html("\n" + message);
         }, function(error) {
             showSwal(error.message, 'error', 3000);
-            console.log(error);
         });
     }
 
@@ -303,11 +300,9 @@
         var form = new FormData();
         request(API('return_samba_service_log'), form, function(response) {
             message = JSON.parse(response)["message"];
-            //console.log(message);
             $('#sambaLog').html(message);
         }, function(error) {
             showSwal(error.message, 'error', 3000);
-            console.log(error);
         });
     }
 
@@ -397,7 +392,6 @@
 
         request(API('check_for_updates'), form, function(response) {
             message = JSON.parse(response)["message"];
-            console.log(message);
             if(message == "upgradable"){
                 info = '<div class="alert alert-info" role="alert">{{__("Sambahvl güncel değil !")}}</div>' 
                 +'<button class="btn btn-info mb-2" id="updateBtn" style="float:left;margin-left:10px;visibility:hidden;"></button>' 
@@ -471,7 +465,6 @@
 
         request(API('show_config'), form, function(response) {
             $('#conf').html(response);
-            console.log(response);
         }, function(response) {
             let error = JSON.parse(response);
             showSwal(error.message, 'error', 3000);
@@ -486,7 +479,6 @@
             $('#dnsForward').val(response);
         }, function(error) {
             showSwal(error.message, 'error', 3000);
-            console.log(error);
         });
     }
     function changednsForward(){
@@ -499,7 +491,6 @@
             //$('#dnsForward').val(response);
         }, function(error) {
             showSwal(error.message, 'error', 3000);
-            console.log(error);
         });
     }
 

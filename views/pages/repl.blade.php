@@ -9,42 +9,6 @@
     </div>
 </div>
 
-@component('modal-component',[
-    "id" => "replModal",
-    "title" => "İstediğiniz replikasyonu seçiniz.",
-    "footer" => [
-        "text" => "Replike Et",
-        "class" => "btn-success",
-        "onclick" => "replicate()"
-    ]
-])
-
-@include('inputs', [
-    "inputs" => [
-        "Nereden:fromSrv" => [
-        ],
-
-        "Nereye:toSrv" => [
-        ],
-
-        "Replikasyon Türü:replType" => [
-            "Root" => "Root",
-            "ForestDnsZones" => "ForestDnsZones",
-            "Configuration" => "Configuration",
-            "DomainDnsZones" => "DomainDnsZones",
-            "Schema" => "Schema"
-        ],
-    ]
-])
-<div class="form-check">
-    <input class="form-check-input" type="checkbox" value="" id="FullSync">
-    <label class="form-check-label" for="FullSync">
-        Full Sync
-    </label>
-</div>
-
-@endcomponent
-
 <script>
     let from;
     let to;

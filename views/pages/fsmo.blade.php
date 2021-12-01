@@ -9,30 +9,6 @@
 <button class="btn btn-success mb-2" id="takeallroles_btn" onclick="showInfoModal()" type="button">{{__('Tüm rolleri al')}}</button>
 <div class="table-responsive" id="fsmoTable"></div>
 
-@component('modal-component',[
-        "id" => "infoModal",
-        "title" => "Sonuç Bilgisi",
-        "footer" => [
-            "text" => "OK",
-            "class" => "btn-success",
-            "onclick" => "hideInfoModal()"
-        ]
-    ])
-@endcomponent
-
-
-@component('modal-component',[
-        "id" => "warningModal",
-        "title" => "Uyarı",
-        "footer" => [
-            "text" => "Evet",
-            "class" => "btn-success",
-            "onclick" => "warningModalYes()"
-        ]
-    ])
-    
-@endcomponent
-
 
 <script>
     // == Printing Table ==

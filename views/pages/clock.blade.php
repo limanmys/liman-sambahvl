@@ -47,7 +47,6 @@ function timeUpdate(){
             document.getElementById("systemClock").value = message;
         }, function(error) {
             showSwal(error.message, 'error', 3000);
-            console.log(error);
         });
     }
 
@@ -58,7 +57,6 @@ function timeUpdate(){
             document.getElementById("hwClock").value = message;
         }, function(error) {
             showSwal(error.message, 'error', 3000);
-            console.log(error);
         });
     }
 

@@ -33,7 +33,6 @@
             }
         }, function(error) {
             showSwal(error.message, 'error', 3000);
-            console.log(error);
         });
     }
 
@@ -49,7 +48,6 @@
             observe();
         }, function(error) {
             showSwal(error.message, 'error', 3000);
-            console.log(error);
             x.disabled = false;
             y.disabled = false;
         });
@@ -96,7 +94,6 @@
             $('#domainLogs').html("\n" + message);
         }, function(error) {
             showSwal(error.message, 'error', 3000);
-            console.log(error);
         });
     }
 

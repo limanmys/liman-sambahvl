@@ -139,7 +139,6 @@
                     let data = new FormData();
                     data.append("groupDN", $("#addUserToGroupGroup").val());     
                     request(API('get_group_members'), data, function(response) {
-                        console.log(response);
                         $('#membersTable').html(response).find('table').DataTable(dataTablePresets('normal'));
                         //$('#group-members').html(message);
                         $('#groupMembersModal').modal('show');
@@ -153,7 +152,6 @@
 
                 function showGroupMembers(node){
                     showSwal("{{__('Yükleniyor...')}}", 'info');
-                    console.log(node);
 
 
                     $("#addUserToGroupGroup").val($(node).find("#dn").text());
@@ -181,15 +179,13 @@
                     data.append("user", user);
                     data.append("group", group);
 
-                    request(API('add_user_to_group'), data, function(response) {
-                        console.log(response);                        
+                    request(API('add_user_to_group'), data, function(response) {                        
 
 
                         updateGroupTable();
                         $('#addUserToGroupModal').modal('hide');
 
                     }, function(error) {
-                        console.log(error);
                         showSwal(error.message, 'error', 5000);
                     });
                 }

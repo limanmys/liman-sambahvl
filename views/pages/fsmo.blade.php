@@ -124,7 +124,6 @@
 
      //== Warning Modal ==
      function showWarningModal(contraction){
-        //console.log(contraction);
         $('#warningModal').find('.modal-footer').html(
             '<button type="button" class="btn btn-success" onClick="warningModalYes()">{{__("Evet")}}</button> '
             + '<button type="button" class="btn btn-danger" onClick="warningModalNo()">{{__("Hayır")}}</button>');

@@ -60,7 +60,6 @@
                 }
 
                 function deleteComputer(item){  
-                    //console.log(item);
                     var form = new FormData();
                     let computerName = item.querySelector("#name").innerHTML;
                     form.append("computerName",computerName);

@@ -1,8 +1,3 @@
-@component('modal-component',[
-    "id" => "packageInstallerModal",
-    "title" => "Görev İşleniyor",
-])
-@endcomponent
 <div id="errorDiv" style="visibility:none;"></div>
 <div id="successDiv" style="visibility:none;"></div>
 <div class="alert alert-primary d-flex align-items-center " role="alert" id="infoAlert">

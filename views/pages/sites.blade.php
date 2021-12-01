@@ -1,33 +1,3 @@
-            @component('modal-component',[
-                    "id" => "createSiteModal",
-                    "title" => "Lütfen oluşturmak istediğiniz site ismini yazınız",
-                   
-                ]) 
-            <form>
-                <div class="form-group">
-                    <label for="sitename">{{__('Site adı')}}</label>
-                    <input class="form-control" id="sitename" aria-describedby="sitenameHelp" placeholder="{{__('Site adı')}}">
-                    <small id="sitenameHelp" class="form-text text-muted">{{__('Oluşturacağınız site adını giriniz.')}}</small>
-                </div>
-            </form>
-                <button class="btn btn-success" onclick="createSite()" style="float:right;">{{__('Oluştur')}}</button>
-            @endcomponent
-
-            @component('modal-component',[
-                "id" => "viewServersOfSiteModal"
-            ])
-            <div id="serversOfSite-table" class="table-content">
-                <div class="table-body"> </div>
-            </div>
-            @endcomponent
-
-            @component('modal-component',[
-                "id" => "viewAvailableServersOfSiteModal"
-            ])
-            <div id="availableServers-table" class="table-content">
-                <div class="table-body"> </div>
-            </div>
-            @endcomponent
 
             <div class="alert alert-primary d-flex align-items-center " role="alert" id="infoAlert">
                 <svg class="bi flex-shrink-0 me-2" width="24" height="24" role="img" aria-label="Info:"><use xlink:href="#info-fill"/></svg>

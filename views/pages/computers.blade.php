@@ -11,19 +11,6 @@
                 "text" => "Yeni Bilgisayar"
                 ])
             
-            @component('modal-component',[
-                "id" => "createComputerModal",
-                "title" => "Lütfen oluşturmak istediğiniz bilgisayar bilgilerini giriniz",
-                
-            ]) 
-            <form>
-                <div class="form-group">
-                    <label for="computerNameCreate">{{__('Bilgisayar Adı')}}</label>
-                    <input class="form-control" id="computerNameCreate" a" placeholder="{{__('Bilgisayar adı')}}">
-                </div>
-            </form>
-            <button class="btn btn-success" onclick="createComputer()" >{{__('Oluştur')}}</button>
-            @endcomponent
 			
             <div class="table-responsive" id="computersTable"></div>
 

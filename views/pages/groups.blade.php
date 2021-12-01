@@ -23,62 +23,7 @@
                 "target_id" => "createGroupModal",
                 "text" => "Grup Oluştur"
                 ])
-            @component('modal-component',[
-                "id" => "createGroupModal",
-                "title" => "Lütfen oluşturmak istediğiniz grup bilgilerini giriniz",
-                
-            ]) 
-            <form>
-                <div class="form-group">
-                    <label for="groupnameCreate">{{__('Grup adı')}}</label>
-                    <input class="form-control" id="groupnameCreate" aria-describedby="groupnameHelp" placeholder="{{__('Grup adı')}}">
-                    <small id="groupnameHelp" class="form-text text-muted">{{__('Oluşturacağınız grup adını giriniz.')}}</small>
-                </div>
-            </form>
-            <button class="btn btn-success" onclick="createGroup()" style="float:right;">{{__('Oluştur')}}</button>
-            @endcomponent
-
-            @component("modal-component", [
-                "id" => "groupMembersModal",
-                "title" => "Grup Üyeleri",
-                "footer" => 
-                   [
-                    "class" => "btn-success",
-                    "onclick" => "closeMembersModal()",
-                    "text" => "Kapat"
-                    ]
-                ])    
-                <div class="d-flex justify-content-end">
-                    <div>
-                        <button class="btn btn-success my-2" onclick="showAddUserToGroupModal()">
-                            Kullanıcı Ekle
-                        </button>
-                    </div>
-                </div>
-                <div class="table-responsive" id="membersTable"></div>
-
-            @endcomponent
-
-            @component('modal-component',[
-                "id" => "addUserToGroupModal",
-                "title" => "Lütfen eklenecek kullanıcının adını girin.",
-                
-            ]) 
-       
-                <form onsubmit="return false;">
-                    <div class="form-group">
-                        <label for="addUserToGroupUser">{{__('Kullanıcı Adı')}}</label>
-                        <input class="form-control" id="addUserToGroupUser" aria-describedby="addUserToGroupUser" placeholder="{{__('Kullanıcı Adı')}}"/>
-                    </div>
-
-                    <input id="addUserToGroupGroup" type="hidden"/>
-
-                    <button class="btn btn-success" onclick="addUserToGroup()" style="float:right;">{{__('Kullanıcı Ekle')}}</button>
-                </form>
             
-            @endcomponent
-
-
 
             <br />
             <br />

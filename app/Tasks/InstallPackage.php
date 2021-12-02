@@ -19,7 +19,7 @@ class InstallPackage extends Task
 			->get();
 
 		$this->command = Distro::debian(
-			"echo 'deb [arch=amd64] http://depo.aciklab.org/ onyedi main' | sudo tee /etc/apt/sources.list.d/acikdepo.list && wget --no-check-certificate -qO - http://depo.aciklab.org/public.key | sudo apt-key add - && apt update && bash -c 'DEBIAN_FRONTEND=noninteractive apt install sambahvl -qqy >/tmp/smbHvlLog.txt 2>&1 & disown'"
+			"echo 'deb [arch=amd64] http://depo.aciklab.org/ bullseye main' | sudo tee /etc/apt/sources.list.d/acikdepo.list && wget --no-check-certificate -qO - http://depo.aciklab.org/public.key | sudo apt-key add - && apt update && bash -c 'DEBIAN_FRONTEND=noninteractive apt install sambahvl -qqy >/tmp/smbHvlLog.txt 2>&1 & disown'"
 		)
 			->get();
 		

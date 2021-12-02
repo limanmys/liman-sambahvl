@@ -63,7 +63,7 @@ class LdapController extends LdapConnection
         else if(str_contains($output,"password is too short")){
             return respond("Şifre çok kısa !",201);
         }
-        else if (str_contains($output,"created successfully")){
+        else if (str_contains($output,"added successfully")){
             return respond("Kullanıcı başarıyla oluşturuldu.",200);
         }
         else if (str_contains($output,"not meet the complexity criteria!")){
@@ -353,7 +353,7 @@ class LdapController extends LdapConnection
         if(str_contains($output,"already exists")){
             return respond("Bilgisayar zaten mevcut !",201);
         }
-        else if(str_contains($output,"created")){
+        else if(str_contains($output,"added")){
             return respond("Bilgisayar başarıyla oluşturuldu.",200);
         }
         else{
@@ -471,7 +471,6 @@ class LdapController extends LdapConnection
             "value" => $data,
             "title" => ["Sitelar"],
             "display" => ["name"],
-            "onclick" => "openSite",
             "menu" => [
                 "Site Sil" => [
                     "target" => "deleteSite",

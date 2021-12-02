@@ -51,7 +51,9 @@
                     let computerName = item.querySelector("#name").innerHTML;
                     form.append("computerName",computerName);
                     request(API('delete_computer'), form, function(response) {
+                        message = JSON.parse(response)["message"];
                         listComputers();
+                        showSwal(message, 'success', 3000);
                     }, function(error) {
                             showSwal(error.message, 'error', 5000);
                     });

@@ -39,7 +39,8 @@ class SambaController{
 
         if(trim(Command::runSudo('dpkg -s samba | grep "Status" | grep -w "install" 1>/dev/null 2>/dev/null && echo "1" || echo "0"')) == "1"){
             return respond(false,202);
-        }else{
+        }
+        else{
             return respond(true,200);
         }
     }
@@ -112,8 +113,7 @@ class SambaController{
         if($existsFlag == 1){
             return true;
         }
-
-        if($existsFlag == 0){
+        else{
             return false;
         }
 
@@ -121,12 +121,11 @@ class SambaController{
 
     function verifyDomain(){
         $smbConfigPath = "/etc/samba/smb.conf";
-
-        if($this->isFileExists($smbConfigPath) == true){
+        $isFileExists = $this->isFileExists($smbConfigPath);
+        if($isFileExists){
             return respond(true,200);
         }
-        
-        if($this->isFileExists($smbConfigPath) == false){
+        else{
             return respond(false,200);
         }
     }
@@ -318,18 +317,20 @@ class SambaController{
 			'site' => 'required|string',
 
 		]);
-
-        $ip = request("ip");
-        $username = request("username");
-        $password = request("password");
-        $site = request("site");
-
-        $migrateCommand = "bash -c 'DEBIAN_FRONTEND=noninteractive smb-migrate-domain -s \"" . $ip . "\" -a \"" . $username . "\" -p \"" . $password . "\" -t \"". $site . "\" > /tmp/migrateLog 2>&1 & disown'";
+        //$migrateCommand = "bash -c 'DEBIAN_FRONTEND=noninteractive smb-migrate-domain -s \"" . $ip . "\" -a \"" . $username . "\" -p \"" . $password . "\" -t \"". $site . "\" > /tmp/migrateLog 2>&1 & disown'";
 
         putFile(getPath("scripts/smb_migrate_domain"), "/tmp/smb_migrate_domain");
         Command::runSudo("chmod +x /tmp/smb_migrate_domain");
         Command::runSudo("cp /tmp/smb_migrate_domain /usr/local/bin/smb-migrate-domain");
-        Command::runSudo($migrateCommand);
+
+        Command::runSudo("bash -c 'DEBIAN_FRONTEND=noninteractive smb-migrate-domain -s @{:ip} -a @{:username} -p @{:password} -t @{:site} > /tmp/migrateLog 2>&1 & disown'", [
+			'ip' => request('ip'),
+			'username' => request('username'),
+			'password' => request('password'),
+			'site' => request('site')
+
+		]);
+
         $this->timeupdate();
     }
 
@@ -669,8 +670,7 @@ class SambaController{
     }
 
     function DnsUpdate(){
-        $output = Command::runSudo("samba_dnsupdate --verbose 2>&1");
-        return respond($output);
+        return respond(Command::runSudo("samba_dnsupdate --verbose 2>&1"));
     }
 
     function getIP(){
